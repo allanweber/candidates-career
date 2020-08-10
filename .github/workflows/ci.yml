@@ -48,7 +48,7 @@ jobs:
       run: heroku container:push -a candidates-career-branch allanweber/candidates-career:${VERSION}
 
     - name: Release DEV Branch
-        if: github.ref != 'refs/heads/master'
+      if: github.ref != 'refs/heads/master'
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         run: heroku container:release -a candidates-career-branch allanweber/candidates-career:${VERSION}
