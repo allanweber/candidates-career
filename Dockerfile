@@ -8,4 +8,5 @@ ENV JAVA_OPTS  "\
 
 ADD target/candidates-career*.jar candidates-career.jar
 
-ENTRYPOINT ["sh","-c","java $JAVA_OPTS -jar candidates-career.jar"]
+#ENTRYPOINT ["sh","-c","java $JAVA_OPTS -jar candidates-career.jar"]
+CMD ["/usr/bin/java", "$JAVA_OPTS -jar candidates-career.jar"]
