@@ -22,7 +22,7 @@ jobs:
       run: echo ::set-env name=VERSION::$(mvn -Dexec.executable='echo' -Dexec.args='${project.version}' --non-recursive exec:exec -q)
 
     - name: Build Image
-      run: docker build -t allanweber/candidates-career:${VERSION} .
+      run: docker build -t candidates-career:${VERSION} .
 
     - name: Login to Heroku Container registry
       env:
@@ -33,25 +33,25 @@ jobs:
 #      run: docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASSWORD }}
 
 #    - name: Push Version
-#      run: docker push allanweber/candidates-career:${VERSION}
+#      run: docker push candidates-career:${VERSION}
 
     - name: Build Latest Image and Push (only master)
       if: github.ref == 'refs/heads/master'
       run: |
-        docker tag allanweber/candidates-career:${VERSION} allanweber/candidates-career:latest
-        docker push allanweber/candidates-career:latest
+        docker tag candidates-career:${VERSION} candidates-career:latest
+        docker push candidates-career:latest
 
     - name: Push DEV Branch to Registry
       if: github.ref != 'refs/heads/master'
       env:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-      run: heroku container:push -a candidates-career-branch allanweber/candidates-career:${VERSION}
+      run: heroku container:push -a candidates-career-branch candidates-career:${VERSION}
 
     - name: Release DEV Branch
       if: github.ref != 'refs/heads/master'
       env:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-      run: heroku container:release -a candidates-career-branch allanweber/candidates-career:${VERSION}
+      run: heroku container:release -a candidates-career-branch candidates-career:${VERSION}
 
 #  heroku-deploy:
 #    name: Heroku Deploy
