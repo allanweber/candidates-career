@@ -7,51 +7,16 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Set up JDK 1.11
-      uses: actions/setup-java@v1
-      with:
-        java-version: 1.11
-    - name: Build with Maven
-      run: mvn -B package --file pom.xml
-
-#    - name: Get Version
-#      run: echo ::set-env name=VERSION::$(mvn -Dexec.executable='echo' -Dexec.args='${project.version}' --non-recursive exec:exec -q)
-#
-#    - name: Build Image
-#      run: docker build -t candidates-career:${VERSION} .
-#
-#    - name: Login to Heroku Container registry
-#      env:
-#        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-#      run: heroku container:login
-
-#    - name: Docker Login
-#      run: docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASSWORD }}
-
-#    - name: Push Version
-#      run: docker push candidates-career:${VERSION}
-
-#    - name: Build Latest Image and Push (only master)
-#      if: github.ref == 'refs/heads/master'
-#      run: |
-#        docker tag candidates-career:${VERSION} candidates-career:latest
-#        docker push candidates-career:latest
-#
-#    - name: Push DEV Branch to Registry
-#      if: github.ref != 'refs/heads/master'
-#      env:
-#        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-#      run: heroku container:push -a candidates-career-branch candidates-career:${VERSION}
-#
-#    - name: Release DEV Branch
-#      if: github.ref != 'refs/heads/master'
-#      env:
-#        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-#      run: heroku container:release -a candidates-career-branch candidates-career:${VERSION}
+#  build:
+#    runs-on: ubuntu-latest
+#    steps:
+#    - uses: actions/checkout@v2
+#    - name: Set up JDK 1.11
+#      uses: actions/setup-java@v1
+#      with:
+#        java-version: 1.11
+#    - name: Build with Maven
+#      run: mvn -B package --file pom.xml
 
   heroku-deploy-branch:
     name: Heroku Deploy Branch
@@ -65,4 +30,4 @@ jobs:
       uses: actions/checkout@v1
 
     - name: Push to Heroku Branch
-      run: git push --force https://heroku:$HEROKU_API_KEY@git.heroku.com/candidates-career-dev.git ci-pipeline:master
+      run: git push https://heroku:$HEROKU_API_KEY@git.heroku.com/candidates-career-dev.git $GITHUB_SHA:master
