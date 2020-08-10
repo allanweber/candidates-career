@@ -49,9 +49,9 @@ jobs:
 
     - name: Release DEV Branch
       if: github.ref != 'refs/heads/master'
-        env:
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        run: heroku container:release -a candidates-career-branch allanweber/candidates-career:${VERSION}
+      env:
+        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+      run: heroku container:release -a candidates-career-branch allanweber/candidates-career:${VERSION}
 
 #  heroku-deploy:
 #    name: Heroku Deploy
