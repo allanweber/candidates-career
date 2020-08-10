@@ -24,6 +24,11 @@ jobs:
     - name: Build Image
       run: docker build -t allanweber/candidates-career:${VERSION} .
 
+    - name: Login to Heroku Container registry
+      env:
+        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+      run: heroku container:login
+
 #    - name: Docker Login
 #      run: docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASSWORD }}
 
