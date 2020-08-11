@@ -18,6 +18,6 @@ public class HomeController {
 
     @GetMapping
     public ResponseEntity<?> get() {
-        return ok(appConfiguration.getSomeProperty() + " branch");
+        return ok(appConfiguration.getSomeProperty());
     }
 }
