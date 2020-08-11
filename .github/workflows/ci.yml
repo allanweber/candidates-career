@@ -1,4 +1,4 @@
-name: Java CI with Maven To Heroku
+name: Java CI with Maven to Heroku
 
 on:
   push:
@@ -21,6 +21,7 @@ jobs:
   heroku-deploy-branch:
     name: Heroku Deploy Branch
     runs-on: ubuntu-latest
+    needs: build
     if: github.ref != 'refs/heads/master'
     env:
       HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
@@ -33,6 +34,7 @@ jobs:
   heroku-deploy-prd:
     name: Heroku Deploy Production
     runs-on: ubuntu-latest
+    needs: build
     if: github.ref == 'refs/heads/master'
     env:
       HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
