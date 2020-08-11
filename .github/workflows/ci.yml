@@ -27,9 +27,7 @@ jobs:
       HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
+      uses: actions/checkout@v1
 
     - name: Push to Heroku Branch
-      run: git push https://heroku:$HEROKU_API_KEY@git.heroku.com/candidates-career-dev.git $GITHUB_SHA:master
+      run: git push https://heroku:$HEROKU_API_KEY@git.heroku.com/candidates-career-dev.git HEAD
