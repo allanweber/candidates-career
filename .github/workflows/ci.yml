@@ -28,6 +28,18 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v1
-
     - name: Push to Heroku Branch
       run: git push -f https://heroku:$HEROKU_API_KEY@git.heroku.com/candidates-career-dev.git $GITHUB_SHA:refs/heads/master
+
+  heroku-deploy-prd:
+    name: Heroku Deploy Production
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/master'
+    env:
+      HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Push to Heroku Branch
+        run: git push -f https://heroku:$HEROKU_API_KEY@git.heroku.com/candidates-career.git refs/heads/master

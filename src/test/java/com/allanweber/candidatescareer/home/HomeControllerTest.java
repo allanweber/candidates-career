@@ -28,6 +28,6 @@ class HomeControllerTest {
         ResponseEntity<?> response = homeController.get();
 
         assertEquals(OK, response.getStatusCode());
-        assertEquals("message", response.getBody());
+        assertEquals("message branch", response.getBody());
     }
 }
