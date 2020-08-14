@@ -2,6 +2,3 @@ spring:
   data:
     mongodb:
       uri: mongodb://${MONGO_HOST:localhost:27017}/career?serverSelectionTimeoutMS=2000&connectTimeoutMS=2000
-
-app:
-  some-property: I am on Local
