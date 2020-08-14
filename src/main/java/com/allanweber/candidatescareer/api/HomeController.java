@@ -1,6 +1,5 @@
-package com.allanweber.candidatescareer.home;
+package com.allanweber.candidatescareer.api;
 
-import com.allanweber.candidatescareer.configuration.AppConfiguration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,10 +13,8 @@ import static org.springframework.http.ResponseEntity.ok;
 @RequiredArgsConstructor
 public class HomeController {
 
-    private final AppConfiguration appConfiguration;
-
     @GetMapping
     public ResponseEntity<?> get() {
-        return ok(appConfiguration.getSomeProperty());
+        return ok().build();
     }
 }

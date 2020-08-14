@@ -1,0 +1,5 @@
+spring:
+  data:
+    mongodb:
+      database: candidates
+      uri: mongodb+srv://admin:9kLLWw9gVaEX@candidates-inttest.wigdo.mongodb.net/candidates?retryWrites=true&w=majority&serverSelectionTimeoutMS=2000&connectTimeoutMS=2000
