@@ -18,7 +18,7 @@ jobs:
       with:
         java-version: 1.11
     - name: Build with Maven
-      run: mvn -B package --file pom.xml
+      run: mvn -B clean package -DMONGO_PASSWORD=$MONGO_PASSWORD --file pom.xml
 
   heroku-deploy-branch:
     name: Heroku Deploy Branch
