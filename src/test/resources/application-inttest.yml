@@ -2,4 +2,4 @@ spring:
   data:
     mongodb:
       database: candidates
-      uri: mongodb+srv://admin:${MONGO_PASSWORD}@candidates-inttest.wigdo.mongodb.net/candidates?retryWrites=true&w=majority&serverSelectionTimeoutMS=2000&connectTimeoutMS=2000
+      uri: mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_HOST}/candidates?retryWrites=true&w=majority&serverSelectionTimeoutMS=2000&connectTimeoutMS=2000
