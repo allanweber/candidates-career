@@ -1,0 +1,5 @@
+spring:
+  data:
+    mongodb:
+      database: candidates
+      uri: mongodb+srv://${MONGO_USER}:${MONGO_PASS}@${MONGO_HOST}/candidates?retryWrites=true&w=majority&serverSelectionTimeoutMS=2000&connectTimeoutMS=2000

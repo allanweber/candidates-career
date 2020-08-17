@@ -1,0 +1,12 @@
+management:
+  endpoints:
+    web:
+      base-path: /
+      exposure:
+        include: configprops, env, health
+
+spring:
+  data:
+    mongodb:
+      database: candidates
+      uri: mongodb+srv://${MONGO_USER:user}:${MONGO_PASS:user}@${MONGO_HOST:host}/candidates?retryWrites=true&w=majority&serverSelectionTimeoutMS=2000&connectTimeoutMS=2000
