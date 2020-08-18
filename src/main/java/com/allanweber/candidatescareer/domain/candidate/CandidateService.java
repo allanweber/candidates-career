@@ -1,8 +1,8 @@
-package com.allanweber.candidatescareer.domain.vacancy;
+package com.allanweber.candidatescareer.domain.candidate;
 
-import com.allanweber.candidatescareer.domain.vacancy.dto.VacancyDto;
-import com.allanweber.candidatescareer.domain.vacancy.mapper.VacancyMapper;
-import com.allanweber.candidatescareer.domain.vacancy.repository.VacancyRepository;
+import com.allanweber.candidatescareer.domain.candidate.dto.CandidateDto;
+import com.allanweber.candidatescareer.domain.candidate.mapper.CandidateMapper;
+import com.allanweber.candidatescareer.domain.candidate.repository.CandidateRepository;
 import lombok.RequiredArgsConstructor;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
@@ -15,25 +15,25 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
-public class VacancyService {
+public class CandidateService {
 
-    private final VacancyRepository repository;
-    private final VacancyMapper mapper = Mappers.getMapper(VacancyMapper.class);
+    private final CandidateRepository repository;
+    private final CandidateMapper mapper = Mappers.getMapper(CandidateMapper.class);
 
-    public List<VacancyDto> getAll() {
+    public List<CandidateDto> getAll() {
         return repository.findAll()
                 .stream()
                 .map(mapper::toDto)
                 .collect(Collectors.toList());
     }
 
-    public VacancyDto getById(String id) {
+    public CandidateDto getById(String id) {
         return repository.findById(id)
                 .map(mapper::toDto)
                 .orElseThrow(() -> new HttpClientErrorException(NOT_FOUND));
     }
 
-    public VacancyDto update(String id, VacancyDto body) {
+    public CandidateDto update(String id, CandidateDto body) {
         return repository.findById(id)
                 .map(entity -> mapper.mapToUpdate(id, body))
                 .map(repository::save)
@@ -41,7 +41,7 @@ public class VacancyService {
                 .orElseThrow(() -> new HttpClientErrorException(NOT_FOUND));
     }
 
-    public VacancyDto insert(VacancyDto body) {
+    public CandidateDto insert(CandidateDto body) {
         var entity = repository.insert(mapper.toEntity(body));
         return mapper.toDto(entity);
     }

@@ -4,6 +4,12 @@
 
 `docker run -p 27017:27017 --name career-app-mongo -d mongo`
 
+## Run Tests Locally
+
+To run integrated tests locally, need to inform the environment variables to maven, get it from credentials to run in Mongo INT Tests
+
+`mvn clean package -DMONGO_PASSWORD=<password> -DMONGO_USER=<user> -DMONGO_HOST=<host>`
+
 ## Artifact Version
 `mvn -Dexec.executable='echo' -Dexec.args='${project.version}' --non-recursive exec:exec -q`
 

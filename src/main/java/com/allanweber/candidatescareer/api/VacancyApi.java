@@ -13,6 +13,8 @@ import java.util.List;
 @RequestMapping("/vacancies")
 public interface VacancyApi {
 
+    String ID = "vacancyId";
+
     @ApiOperation(notes = "Return all vacancies", value = "Return all vacancies", response = VacancyDto.class)
     @ApiResponses({
             @ApiResponse(code = 200, message = "Vacancies returned"),
@@ -26,7 +28,7 @@ public interface VacancyApi {
             @ApiResponse(code = 400, message = ConstantsUtils.HTTP_400_MESSAGE),
             @ApiResponse(code = 404, message = "Could not find the vacancy")})
     @GetMapping("/{vacancyId}")
-    ResponseEntity<VacancyDto> get(@ApiParam(name= "vacancyId", value = "Vacancy id", required = true ) @PathVariable String vacancyId);
+    ResponseEntity<VacancyDto> get(@ApiParam(name = ID, value = "Vacancy id", required = true) @PathVariable(name = ID) String id);
 
     @ApiOperation(notes = "Create a new vacancy based", value = "Create new vacancy", response = VacancyDto.class)
     @ApiResponses({
@@ -42,7 +44,7 @@ public interface VacancyApi {
             @ApiResponse(code = 400, message = ConstantsUtils.HTTP_400_MESSAGE),
             @ApiResponse(code = 404, message = "Could not find the vacancy")})
     @PutMapping("/{vacancyId}")
-    ResponseEntity<VacancyDto> update(@ApiParam(name= "vacancyId", value = "Vacancy id", required = true) @PathVariable String vacancyId,
+    ResponseEntity<VacancyDto> update(@ApiParam(name = ID, value = "Vacancy id", required = true) @PathVariable(name = ID) String id,
                                       @Valid @RequestBody VacancyDto body);
 
     @ApiOperation(notes = "Delete the vacancy by id", value = "Delete a vacancy")
@@ -52,5 +54,5 @@ public interface VacancyApi {
             @ApiResponse(code = 404, message = "Could not find the vacancy")})
     @ResponseStatus(HttpStatus.GONE)
     @DeleteMapping("/{vacancyId}")
-    ResponseEntity<?> delete(@ApiParam(name= "vacancyId", value = "Vacancy id", required = true) @PathVariable String vacancyId);
+    ResponseEntity<?> delete(@ApiParam(name = ID, value = "Vacancy id", required = true) @PathVariable(name = ID) String id);
 }

@@ -1,7 +1,7 @@
 package com.allanweber.candidatescareer.api;
 
+import com.allanweber.candidatescareer.domain.candidate.dto.CandidateDto;
 import com.allanweber.candidatescareer.domain.helper.ObjectMapperHelper;
-import com.allanweber.candidatescareer.domain.vacancy.dto.VacancyDto;
 import com.allanweber.candidatescareer.domain.vacancy.repository.VacancyRepository;
 import com.allanweber.candidatescareer.infrastructure.handler.dto.ResponseErrorDto;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -18,7 +18,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -29,14 +28,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("inttest")
-class VacancyApiIntegratedTest {
+class CandidateApiIntegratedTest {
 
-    private static final String PATH = "/vacancies";
-    private static final String PATH_WITH_ID = String.format("%s/{vacancyId}", PATH);
+    private static final String PATH = "/candidates";
+    private static final String PATH_WITH_ID = String.format("%s/{candidateId}", PATH);
 
-    private final ObjectWriter requestWriter = ObjectMapperHelper.get().writerFor(VacancyDto.class);
-    private final ObjectReader responseReader = ObjectMapperHelper.get().readerFor(VacancyDto.class);
-    private final ObjectReader arrayResponseReader = ObjectMapperHelper.get().readerFor(new TypeReference<List<VacancyDto>>() {
+    private final ObjectWriter requestWriter = ObjectMapperHelper.get().writerFor(CandidateDto.class);
+    private final ObjectReader responseReader = ObjectMapperHelper.get().readerFor(CandidateDto.class);
+    private final ObjectReader arrayResponseReader = ObjectMapperHelper.get().readerFor(new TypeReference<List<CandidateDto>>() {
     });
     private final ObjectReader responseErrorDtoReader = ObjectMapperHelper.get().readerFor(ResponseErrorDto.class);
 
@@ -59,10 +58,10 @@ class VacancyApiIntegratedTest {
         assertTrue(all.isEmpty());
 
         //Create first
-        var createDto = VacancyDto.builder().name("Java").skills(Arrays.asList("Java", "Maven")).build();
+        var createDto = CandidateDto.builder().name("Allan").gitHubProfile("https://github.com/allanweber").build();
         var created1 = create(createDto);
         assertEquals(createDto.getName(), created1.getName());
-        assertEquals(createDto.getSkills(), created1.getSkills());
+        assertEquals("https://github.com/allanweber", created1.getGitHubProfile());
         assertFalse(created1.getId().isEmpty());
 
         // Is 1
@@ -74,20 +73,20 @@ class VacancyApiIntegratedTest {
         assertEquals(created1, get);
 
         // Update
-        var updateDto = VacancyDto.builder().name("Java Senior").skills(Arrays.asList("Java", "Maven", "Senior")).build();
+        var updateDto = CandidateDto.builder().name("Allan Weber").gitHubProfile("https://github.com/allanweber").build();
         update(created1.getId(), updateDto);
 
         // Is 1
         all = getAll();
         assertFalse(all.isEmpty());
         assertEquals(1, all.size());
-        assertEquals("Java Senior", all.get(0).getName());
-        assertEquals(3, all.get(0).getSkills().size());
+        assertEquals("Allan Weber", all.get(0).getName());
+        assertEquals("https://github.com/allanweber", all.get(0).getGitHubProfile());
 
-        var createDto2 = VacancyDto.builder().name(".NET").skills(Arrays.asList("C#", "Entity")).build();
+        var createDto2 = CandidateDto.builder().name("Weber").gitHubProfile("https://github.com/weber").build();
         var created2 = create(createDto2);
         assertEquals(createDto2.getName(), created2.getName());
-        assertEquals(createDto2.getSkills(), created2.getSkills());
+        assertEquals(createDto2.getGitHubProfile(), created2.getGitHubProfile());
         assertFalse(created2.getId().isEmpty());
 
         // Is 2
@@ -111,8 +110,23 @@ class VacancyApiIntegratedTest {
     }
 
     @Test
+    void gitUrl_is_valid_null() throws Exception {
+        // URL should be valid null
+        var bodyJson = requestWriter.writeValueAsString(CandidateDto.builder().name("Allan").build());
+        var responseJson = mockMvc.perform(post(PATH)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(bodyJson))
+                .andExpect(status().isCreated())
+                .andReturn().getResponse().getContentAsString();
+
+        CandidateDto dto = responseReader.readValue(responseJson);
+        assertNull(dto.getGitHubProfile());
+        delete(dto.getId());
+    }
+
+    @Test
     void invalid_body_exception() throws Exception {
-        var bodyJson = requestWriter.writeValueAsString(VacancyDto.builder().name("Java").build());
+        var bodyJson = requestWriter.writeValueAsString(CandidateDto.builder().build());
         var errorResponse = mockMvc.perform(post(PATH)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(bodyJson))
@@ -120,9 +134,9 @@ class VacancyApiIntegratedTest {
                 .andReturn().getResponse().getContentAsString();
 
         ResponseErrorDto errorDto = responseErrorDtoReader.readValue(errorResponse);
-        assertEquals("Skills are required", errorDto.getMessage());
+        assertEquals("Name is required", errorDto.getMessage());
 
-        bodyJson = requestWriter.writeValueAsString(VacancyDto.builder().skills(Arrays.asList("C#", "Entity")).build());
+        bodyJson = requestWriter.writeValueAsString(CandidateDto.builder().name("Allan").gitHubProfile("git").build());
         errorResponse = mockMvc.perform(post(PATH)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(bodyJson))
@@ -130,7 +144,7 @@ class VacancyApiIntegratedTest {
                 .andReturn().getResponse().getContentAsString();
 
         errorDto = responseErrorDtoReader.readValue(errorResponse);
-        assertEquals("Name is required", errorDto.getMessage());
+        assertEquals("Git hub url is invalid", errorDto.getMessage());
     }
 
     @Test
@@ -140,7 +154,7 @@ class VacancyApiIntegratedTest {
                 .andExpect(status().isNotFound())
                 .andReturn().getResponse().getContentAsString();
 
-        var bodyJson = requestWriter.writeValueAsString(VacancyDto.builder().name("Java").skills(Arrays.asList("Java", "Maven")).build());
+        var bodyJson = requestWriter.writeValueAsString(CandidateDto.builder().name("Allan Weber").gitHubProfile("https://github.com/allanweber").build());
         mockMvc.perform(MockMvcRequestBuilders
                 .put(PATH_WITH_ID, new ObjectId().toString())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -155,34 +169,15 @@ class VacancyApiIntegratedTest {
                 .andReturn();
     }
 
-    private void delete(String id) throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders
-                .delete(PATH_WITH_ID, id)
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isGone())
-                .andReturn();
-    }
-
-    private VacancyDto update(String id, VacancyDto body) throws Exception {
-        var bodyJson = requestWriter.writeValueAsString(body);
-        var putResponse = mockMvc.perform(MockMvcRequestBuilders
-                .put(PATH_WITH_ID, id)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(bodyJson))
+    private List<CandidateDto> getAll() throws Exception {
+        var getAllResponse = mockMvc.perform(get(PATH))
                 .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString();
-        return responseReader.readValue(putResponse);
+                .andReturn()
+                .getResponse().getContentAsString();
+        return arrayResponseReader.readValue(getAllResponse);
     }
 
-    private VacancyDto getOne(String id) throws Exception {
-        var getResponse = mockMvc.perform(MockMvcRequestBuilders
-                .get(PATH_WITH_ID, id))
-                .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString();
-        return responseReader.readValue(getResponse);
-    }
-
-    private VacancyDto create(VacancyDto body) throws Exception {
+    private CandidateDto create(CandidateDto body) throws Exception {
         var bodyJson = requestWriter.writeValueAsString(body);
         var postResponse = mockMvc.perform(post(PATH)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -193,11 +188,30 @@ class VacancyApiIntegratedTest {
         return responseReader.readValue(postResponse);
     }
 
-    private List<VacancyDto> getAll() throws Exception {
-        var getAllResponse = mockMvc.perform(get(PATH))
+    private CandidateDto getOne(String id) throws Exception {
+        var getResponse = mockMvc.perform(MockMvcRequestBuilders
+                .get(PATH_WITH_ID, id))
                 .andExpect(status().isOk())
-                .andReturn()
-                .getResponse().getContentAsString();
-        return arrayResponseReader.readValue(getAllResponse);
+                .andReturn().getResponse().getContentAsString();
+        return responseReader.readValue(getResponse);
+    }
+
+    private CandidateDto update(String id, CandidateDto body) throws Exception {
+        var bodyJson = requestWriter.writeValueAsString(body);
+        var putResponse = mockMvc.perform(MockMvcRequestBuilders
+                .put(PATH_WITH_ID, id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(bodyJson))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+        return responseReader.readValue(putResponse);
+    }
+
+    private void delete(String id) throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders
+                .delete(PATH_WITH_ID, id)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isGone())
+                .andReturn();
     }
 }
