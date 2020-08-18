@@ -5,7 +5,6 @@ import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
-import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,17 +12,11 @@ import java.util.List;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @EqualsAndHashCode
-public class CandidateDto {
-    private String id;
+public class SocialNetworkDto {
+    @NonNull
+    private SocialNetworkType type;
 
-    @NotBlank(message = "Name is required")
-    private String name;
-
+    @NotBlank
     @Pattern(regexp = "https?://.+", message = "Git hub url is invalid")
-    private String gitHubProfile;
-
-    @Pattern(regexp = "https://www.linkedin.com/.+", message = "Linked url is invalid")
-    private String linkedInProfile;
-
-    private List<SocialNetworkDto> socialNetwork;
+    private String url;
 }

@@ -1,6 +1,8 @@
 package com.allanweber.candidatescareer.api;
 
 import com.allanweber.candidatescareer.domain.candidate.dto.CandidateDto;
+import com.allanweber.candidatescareer.domain.candidate.dto.SocialNetworkDto;
+import com.allanweber.candidatescareer.domain.candidate.dto.SocialNetworkType;
 import com.allanweber.candidatescareer.domain.helper.ObjectMapperHelper;
 import com.allanweber.candidatescareer.domain.vacancy.repository.VacancyRepository;
 import com.allanweber.candidatescareer.infrastructure.handler.dto.ResponseErrorDto;
@@ -18,8 +20,12 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -63,11 +69,21 @@ class CandidateApiIntegratedTest {
                 .name("Allan")
                 .gitHubProfile("https://github.com/allanweber")
                 .linkedInProfile("https://www.linkedin.com/in/allancassianoweber/")
+                .socialNetwork(Arrays.asList(
+                        SocialNetworkDto.builder().type(SocialNetworkType.TWITTER).url("https://twitter.com/acassianoweber").build(),
+                        SocialNetworkDto.builder().type(SocialNetworkType.WEBSITE).url("http://allanweber.dev/").build()
+                ))
                 .build();
         var created1 = create(createDto);
         assertEquals(createDto.getName(), created1.getName());
         assertEquals("https://github.com/allanweber", created1.getGitHubProfile());
         assertEquals("https://www.linkedin.com/in/allancassianoweber/", created1.getLinkedInProfile());
+        assertEquals(2, created1.getSocialNetwork().size());
+        assertThat(created1.getSocialNetwork(),
+                contains(
+                        hasProperty("url", is("https://twitter.com/acassianoweber")),
+                        hasProperty("url", is("http://allanweber.dev/"))
+                ));
         assertFalse(created1.getId().isEmpty());
 
         // Is 1
@@ -116,9 +132,32 @@ class CandidateApiIntegratedTest {
     }
 
     @Test
-    void gitUrl_linkedIn_are_valid_null() throws Exception {
+    void gitUrl_linkedIn_socialNetwork_are_valid_null() throws Exception {
         // URL should be valid null
         var bodyJson = requestWriter.writeValueAsString(CandidateDto.builder().name("Allan").build());
+        var responseJson = mockMvc.perform(post(PATH)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(bodyJson))
+                .andExpect(status().isCreated())
+                .andReturn().getResponse().getContentAsString();
+
+        CandidateDto dto = responseReader.readValue(responseJson);
+        assertNull(dto.getGitHubProfile());
+        delete(dto.getId());
+    }
+
+    @Test
+    void socialNetwork_are_valid_with_http_null() throws Exception {
+        // URL should be valid with http
+        var bodyJson = requestWriter.writeValueAsString(
+                CandidateDto
+                        .builder()
+                        .name("Allan")
+                        .socialNetwork(Collections.singletonList(
+                                SocialNetworkDto.builder().type(SocialNetworkType.WEBSITE).url("http://allanweber.dev/").build()
+                        ))
+                        .build()
+        );
         var responseJson = mockMvc.perform(post(PATH)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(bodyJson))
