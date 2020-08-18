@@ -19,4 +19,6 @@ public class Candidate {
     private String name;
 
     private String gitHubProfile;
+
+    private String linkedInProfile;
 }

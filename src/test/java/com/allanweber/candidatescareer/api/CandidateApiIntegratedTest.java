@@ -58,10 +58,16 @@ class CandidateApiIntegratedTest {
         assertTrue(all.isEmpty());
 
         //Create first
-        var createDto = CandidateDto.builder().name("Allan").gitHubProfile("https://github.com/allanweber").build();
+        var createDto = CandidateDto
+                .builder()
+                .name("Allan")
+                .gitHubProfile("https://github.com/allanweber")
+                .linkedInProfile("https://www.linkedin.com/in/allancassianoweber/")
+                .build();
         var created1 = create(createDto);
         assertEquals(createDto.getName(), created1.getName());
         assertEquals("https://github.com/allanweber", created1.getGitHubProfile());
+        assertEquals("https://www.linkedin.com/in/allancassianoweber/", created1.getLinkedInProfile());
         assertFalse(created1.getId().isEmpty());
 
         // Is 1
@@ -110,7 +116,7 @@ class CandidateApiIntegratedTest {
     }
 
     @Test
-    void gitUrl_is_valid_null() throws Exception {
+    void gitUrl_linkedIn_are_valid_null() throws Exception {
         // URL should be valid null
         var bodyJson = requestWriter.writeValueAsString(CandidateDto.builder().name("Allan").build());
         var responseJson = mockMvc.perform(post(PATH)
@@ -145,6 +151,20 @@ class CandidateApiIntegratedTest {
 
         errorDto = responseErrorDtoReader.readValue(errorResponse);
         assertEquals("Git hub url is invalid", errorDto.getMessage());
+
+        bodyJson = requestWriter.writeValueAsString(CandidateDto.builder()
+                .name("Allan")
+                .gitHubProfile("https://github.com/weber")
+                .linkedInProfile("https://github.com")
+                .build());
+        errorResponse = mockMvc.perform(post(PATH)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(bodyJson))
+                .andExpect(status().isBadRequest())
+                .andReturn().getResponse().getContentAsString();
+
+        errorDto = responseErrorDtoReader.readValue(errorResponse);
+        assertEquals("Linked url is invalid", errorDto.getMessage());
     }
 
     @Test

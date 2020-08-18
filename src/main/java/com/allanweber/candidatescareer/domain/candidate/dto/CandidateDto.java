@@ -20,4 +20,7 @@ public class CandidateDto {
 
     @Pattern(regexp = "https?://.+", message = "Git hub url is invalid")
     private String gitHubProfile;
+
+    @Pattern(regexp = "https://www.linkedin.com/.+", message = "Linked url is invalid")
+    private String linkedInProfile;
 }
