@@ -10,9 +10,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      - MONGO_PASSWORD: ${{ secrets.MONGO_PASSWORD }}
-      - MONGO_USER: ${{ secrets.MONGO_USER }}
-      - MONGO_HOST: ${{ secrets.MONGO_HOST }}
+      MONGO_PASSWORD: ${{ secrets.MONGO_PASSWORD }}
+      MONGO_USER: ${{ secrets.MONGO_USER }}
+      MONGO_HOST: ${{ secrets.MONGO_HOST }}
     steps:
     - uses: actions/checkout@v2
     - name: Set up JDK 1.11

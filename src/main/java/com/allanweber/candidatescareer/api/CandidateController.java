@@ -1,7 +1,7 @@
 package com.allanweber.candidatescareer.api;
 
-import com.allanweber.candidatescareer.domain.vacancy.VacancyService;
-import com.allanweber.candidatescareer.domain.vacancy.dto.VacancyDto;
+import com.allanweber.candidatescareer.domain.candidate.CandidateService;
+import com.allanweber.candidatescareer.domain.candidate.dto.CandidateDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,28 +15,28 @@ import static org.springframework.http.ResponseEntity.*;
 
 @RequiredArgsConstructor
 @RestController
-public class VacancyController implements VacancyApi {
+public class CandidateController implements CandidateApi {
 
-    private final VacancyService service;
+    private final CandidateService service;
 
     @Override
-    public ResponseEntity<List<VacancyDto>> getAll() {
+    public ResponseEntity<List<CandidateDto>> getAll() {
         return ok(service.getAll());
     }
 
     @Override
-    public ResponseEntity<VacancyDto> get(String id) {
+    public ResponseEntity<CandidateDto> get(String id) {
         return ok(service.getById(id));
     }
 
     @Override
-    public ResponseEntity<VacancyDto> create(@Valid VacancyDto body) {
-        VacancyDto created = service.insert(body);
-        return created(URI.create(String.format("/vacancies/%s", created.getId()))).body(created);
+    public ResponseEntity<CandidateDto> create(@Valid CandidateDto body) {
+        CandidateDto created = service.insert(body);
+        return created(URI.create(String.format("/candidates/%s", created.getId()))).body(created);
     }
 
     @Override
-    public ResponseEntity<VacancyDto> update(String id, @Valid VacancyDto body) {
+    public ResponseEntity<CandidateDto> update(String id, @Valid CandidateDto body) {
         return ok(service.update(id, body));
     }
 
