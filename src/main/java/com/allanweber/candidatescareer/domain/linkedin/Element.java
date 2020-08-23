@@ -16,5 +16,5 @@ class Element {
     @JsonProperty("data")
     private ImageData data;
 
-    private List<IdentifierImage> identifierImages;
+    private List<IdentifierImage> identifiers;
 }

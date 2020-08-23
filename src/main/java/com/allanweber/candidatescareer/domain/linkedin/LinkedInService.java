@@ -78,7 +78,7 @@ public class LinkedInService {
                     .filter(element -> element.getAuthorizationMethod().equals("PUBLIC"))
                     .filter(element -> element.getData().getStillImage().getStorageSize().getWidth() < 500)
                     .reduce((first, second) -> second)
-                    .map(element -> element.getIdentifierImages().stream().findFirst().orElse(new IdentifierImage()).getIdentifier());
+                    .map(element -> element.getIdentifiers().stream().findFirst().orElse(new IdentifierImage()).getIdentifier());
 
             String base64Image = null;
             if(profilePictureUrl.isPresent()) {
