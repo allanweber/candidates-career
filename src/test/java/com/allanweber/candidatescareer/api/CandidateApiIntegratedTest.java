@@ -1,10 +1,10 @@
 package com.allanweber.candidatescareer.api;
 
-import com.allanweber.candidatescareer.domain.candidate.dto.CandidateDto;
-import com.allanweber.candidatescareer.domain.candidate.dto.SocialNetworkDto;
-import com.allanweber.candidatescareer.domain.candidate.dto.SocialNetworkType;
+import com.allanweber.candidatescareer.domain.candidate.dto.*;
+import com.allanweber.candidatescareer.domain.candidate.mapper.CandidateMapper;
+import com.allanweber.candidatescareer.domain.candidate.repository.Candidate;
+import com.allanweber.candidatescareer.domain.candidate.repository.CandidateRepository;
 import com.allanweber.candidatescareer.domain.helper.ObjectMapperHelper;
-import com.allanweber.candidatescareer.domain.vacancy.repository.VacancyRepository;
 import com.allanweber.candidatescareer.infrastructure.handler.dto.ResponseErrorDto;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectReader;
@@ -23,9 +23,10 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static com.allanweber.candidatescareer.domain.candidate.dto.SocialNetworkType.*;
+import static com.allanweber.candidatescareer.domain.candidate.dto.SocialStatus.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -39,9 +40,11 @@ class CandidateApiIntegratedTest {
     private static final String PATH = "/candidates";
     private static final String PATH_WITH_ID = String.format("%s/{candidateId}", PATH);
 
-    private final ObjectWriter requestWriter = ObjectMapperHelper.get().writerFor(CandidateDto.class);
-    private final ObjectReader responseReader = ObjectMapperHelper.get().readerFor(CandidateDto.class);
-    private final ObjectReader arrayResponseReader = ObjectMapperHelper.get().readerFor(new TypeReference<List<CandidateDto>>() {
+    private final ObjectWriter requestWriter = ObjectMapperHelper.get().writerFor(CandidateRequest.class);
+    private final ObjectReader responseReader = ObjectMapperHelper.get().readerFor(CandidateResponse.class);
+    private final ObjectReader arrayResponseReader = ObjectMapperHelper.get().readerFor(new TypeReference<List<CandidateResponse>>() {
+    });
+    private final ObjectWriter arraySocialNetworkTypeWriter = ObjectMapperHelper.get().writerFor(new TypeReference<List<SocialNetworkType>>() {
     });
     private final ObjectReader responseErrorDtoReader = ObjectMapperHelper.get().readerFor(ResponseErrorDto.class);
 
@@ -49,7 +52,7 @@ class CandidateApiIntegratedTest {
     private MockMvc mockMvc;
 
     @Autowired
-    private VacancyRepository repository;
+    private CandidateRepository repository;
 
     @BeforeEach
     public void setUp() {
@@ -64,38 +67,29 @@ class CandidateApiIntegratedTest {
         assertTrue(all.isEmpty());
 
         //Create first
-        var createDto = CandidateDto
+        var createDto = CandidateRequest
                 .builder()
                 .name("Allan")
-                .gitHubProfile("https://github.com/allanweber")
-                .linkedInProfile("https://www.linkedin.com/in/allancassianoweber/")
-                .socialNetwork(Arrays.asList(
-                        SocialNetworkDto.builder().type(SocialNetworkType.TWITTER).url("https://twitter.com/acassianoweber").build(),
-                        SocialNetworkDto.builder().type(SocialNetworkType.WEBSITE).url("http://allanweber.dev/").build()
-                ))
+                .email("mail@mail.com")
                 .build();
         var created1 = create(createDto);
         assertEquals(createDto.getName(), created1.getName());
-        assertEquals("https://github.com/allanweber", created1.getGitHubProfile());
-        assertEquals("https://www.linkedin.com/in/allancassianoweber/", created1.getLinkedInProfile());
-        assertEquals(2, created1.getSocialNetwork().size());
-        assertThat(created1.getSocialNetwork(),
-                contains(
-                        hasProperty("url", is("https://twitter.com/acassianoweber")),
-                        hasProperty("url", is("http://allanweber.dev/"))
-                ));
+        assertEquals(createDto.getEmail(), created1.getEmail());
+        assertNull(created1.getSocialNetwork());
+        assertNull(created1.getSocialNetwork());
         assertFalse(created1.getId().isEmpty());
 
         // Is 1
         all = getAll();
         assertFalse(all.isEmpty());
-        assertEquals(created1, all.get(0));
+        assertEquals(created1.getName(), all.get(0).getName());
 
         var get = getOne(created1.getId());
-        assertEquals(created1, get);
+        assertEquals(created1.getName(), get.getName());
+        assertEquals(created1.getSocialNetwork(), get.getSocialNetwork());
 
         // Update
-        var updateDto = CandidateDto.builder().name("Allan Weber").gitHubProfile("https://github.com/allanweber").build();
+        var updateDto = CandidateRequest.builder().name("Allan Weber").email("allan@mail.com").build();
         update(created1.getId(), updateDto);
 
         // Is 1
@@ -103,12 +97,12 @@ class CandidateApiIntegratedTest {
         assertFalse(all.isEmpty());
         assertEquals(1, all.size());
         assertEquals("Allan Weber", all.get(0).getName());
-        assertEquals("https://github.com/allanweber", all.get(0).getGitHubProfile());
+        assertEquals("allan@mail.com", all.get(0).getEmail());
 
-        var createDto2 = CandidateDto.builder().name("Weber").gitHubProfile("https://github.com/weber").build();
+        var createDto2 = CandidateRequest.builder().name("Weber").email("weber@mail.com").build();
         var created2 = create(createDto2);
         assertEquals(createDto2.getName(), created2.getName());
-        assertEquals(createDto2.getGitHubProfile(), created2.getGitHubProfile());
+        assertEquals(createDto2.getEmail(), created2.getEmail());
         assertFalse(created2.getId().isEmpty());
 
         // Is 2
@@ -116,7 +110,8 @@ class CandidateApiIntegratedTest {
         assertEquals(2, all.size());
 
         get = getOne(created2.getId());
-        assertEquals(created2, get);
+        assertEquals(created2.getName(), get.getName());
+        assertEquals(created2.getEmail(), get.getEmail());
 
         delete(created1.getId());
 
@@ -132,46 +127,62 @@ class CandidateApiIntegratedTest {
     }
 
     @Test
-    void gitUrl_linkedIn_socialNetwork_are_valid_null() throws Exception {
-        // URL should be valid null
-        var bodyJson = requestWriter.writeValueAsString(CandidateDto.builder().name("Allan").build());
-        var responseJson = mockMvc.perform(post(PATH)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(bodyJson))
-                .andExpect(status().isCreated())
-                .andReturn().getResponse().getContentAsString();
+    void test_update_not_override_properties() throws Exception {
 
-        CandidateDto dto = responseReader.readValue(responseJson);
-        assertNull(dto.getGitHubProfile());
-        delete(dto.getId());
-    }
+        //Create One
+        var createDto = CandidateRequest
+                .builder()
+                .name("Allan")
+                .email("mail@mail.com")
+                .build();
+        var created = create(createDto);
+        assertEquals(createDto.getName(), created.getName());
+        assertEquals(createDto.getEmail(), created.getEmail());
+        assertNull(created.getSocialNetwork());
+        assertNull(created.getSocialNetwork());
+        assertFalse(created.getId().isEmpty());
 
-    @Test
-    void socialNetwork_are_valid_with_http_null() throws Exception {
-        // URL should be valid with http
-        var bodyJson = requestWriter.writeValueAsString(
-                CandidateDto
-                        .builder()
-                        .name("Allan")
-                        .socialNetwork(Collections.singletonList(
-                                SocialNetworkDto.builder().type(SocialNetworkType.WEBSITE).url("http://allanweber.dev/").build()
-                        ))
-                        .build()
-        );
-        var responseJson = mockMvc.perform(post(PATH)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(bodyJson))
-                .andExpect(status().isCreated())
-                .andReturn().getResponse().getContentAsString();
+        //Update via Repository
+        Candidate candidateEntity = CandidateMapper.toEntity(createDto)
+                .withId(created.getId())
+                .withSocialEntries(Arrays.asList(
+                        SocialEntry.builder().type(SocialNetworkType.GITHUB).status(GRANTED).build(),
+                        SocialEntry.builder().type(SocialNetworkType.LINKEDIN).status(PENDING).build()
+                ))
+                .withSocialNetwork(Arrays.asList(
+                        SocialNetworkDto.builder().type(TWITTER).url("https://twitter.com/acassianoweber").build(),
+                        SocialNetworkDto.builder().type(SocialNetworkType.WEBSITE).url("http://meusite.com").build()
+                ));
+        repository.save(candidateEntity);
 
-        CandidateDto dto = responseReader.readValue(responseJson);
-        assertNull(dto.getGitHubProfile());
-        delete(dto.getId());
+        //Check updates
+        var all = getAll();
+        assertEquals(1, getAll().size());
+        assertEquals(created.getId(), all.get(0).getId());
+        assertEquals(created.getName(), all.get(0).getName());
+        assertEquals(created.getEmail(), all.get(0).getEmail());
+        assertEquals(2, all.get(0).getSocialNetwork().size());
+        assertEquals(2, all.get(0).getSocialEntries().size());
+
+        //Update Name and Email
+        var updateDto = CandidateRequest.builder().name("Allan Weber").email("allan@mail.com").build();
+        CandidateResponse updated = update(created.getId(), updateDto);
+
+        //Check updates1
+        all = getAll();
+        assertEquals(1, getAll().size());
+        assertEquals(updated.getId(), all.get(0).getId());
+        assertEquals(updated.getName(), all.get(0).getName());
+        assertEquals(updated.getEmail(), all.get(0).getEmail());
+        assertEquals(2, all.get(0).getSocialNetwork().size());
+        assertEquals(2, all.get(0).getSocialEntries().size());
+
+        delete(updated.getId());
     }
 
     @Test
     void invalid_body_exception() throws Exception {
-        var bodyJson = requestWriter.writeValueAsString(CandidateDto.builder().build());
+        var bodyJson = requestWriter.writeValueAsString(CandidateRequest.builder().email("email@mail.com").build());
         var errorResponse = mockMvc.perform(post(PATH)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(bodyJson))
@@ -181,7 +192,7 @@ class CandidateApiIntegratedTest {
         ResponseErrorDto errorDto = responseErrorDtoReader.readValue(errorResponse);
         assertEquals("Name is required", errorDto.getMessage());
 
-        bodyJson = requestWriter.writeValueAsString(CandidateDto.builder().name("Allan").gitHubProfile("git").build());
+        bodyJson = requestWriter.writeValueAsString(CandidateRequest.builder().name("Allan").build());
         errorResponse = mockMvc.perform(post(PATH)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(bodyJson))
@@ -189,13 +200,9 @@ class CandidateApiIntegratedTest {
                 .andReturn().getResponse().getContentAsString();
 
         errorDto = responseErrorDtoReader.readValue(errorResponse);
-        assertEquals("Git hub url is invalid", errorDto.getMessage());
+        assertEquals("Email is required", errorDto.getMessage());
 
-        bodyJson = requestWriter.writeValueAsString(CandidateDto.builder()
-                .name("Allan")
-                .gitHubProfile("https://github.com/weber")
-                .linkedInProfile("https://github.com")
-                .build());
+        bodyJson = requestWriter.writeValueAsString(CandidateRequest.builder().name("Allan").email("email").build());
         errorResponse = mockMvc.perform(post(PATH)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(bodyJson))
@@ -203,7 +210,7 @@ class CandidateApiIntegratedTest {
                 .andReturn().getResponse().getContentAsString();
 
         errorDto = responseErrorDtoReader.readValue(errorResponse);
-        assertEquals("Linked url is invalid", errorDto.getMessage());
+        assertEquals("Email is invalid", errorDto.getMessage());
     }
 
     @Test
@@ -213,7 +220,7 @@ class CandidateApiIntegratedTest {
                 .andExpect(status().isNotFound())
                 .andReturn().getResponse().getContentAsString();
 
-        var bodyJson = requestWriter.writeValueAsString(CandidateDto.builder().name("Allan Weber").gitHubProfile("https://github.com/allanweber").build());
+        var bodyJson = requestWriter.writeValueAsString(CandidateRequest.builder().name("Allan Weber").email("mail@mail.com").build());
         mockMvc.perform(MockMvcRequestBuilders
                 .put(PATH_WITH_ID, new ObjectId().toString())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -228,7 +235,84 @@ class CandidateApiIntegratedTest {
                 .andReturn();
     }
 
-    private List<CandidateDto> getAll() throws Exception {
+    @Test
+    void exception_when_email_exists() throws Exception {
+        //Create One
+        var createDto = CandidateRequest
+                .builder()
+                .name("Allan")
+                .email("mail@mail.com")
+                .build();
+        CandidateResponse candidateResponse = create(createDto);
+
+        var bodyJson = requestWriter.writeValueAsString(CandidateRequest
+                .builder()
+                .name("Allan Weber")
+                .email("mail@mail.com")
+                .build());
+        var errorResponse = mockMvc.perform(post(PATH)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(bodyJson))
+                .andExpect(status().isConflict())
+                .andReturn().getResponse().getContentAsString();
+
+        ResponseErrorDto errorDto = responseErrorDtoReader.readValue(errorResponse);
+        assertEquals("Candidate email mail@mail.com already exist", errorDto.getMessage());
+
+        delete(candidateResponse.getId());
+    }
+
+    @Test
+    void add_and_replace_social_entries() throws Exception {
+        var dto = CandidateRequest
+                .builder()
+                .name("Allan")
+                .email("mail@mail.com")
+                .build();
+        CandidateResponse candidateResponse = create(dto);
+
+        candidateResponse = addSocialEntry(candidateResponse.getId(), Collections.singletonList(TWITTER));
+        assertEquals(1, candidateResponse.getSocialEntries().size());
+
+        candidateResponse = addSocialEntry(candidateResponse.getId(), Collections.singletonList(GITHUB));
+        assertEquals(2, candidateResponse.getSocialEntries().size());
+        assertEquals(PENDING, candidateResponse.getSocialEntries().stream().filter(entry -> entry.getType().equals(TWITTER)).findFirst()
+                .orElseThrow(NullPointerException::new).getStatus());
+        assertEquals(PENDING, candidateResponse.getSocialEntries().stream().filter(entry -> entry.getType().equals(GITHUB)).findFirst()
+                .orElseThrow(NullPointerException::new).getStatus());
+
+        List<SocialEntry> socialEntries = Arrays.asList(
+                SocialEntry.builder().type(TWITTER).status(GRANTED).build(),
+                SocialEntry.builder().type(GITHUB).status(GRANTED).build(),
+                SocialEntry.builder().type(LINKEDIN).status(DENIED).build()
+        );
+        Candidate candidate = repository.findById(candidateResponse.getId()).orElseThrow(NullPointerException::new);
+        candidate.removeEqualEntries(socialEntries.stream().map(SocialEntry::getType).collect(Collectors.toList()));
+        candidate.addSocialEntries(socialEntries);
+        repository.save(candidate);
+        candidateResponse = getOne(candidateResponse.getId());
+        assertEquals(3, candidateResponse.getSocialEntries().size());
+        assertEquals(GRANTED, candidateResponse.getSocialEntries().stream().filter(entry -> entry.getType().equals(TWITTER)).findFirst()
+                .orElseThrow(NullPointerException::new).getStatus());
+        assertEquals(GRANTED, candidateResponse.getSocialEntries().stream().filter(entry -> entry.getType().equals(GITHUB)).findFirst()
+                .orElseThrow(NullPointerException::new).getStatus());
+        assertEquals(DENIED, candidateResponse.getSocialEntries().stream().filter(entry -> entry.getType().equals(LINKEDIN)).findFirst()
+                .orElseThrow(NullPointerException::new).getStatus());
+
+        candidateResponse = addSocialEntry(candidateResponse.getId(), socialEntries.stream().map(SocialEntry::getType).collect(Collectors.toList()));
+        assertEquals(3, candidateResponse.getSocialEntries().size());
+        assertEquals(PENDING, candidateResponse.getSocialEntries().stream().filter(entry -> entry.getType().equals(TWITTER)).findFirst()
+                .orElseThrow(NullPointerException::new).getStatus());
+        assertEquals(PENDING, candidateResponse.getSocialEntries().stream().filter(entry -> entry.getType().equals(GITHUB)).findFirst()
+                .orElseThrow(NullPointerException::new).getStatus());
+        assertEquals(PENDING, candidateResponse.getSocialEntries().stream().filter(entry -> entry.getType().equals(LINKEDIN)).findFirst()
+                .orElseThrow(NullPointerException::new).getStatus());
+
+
+        delete(candidateResponse.getId());
+    }
+
+    private List<CandidateResponse> getAll() throws Exception {
         var getAllResponse = mockMvc.perform(get(PATH))
                 .andExpect(status().isOk())
                 .andReturn()
@@ -236,7 +320,7 @@ class CandidateApiIntegratedTest {
         return arrayResponseReader.readValue(getAllResponse);
     }
 
-    private CandidateDto create(CandidateDto body) throws Exception {
+    private CandidateResponse create(CandidateRequest body) throws Exception {
         var bodyJson = requestWriter.writeValueAsString(body);
         var postResponse = mockMvc.perform(post(PATH)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -247,7 +331,7 @@ class CandidateApiIntegratedTest {
         return responseReader.readValue(postResponse);
     }
 
-    private CandidateDto getOne(String id) throws Exception {
+    private CandidateResponse getOne(String id) throws Exception {
         var getResponse = mockMvc.perform(MockMvcRequestBuilders
                 .get(PATH_WITH_ID, id))
                 .andExpect(status().isOk())
@@ -255,7 +339,7 @@ class CandidateApiIntegratedTest {
         return responseReader.readValue(getResponse);
     }
 
-    private CandidateDto update(String id, CandidateDto body) throws Exception {
+    private CandidateResponse update(String id, CandidateRequest body) throws Exception {
         var bodyJson = requestWriter.writeValueAsString(body);
         var putResponse = mockMvc.perform(MockMvcRequestBuilders
                 .put(PATH_WITH_ID, id)
@@ -272,5 +356,16 @@ class CandidateApiIntegratedTest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isGone())
                 .andReturn();
+    }
+
+    private CandidateResponse addSocialEntry(String id, List<SocialNetworkType> entries) throws Exception {
+        var bodyJson = arraySocialNetworkTypeWriter.writeValueAsString(entries);
+        var putResponse = mockMvc.perform(MockMvcRequestBuilders
+                .put(PATH_WITH_ID.concat("/social-entry"), id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(bodyJson))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+        return responseReader.readValue(putResponse);
     }
 }

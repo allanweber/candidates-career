@@ -2,18 +2,30 @@ package com.allanweber.candidatescareer.domain.vacancy.mapper;
 
 import com.allanweber.candidatescareer.domain.vacancy.dto.VacancyDto;
 import com.allanweber.candidatescareer.domain.vacancy.repository.Vacancy;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
-@Mapper(componentModel = "spring")
-public interface VacancyMapper {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class VacancyMapper {
 
-    @Mapping(target = "id", source = "id")
-    Vacancy toEntity(VacancyDto dto);
+    public static Vacancy toEntity(VacancyDto dto) {
+        return Vacancy
+                .builder()
+                .name(dto.getName())
+                .skills(dto.getSkills())
+                .build();
+    }
 
-    @Mapping(target = "id", source = "id")
-    VacancyDto toDto(Vacancy entity);
+    public static VacancyDto toResponse(Vacancy entity) {
+        return VacancyDto
+                .builder()
+                .id(entity.getId())
+                .name(entity.getName())
+                .skills(entity.getSkills())
+                .build();
+    }
 
-    @Mapping(target = "id", source = "id")
-    Vacancy mapToUpdate(String id, VacancyDto dto);
+    public static Vacancy mapToUpdate(Vacancy entity, VacancyDto dto) {
+        return entity.withName(dto.getName()).withSkills(dto.getSkills());
+    }
 }
