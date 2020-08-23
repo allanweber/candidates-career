@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -80,9 +81,10 @@ public class CandidateService {
                 .orElseThrow(() -> new HttpClientErrorException(NOT_FOUND, NOT_FOUND_MESSAGE));
     }
 
-    public SocialEntry getSocialEntry(String candidateId, SocialNetworkType socialNetworkType) {
-        return getById(candidateId)
-                .getSocialEntries()
+    public SocialEntry getSocialEntry(String id, SocialNetworkType socialNetworkType) {
+        return repository.findById(id)
+                .map(Candidate::getSocialEntries)
+                .orElse(Collections.emptyList())
                 .stream()
                 .filter(socialEntry -> socialEntry.getType().equals(socialNetworkType))
                 .findFirst()

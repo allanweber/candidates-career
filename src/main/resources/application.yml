@@ -15,7 +15,7 @@ app:
   linkedin:
     client-id: ${LINKEDIN_CLIENT_ID}
     clientSecret: ${LINKEDIN_CLIENT_SECRET}
-    redirectHost: http://localhost:8080
+    redirectHost: https://candidates-career.herokuapp.com/
     authorization-url: https://www.linkedin.com/oauth/v2/authorization?response_type=code&scope=r_liteprofile%20r_emailaddress
     client-id-query: client_id={client_id}
     redirect-uri-query: redirect_uri={redirect_uri}
