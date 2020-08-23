@@ -3,9 +3,8 @@ package com.allanweber.candidatescareer.domain.candidate.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
-import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,17 +12,13 @@ import java.util.List;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @EqualsAndHashCode
-public class CandidateDto {
+public class CandidateRequest {
     private String id;
 
     @NotBlank(message = "Name is required")
     private String name;
 
-    @Pattern(regexp = "https?://.+", message = "Git hub url is invalid")
-    private String gitHubProfile;
-
-    @Pattern(regexp = "https://www.linkedin.com/.+", message = "Linked url is invalid")
-    private String linkedInProfile;
-
-    private List<SocialNetworkDto> socialNetwork;
+    @NotBlank(message = "Email is required")
+    @Email(message = "Email is invalid")
+    private String email;
 }

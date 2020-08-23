@@ -10,3 +10,15 @@ spring:
     mongodb:
       database: candidates
       uri: mongodb+srv://${MONGO_USER:user}:${MONGO_PASS:user}@${MONGO_HOST:host}/candidates?retryWrites=true&w=majority&serverSelectionTimeoutMS=2000&connectTimeoutMS=2000
+
+app:
+  linkedin:
+    client-id: 78q930z42gualz
+    clientSecret: mQsInHnFzemOv8QQ
+    redirectHost: http://localhost:8080
+    authorization-url: https://www.linkedin.com/oauth/v2/authorization?response_type=code&scope=r_liteprofile%20r_emailaddress
+    client-id-query: client_id={client_id}
+    redirect-uri-query: redirect_uri={redirect_uri}
+    state-query: state={state}
+  read-timeout-in-ms: 5000
+  connect-timeout-in-ms: 5000

@@ -14,6 +14,7 @@
         <exclude name="ShortVariable"/>
         <exclude name="TooManyStaticImports"/>
         <exclude name="LocalVariableCouldBeFinal"/>
+        <exclude name="ClassNamingConventions"/>
     </rule>
     <rule ref="category/java/errorprone.xml">
         <exclude name="BeanMembersShouldSerialize"/>

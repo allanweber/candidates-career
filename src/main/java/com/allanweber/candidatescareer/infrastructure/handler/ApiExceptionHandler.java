@@ -16,6 +16,7 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @RestControllerAdvice
 @Slf4j
@@ -27,7 +28,8 @@ public class ApiExceptionHandler {
     @ExceptionHandler(HttpClientErrorException.class)
     public ResponseEntity<ResponseErrorDto> handleClientException(HttpClientErrorException ex) {
         log.error(UNEXPECTED_ERROR_HAPPENED, ex);
-        return ResponseEntity.status(ex.getStatusCode()).body(new ResponseErrorDto(ex.getMessage()));
+        String message = Objects.requireNonNull(ex.getMessage()).replace(Integer.toString(ex.getRawStatusCode()), "").trim();
+        return ResponseEntity.status(ex.getStatusCode()).body(new ResponseErrorDto(message));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

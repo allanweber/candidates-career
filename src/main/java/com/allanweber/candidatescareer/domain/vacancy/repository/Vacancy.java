@@ -1,25 +1,21 @@
 package com.allanweber.candidatescareer.domain.vacancy.repository;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 
 @Document(collection = "vacancy")
-@AllArgsConstructor
-@NoArgsConstructor
-@Data
+@RequiredArgsConstructor
+@Getter
+@With
 @Builder
 public class Vacancy {
-
     @Id
-    private String id;
+    private final String id;
 
-    private String name;
+    private final String name;
 
-    private List<String> skills;
+    private final List<String> skills;
 }

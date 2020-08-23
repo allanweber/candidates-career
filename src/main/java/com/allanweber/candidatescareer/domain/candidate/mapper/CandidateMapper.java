@@ -1,19 +1,34 @@
 package com.allanweber.candidatescareer.domain.candidate.mapper;
 
-import com.allanweber.candidatescareer.domain.candidate.dto.CandidateDto;
+import com.allanweber.candidatescareer.domain.candidate.dto.CandidateRequest;
+import com.allanweber.candidatescareer.domain.candidate.dto.CandidateResponse;
 import com.allanweber.candidatescareer.domain.candidate.repository.Candidate;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
-@Mapper(componentModel = "spring")
-public interface CandidateMapper {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class CandidateMapper {
 
-    @Mapping(target = "id", source = "id")
-    Candidate toEntity(CandidateDto dto);
+    public static Candidate toEntity(CandidateRequest dto) {
+        return Candidate
+                .builder()
+                .name(dto.getName())
+                .email(dto.getEmail())
+                .build();
+    }
 
-    @Mapping(target = "id", source = "id")
-    CandidateDto toDto(Candidate entity);
+    public static CandidateResponse toResponse(Candidate entity) {
+        return CandidateResponse
+                .builder()
+                .id(entity.getId())
+                .name(entity.getName())
+                .email(entity.getEmail())
+                .socialEntries(entity.getSocialEntries())
+                .socialNetwork(entity.getSocialNetwork())
+                .build();
+    }
 
-    @Mapping(target = "id", source = "id")
-    Candidate mapToUpdate(String id, CandidateDto dto);
+    public static Candidate mapToUpdate(Candidate entity, CandidateRequest dto) {
+        return entity.withName(dto.getName()).withEmail(dto.getEmail());
+    }
 }
