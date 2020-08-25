@@ -13,26 +13,29 @@ import java.util.Optional;
 public class CandidateMapper {
 
     public static Candidate toEntity(CandidateRequest dto) {
-        dto = Optional.ofNullable(dto).orElse(new CandidateRequest());
+        CandidateRequest candidateRequest = Optional.ofNullable(dto).orElse(new CandidateRequest());
         return Candidate
                 .builder()
-                .name(dto.getName())
-                .email(dto.getEmail())
+                .name(candidateRequest.getName())
+                .email(candidateRequest.getEmail())
                 .build();
     }
 
     public static CandidateResponse toResponse(Candidate entity) {
-        if(Objects.isNull(entity)){
-            return CandidateResponse.builder().build();
+        CandidateResponse response;
+        if (Objects.isNull(entity)) {
+            response = CandidateResponse.builder().build();
+        } else {
+            response = CandidateResponse
+                    .builder()
+                    .id(entity.getId())
+                    .name(entity.getName())
+                    .email(entity.getEmail())
+                    .socialEntries(entity.getSocialEntries())
+                    .socialNetwork(entity.getSocialNetwork())
+                    .build();
         }
-        return CandidateResponse
-                .builder()
-                .id(entity.getId())
-                .name(entity.getName())
-                .email(entity.getEmail())
-                .socialEntries(entity.getSocialEntries())
-                .socialNetwork(entity.getSocialNetwork())
-                .build();
+        return response;
     }
 
     public static Candidate mapToUpdate(Candidate entity, CandidateRequest dto) {

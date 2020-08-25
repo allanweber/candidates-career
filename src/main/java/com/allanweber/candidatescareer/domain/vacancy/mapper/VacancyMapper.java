@@ -12,24 +12,27 @@ import java.util.Optional;
 public class VacancyMapper {
 
     public static Vacancy toEntity(VacancyDto dto) {
-        dto = Optional.ofNullable(dto).orElse(new VacancyDto());
+        VacancyDto vacancyDto = Optional.ofNullable(dto).orElse(new VacancyDto());
         return Vacancy
                 .builder()
-                .name(dto.getName())
-                .skills(dto.getSkills())
+                .name(vacancyDto.getName())
+                .skills(vacancyDto.getSkills())
                 .build();
     }
 
     public static VacancyDto toResponse(Vacancy entity) {
-        if(Objects.isNull(entity)){
-            return VacancyDto.builder().build();
+        VacancyDto dto;
+        if (Objects.isNull(entity)) {
+            dto = VacancyDto.builder().build();
+        } else {
+            dto = VacancyDto
+                    .builder()
+                    .id(entity.getId())
+                    .name(entity.getName())
+                    .skills(entity.getSkills())
+                    .build();
         }
-        return VacancyDto
-                .builder()
-                .id(entity.getId())
-                .name(entity.getName())
-                .skills(entity.getSkills())
-                .build();
+        return dto;
     }
 
     public static Vacancy mapToUpdate(Vacancy entity, VacancyDto dto) {

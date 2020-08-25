@@ -44,10 +44,10 @@ public class Candidate {
     }
 
     public Candidate addSocialEntries(List<SocialEntry> entries) {
-        entries = Optional.ofNullable(entries).orElse(Collections.emptyList());
-        Candidate candidate = removeEqualEntries(entries.stream().map(SocialEntry::getType).collect(Collectors.toList()));
-        entries.addAll(Optional.ofNullable(candidate.getSocialEntries()).orElse(Collections.emptyList()));
-        return candidate.withSocialEntries(entries);
+        List<SocialEntry> socialEntries = new ArrayList<>(Optional.ofNullable(entries).orElse(Collections.emptyList()));
+        Candidate candidate = removeEqualEntries(socialEntries.stream().map(SocialEntry::getType).collect(Collectors.toList()));
+        socialEntries.addAll(Optional.ofNullable(candidate.getSocialEntries()).orElse(Collections.emptyList()));
+        return candidate.withSocialEntries(socialEntries);
     }
 
     public Candidate markSocialEntryDone(SocialNetworkType type) {
