@@ -73,7 +73,6 @@ public class CandidateService {
 
     public CandidateResponse addSocialEntries(String id, List<SocialNetworkType> networkTypes) {
         return repository.findById(id)
-                .map(candidate -> candidate.removeEqualEntries(networkTypes))
                 .map(candidate -> candidate.addSocialEntriesPending(networkTypes))
                 .map(repository::save)
                 .map(CandidateMapper::toResponse)

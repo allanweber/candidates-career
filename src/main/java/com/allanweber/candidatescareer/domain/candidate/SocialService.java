@@ -18,7 +18,7 @@ import static org.springframework.http.HttpStatus.NOT_IMPLEMENTED;
 public class SocialService {
 
     private static final String NOT_IMPLEMENTED_MESSAGE = "Social network request %s not implemented";
-    private static final String SOCIAL_NETWORK_COMPLETED = "Social network request was completed already";
+    private static final String SOCIAL_NETWORK_COMPLETED = "Social network request was completed";
 
     private final LinkedInService linkedInService;
     private final CandidateService candidateService;
