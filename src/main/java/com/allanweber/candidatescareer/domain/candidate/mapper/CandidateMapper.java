@@ -6,10 +6,14 @@ import com.allanweber.candidatescareer.domain.candidate.repository.Candidate;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+import java.util.Objects;
+import java.util.Optional;
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CandidateMapper {
 
     public static Candidate toEntity(CandidateRequest dto) {
+        dto = Optional.ofNullable(dto).orElse(new CandidateRequest());
         return Candidate
                 .builder()
                 .name(dto.getName())
@@ -18,6 +22,9 @@ public class CandidateMapper {
     }
 
     public static CandidateResponse toResponse(Candidate entity) {
+        if(Objects.isNull(entity)){
+            return CandidateResponse.builder().build();
+        }
         return CandidateResponse
                 .builder()
                 .id(entity.getId())

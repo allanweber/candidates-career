@@ -5,10 +5,14 @@ import com.allanweber.candidatescareer.domain.vacancy.repository.Vacancy;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+import java.util.Objects;
+import java.util.Optional;
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class VacancyMapper {
 
     public static Vacancy toEntity(VacancyDto dto) {
+        dto = Optional.ofNullable(dto).orElse(new VacancyDto());
         return Vacancy
                 .builder()
                 .name(dto.getName())
@@ -17,6 +21,9 @@ public class VacancyMapper {
     }
 
     public static VacancyDto toResponse(Vacancy entity) {
+        if(Objects.isNull(entity)){
+            return VacancyDto.builder().build();
+        }
         return VacancyDto
                 .builder()
                 .id(entity.getId())
