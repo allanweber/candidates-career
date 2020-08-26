@@ -17,10 +17,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
@@ -74,24 +71,35 @@ public class LinkedInService {
 
             LinkedInData linkedInData = reader.readValue(linkedinDetailRequest.getBody());
 
-            Optional<String> profilePictureUrl = linkedInData.getProfilePicture().getDisplayImage().getElements().stream()
+            Optional<String> profilePictureUrl = Optional.ofNullable(linkedInData.getProfilePicture())
+                    .map(ProfilePicture::getDisplayImage)
+                    .map(DisplayImage::getElements)
+                    .orElse(Collections.emptyList())
+                    .stream()
                     .filter(element -> element.getAuthorizationMethod().equals("PUBLIC"))
-                    .filter(element -> element.getData().getStillImage().getStorageSize().getWidth() < 500)
+                    .filter(element -> element.getData().getStillImage().getStorageSize().getWidth() < 500) //TESTAR
                     .reduce((first, second) -> second)
-                    .map(element -> element.getIdentifiers().stream().findFirst().orElse(new IdentifierImage()).getIdentifier());
+                    .map(element -> element.getIdentifiers().stream().findFirst().orElse(new IdentifierImage()).getIdentifier());//TESTAR
 
             String base64Image = null;
-            if(profilePictureUrl.isPresent()) {
+            if (profilePictureUrl.isPresent()) {
                 base64Image = getBase64Image(profilePictureUrl.get());
             }
 
-            String firstName = getLinkedInName(linkedInData.getFirstName().getName());
-            String lastName = getLinkedInName(linkedInData.getLastName().getName());
+            String firstName = null;
+            if (Objects.nonNull(linkedInData.getFirstName())) {
+                firstName = getLinkedInName(linkedInData.getFirstName().getName());
+            }
+
+            String lastName = null;
+            if (Objects.nonNull(linkedInData.getLastName())) {
+                lastName = getLinkedInName(linkedInData.getLastName().getName());
+            }
 
             return new LinkedInProfile(firstName, lastName, base64Image);
 
         } catch (JSONException | JsonProcessingException e) {
-            throw (HttpClientErrorException)new HttpClientErrorException(INTERNAL_SERVER_ERROR, e.getMessage()).initCause(e);
+            throw (HttpClientErrorException) new HttpClientErrorException(INTERNAL_SERVER_ERROR, e.getMessage()).initCause(e);
         }
     }
 
@@ -103,8 +111,10 @@ public class LinkedInService {
         return Base64.getEncoder().encodeToString(response.getBody());
     }
 
-    private String getLinkedInName(Map<String, String> name){
-        Map.Entry<String,String> entry = name.entrySet().iterator().next();
+    @SuppressWarnings("PMD")
+    private String getLinkedInName(Map<String, String> name) {
+        if (name == null) return null;
+        Map.Entry<String, String> entry = name.entrySet().iterator().next();
         return entry.getValue();
     }
 }

@@ -29,7 +29,7 @@ class VacancyControllerTest {
 
     @Test
     void getAll() {
-        when(service.getAll()).thenReturn(getList());
+        when(service.getAll()).thenReturn(mockDtos());
         ResponseEntity<List<VacancyDto>> responseEntity = controller.getAll();
         assertEquals(200, responseEntity.getStatusCodeValue());
         assertEquals(3, Objects.requireNonNull(responseEntity.getBody()).size());
@@ -37,7 +37,7 @@ class VacancyControllerTest {
 
     @Test
     void get() {
-        VacancyDto dto = getList().get(0);
+        VacancyDto dto = mockDtos().get(0);
         when(service.getById(dto.getId())).thenReturn(dto);
         ResponseEntity<VacancyDto> responseEntity = controller.get(dto.getId());
         assertEquals(200, responseEntity.getStatusCodeValue());
@@ -46,7 +46,7 @@ class VacancyControllerTest {
 
     @Test
     void create() {
-        VacancyDto dto = getList().get(0);
+        VacancyDto dto = mockDtos().get(0);
         when(service.insert(dto)).thenReturn(dto);
         ResponseEntity<VacancyDto> responseEntity = controller.create(dto);
         assertEquals(201, responseEntity.getStatusCodeValue());
@@ -57,7 +57,7 @@ class VacancyControllerTest {
 
     @Test
     void update() {
-        VacancyDto dto = getList().get(0);
+        VacancyDto dto = mockDtos().get(0);
         when(service.update(dto.getId(), dto)).thenReturn(dto);
         ResponseEntity<VacancyDto> responseEntity = controller.update(dto.getId(), dto);
         assertEquals(200, responseEntity.getStatusCodeValue());
@@ -72,7 +72,7 @@ class VacancyControllerTest {
         assertEquals(410, responseEntity.getStatusCodeValue());
     }
 
-    List<VacancyDto> getList() {
+    List<VacancyDto> mockDtos() {
         return Arrays.asList(
                 VacancyDto.builder().id(UUID.randomUUID().toString()).name("NET").skills(Arrays.asList(".NET", "SQL")).build(),
                 VacancyDto.builder().id(UUID.randomUUID().toString()).name("JAVA").skills(Arrays.asList("JAVA", "SQL")).build(),
