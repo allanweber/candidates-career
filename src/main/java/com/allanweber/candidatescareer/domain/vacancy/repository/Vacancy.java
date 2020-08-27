@@ -4,6 +4,7 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @Document(collection = "vacancy")
@@ -15,6 +16,9 @@ import java.util.List;
 public class Vacancy {
     @Id
     private final String id;
+
+    @NotBlank
+    private final String owner;
 
     private final String name;
 

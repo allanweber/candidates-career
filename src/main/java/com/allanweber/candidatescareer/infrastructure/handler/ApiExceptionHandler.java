@@ -17,11 +17,15 @@ import org.springframework.web.client.HttpClientErrorException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @RestControllerAdvice
 @Slf4j
 public class ApiExceptionHandler {
     private static final String CLIENT_EXCEPTION_HAPPENED = "Client Exception happened";
+    private static final String UNEXPECTED_EXCEPTION_HAPPENED = "Unexpected Exception happened";
     private static final String CONSTRAINT_MESSAGE = "Constraints violations found.";
     private static final Integer SIZE = 1;
 
@@ -30,6 +34,13 @@ public class ApiExceptionHandler {
         log.error(CLIENT_EXCEPTION_HAPPENED, ex);
         String message = Objects.requireNonNull(ex.getMessage()).replace(Integer.toString(ex.getRawStatusCode()), "").trim();
         return ResponseEntity.status(ex.getStatusCode()).body(new ResponseErrorDto(message));
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ResponseErrorDto> handleException(Exception ex) {
+        log.error(UNEXPECTED_EXCEPTION_HAPPENED, ex);
+        String message = Optional.ofNullable(ex.getCause()).orElse(ex).getMessage();
+        return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ResponseErrorDto(message));
     }
 
     //TODO: need test

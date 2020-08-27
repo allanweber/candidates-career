@@ -8,6 +8,7 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.validation.constraints.NotBlank;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -23,6 +24,9 @@ import static com.allanweber.candidatescareer.domain.candidate.dto.SocialStatus.
 public class Candidate {
     @Id
     private final String id;
+
+    @NotBlank
+    private final String owner;
 
     private final String name;
 

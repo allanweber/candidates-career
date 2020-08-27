@@ -72,7 +72,7 @@ class VacancyServiceTest {
     void insert() {
         Vacancy entity = mockEntities().get(0);
         VacancyDto vacancyDto = VacancyDto.builder().name("NET").skills(Arrays.asList(".NET", "SQL")).build();
-        when(repository.insert(eq(entity))).thenReturn(entity);
+        when(repository.save(eq(entity))).thenReturn(entity);
         VacancyDto dto = service.insert(vacancyDto);
         assertNotNull(dto);
     }
