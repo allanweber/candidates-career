@@ -21,17 +21,18 @@ import java.util.Objects;
 @RestControllerAdvice
 @Slf4j
 public class ApiExceptionHandler {
-    private static final String UNEXPECTED_ERROR_HAPPENED = "Unexpected Error happened";
+    private static final String CLIENT_EXCEPTION_HAPPENED = "Client Exception happened";
     private static final String CONSTRAINT_MESSAGE = "Constraints violations found.";
     private static final Integer SIZE = 1;
 
     @ExceptionHandler(HttpClientErrorException.class)
     public ResponseEntity<ResponseErrorDto> handleClientException(HttpClientErrorException ex) {
-        log.error(UNEXPECTED_ERROR_HAPPENED, ex);
+        log.error(CLIENT_EXCEPTION_HAPPENED, ex);
         String message = Objects.requireNonNull(ex.getMessage()).replace(Integer.toString(ex.getRawStatusCode()), "").trim();
         return ResponseEntity.status(ex.getStatusCode()).body(new ResponseErrorDto(message));
     }
 
+    //TODO: need test
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody

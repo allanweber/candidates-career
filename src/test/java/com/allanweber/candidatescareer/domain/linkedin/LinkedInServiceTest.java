@@ -112,7 +112,7 @@ class LinkedInServiceTest {
     }
 
     @Test
-    void callBackLinkedIn_private_image() throws JsonProcessingException {
+    void callBackLinkedIn_no_public_image() throws JsonProcessingException {
         String authorizationCode = "authorizationCode";
         mockLinkedInConfiguration();
         when(restTemplate.getForObject(anyString(), eq(String.class))).thenReturn("{ \"access_token\":\"access_token123456\" }");
@@ -179,7 +179,6 @@ class LinkedInServiceTest {
         when(linkedInConfiguration.getClientId()).thenReturn("123456");
         when(linkedInConfiguration.getClientSecret()).thenReturn("456789");
         when(linkedInConfiguration.getRedirectHost()).thenReturn("http://localhost:8080");
-        when(linkedInConfiguration.getAuthorizationUrl()).thenReturn("https://www.linkedin.com/oauth/v2/authorization?response_type=code&scope=r_liteprofile%20r_emailaddress");
         when(linkedInConfiguration.getClientIdQuery()).thenReturn("client_id={client_id}");
         when(linkedInConfiguration.getRedirectUriQuery()).thenReturn("redirect_uri={redirect_uri}");
         when(linkedInConfiguration.getStateQuery()).thenReturn("state={state}");

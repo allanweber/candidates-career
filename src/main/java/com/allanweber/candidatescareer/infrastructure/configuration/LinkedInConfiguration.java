@@ -15,8 +15,6 @@ public class LinkedInConfiguration {
 
     private String redirectHost;
 
-    private String authorizationUrl;
-
     private String clientIdQuery;
 
     private String redirectUriQuery;
