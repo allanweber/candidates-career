@@ -11,6 +11,7 @@ import java.util.List;
 @Getter
 @With
 @Builder
+@EqualsAndHashCode
 public class Vacancy {
     @Id
     private final String id;

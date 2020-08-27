@@ -6,6 +6,7 @@ import com.allanweber.candidatescareer.infrastructure.configuration.LinkedInConf
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectReader;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.*;
@@ -17,18 +18,19 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class LinkedInService {
 
     private static final String CALL_BACK_METHOD = "auth/callback";
+    private static final String LINKEDIN_AUTH_URL = "https://www.linkedin.com/oauth/v2/authorization?response_type=code&scope=r_liteprofile%20r_emailaddress";
+    private static final String LINKEDIN_TOKEN_URL = "https://www.linkedin.com/oauth/v2/accessToken?grant_type=authorization_code&code=";
+    private static final String LINKEDIN_PROFILE_URL = "https://api.linkedin.com/v2/me?projection=(id,firstName,lastName,profilePicture(displayImage~:playableStreams))";
 
     private final LinkedInConfiguration linkedInConfiguration;
     private final RestTemplate restTemplate;
@@ -41,7 +43,7 @@ public class LinkedInService {
                 .toUriString();
         String redirectEncoded = URLEncoder.encode(redirectUri, StandardCharsets.UTF_8);
         return UriComponentsBuilder.newInstance()
-                .uri(URI.create(linkedInConfiguration.getAuthorizationUrl()))
+                .uri(URI.create(LINKEDIN_AUTH_URL))
                 .query(linkedInConfiguration.getClientIdQuery())
                 .query(linkedInConfiguration.getRedirectUriQuery())
                 .query(linkedInConfiguration.getStateQuery())
@@ -51,48 +53,64 @@ public class LinkedInService {
 
     public LinkedInProfile callBackLinkedIn(String authorizationCode) {
         try {
-            String redirectUri = UriComponentsBuilder.newInstance()
-                    .uri(URI.create(linkedInConfiguration.getRedirectHost()))
-                    .path(CALL_BACK_METHOD)
-                    .toUriString();
+            LinkedInData linkedInData = getLinkedInData(authorizationCode);
+            String base64Image = getImage(linkedInData);
+            String firstName = null;
+            if (Objects.nonNull(linkedInData.getFirstName())) {
+                firstName = getLinkedInName(linkedInData.getFirstName().getName());
+            }
+            String lastName = null;
+            if (Objects.nonNull(linkedInData.getLastName())) {
+                lastName = getLinkedInName(linkedInData.getLastName().getName());
+            }
+            return new LinkedInProfile(firstName, lastName, base64Image);
+        } catch (JSONException | JsonProcessingException e) {
+            log.error("Error when getting linkedin data.", e);
+            throw (HttpClientErrorException) new HttpClientErrorException(INTERNAL_SERVER_ERROR, e.getMessage()).initCause(e);
+        }
+    }
 
-            //To trade your authorization code for access token
-            String accessTokenUri = "https://www.linkedin.com/oauth/v2/accessToken?grant_type=authorization_code&code=" + authorizationCode +
-                    "&redirect_uri=" + redirectUri +
-                    "&client_id=" + linkedInConfiguration.getClientId() +
-                    "&client_secret=" + linkedInConfiguration.getClientSecret();
+    private LinkedInData getLinkedInData(String authorizationCode) throws JSONException, JsonProcessingException {
+        String redirectUri = UriComponentsBuilder.newInstance()
+                .uri(URI.create(linkedInConfiguration.getRedirectHost()))
+                .path(CALL_BACK_METHOD)
+                .toUriString();
+        String accessTokenUri = LINKEDIN_TOKEN_URL + authorizationCode +
+                "&redirect_uri=" + redirectUri +
+                "&client_id=" + linkedInConfiguration.getClientId() +
+                "&client_secret=" + linkedInConfiguration.getClientSecret();
+        String accessTokenRequest = restTemplate.getForObject(accessTokenUri, String.class);
+        JSONObject jsonObjOfAccessToken = new JSONObject(accessTokenRequest);
+        String accessToken = jsonObjOfAccessToken.get("access_token").toString();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + accessToken);
+        HttpEntity<?> entity = new HttpEntity<>(headers);
+        ResponseEntity<String> linkedinDetailRequest = restTemplate.exchange(LINKEDIN_PROFILE_URL, HttpMethod.GET, entity, String.class);
+        return reader.readValue(linkedinDetailRequest.getBody());
+    }
 
-            String accessTokenRequest = restTemplate.getForObject(accessTokenUri, String.class);
-            JSONObject jsonObjOfAccessToken = new JSONObject(accessTokenRequest);
-            String accessToken = jsonObjOfAccessToken.get("access_token").toString();
-
-            String linkedInDetailUri = "https://api.linkedin.com/v2/me?projection=(id,firstName,lastName,profilePicture(displayImage~:playableStreams))";
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("Authorization", "Bearer " + accessToken);
-            HttpEntity<?> entity = new HttpEntity<>(headers);
-            ResponseEntity<String> linkedinDetailRequest = restTemplate.exchange(linkedInDetailUri, HttpMethod.GET, entity, String.class);
-
-            LinkedInData linkedInData = reader.readValue(linkedinDetailRequest.getBody());
-
-            Optional<String> profilePictureUrl = linkedInData.getProfilePicture().getDisplayImage().getElements().stream()
+    @SuppressWarnings("PMD")
+    private String getImage(LinkedInData linkedInData) {
+        String base64Image = null;
+        try {
+            Optional<String> profilePictureUrl = Optional.ofNullable(linkedInData.getProfilePicture())
+                    .map(ProfilePicture::getDisplayImage)
+                    .map(DisplayImage::getElements)
+                    .orElse(Collections.emptyList())
+                    .stream()
                     .filter(element -> element.getAuthorizationMethod().equals("PUBLIC"))
                     .filter(element -> element.getData().getStillImage().getStorageSize().getWidth() < 500)
                     .reduce((first, second) -> second)
                     .map(element -> element.getIdentifiers().stream().findFirst().orElse(new IdentifierImage()).getIdentifier());
 
-            String base64Image = null;
-            if(profilePictureUrl.isPresent()) {
+            if (profilePictureUrl.isPresent()) {
                 base64Image = getBase64Image(profilePictureUrl.get());
             }
-
-            String firstName = getLinkedInName(linkedInData.getFirstName().getName());
-            String lastName = getLinkedInName(linkedInData.getLastName().getName());
-
-            return new LinkedInProfile(firstName, lastName, base64Image);
-
-        } catch (JSONException | JsonProcessingException e) {
-            throw (HttpClientErrorException)new HttpClientErrorException(INTERNAL_SERVER_ERROR, e.getMessage()).initCause(e);
+        } catch (Exception e) {
+            log.error("Error when getting image.", e);
         }
+
+        return base64Image;
     }
 
     private String getBase64Image(String profilePictureUrl) {
@@ -103,8 +121,10 @@ public class LinkedInService {
         return Base64.getEncoder().encodeToString(response.getBody());
     }
 
-    private String getLinkedInName(Map<String, String> name){
-        Map.Entry<String,String> entry = name.entrySet().iterator().next();
+    @SuppressWarnings("PMD")
+    private String getLinkedInName(Map<String, String> name) {
+        if (name == null) return null;
+        Map.Entry<String, String> entry = name.entrySet().iterator().next();
         return entry.getValue();
     }
 }

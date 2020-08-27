@@ -4,10 +4,7 @@ import com.allanweber.candidatescareer.domain.candidate.dto.SocialEntry;
 import com.allanweber.candidatescareer.domain.candidate.dto.SocialNetworkDto;
 import com.allanweber.candidatescareer.domain.candidate.dto.SocialNetworkType;
 import com.allanweber.candidatescareer.domain.linkedin.dto.LinkedInProfile;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.With;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -22,6 +19,7 @@ import static com.allanweber.candidatescareer.domain.candidate.dto.SocialStatus.
 @Getter
 @With
 @Builder
+@EqualsAndHashCode
 public class Candidate {
     @Id
     private final String id;
