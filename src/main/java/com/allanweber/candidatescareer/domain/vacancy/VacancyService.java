@@ -40,7 +40,7 @@ public class VacancyService {
     }
 
     public VacancyDto insert(VacancyDto body) {
-        var entity = repository.insert(VacancyMapper.toEntity(body));
+        var entity = repository.save(VacancyMapper.toEntity(body));
         return VacancyMapper.toResponse(entity);
     }
 

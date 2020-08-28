@@ -74,7 +74,7 @@ class CandidateServiceTest {
     void insert() {
         Candidate entity = mockEntities().get(0);
         CandidateRequest candidateRequest = CandidateRequest.builder().name("NET").build();
-        when(repository.insert(eq(entity))).thenReturn(entity);
+        when(repository.save(eq(entity))).thenReturn(entity);
         CandidateResponse response = service.insert(candidateRequest);
         assertNotNull(response);
     }

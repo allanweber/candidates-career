@@ -54,8 +54,7 @@ public class CandidateService {
         if (repository.getByEmail(body.getEmail()).isPresent()) {
             throw new HttpClientErrorException(CONFLICT, String.format(EMAIL_EXIST_MESSAGE, body.getEmail()));
         }
-
-        var entity = repository.insert(CandidateMapper.toEntity(body));
+        var entity = repository.save(CandidateMapper.toEntity(body));
         return CandidateMapper.toResponse(entity);
     }
 

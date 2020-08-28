@@ -30,4 +30,23 @@ class ApiExceptionHandlerTest {
         assertEquals("any message", Objects.requireNonNull(response.getBody()).getMessage() );
         assertNull(Objects.requireNonNull(response.getBody()).getDetail());
     }
+
+    @Test
+    void handleException() {
+        ResponseEntity<ResponseErrorDto> response =
+                apiExceptionHandler.handleException(new RuntimeException("any message"));
+        assertEquals(500, response.getStatusCodeValue());
+        assertEquals("any message", Objects.requireNonNull(response.getBody()).getMessage() );
+        assertNull(Objects.requireNonNull(response.getBody()).getDetail());
+    }
+
+    @Test
+    void handleException_with_cause() {
+        RuntimeException causeMessage = new RuntimeException("cause message");
+        ResponseEntity<ResponseErrorDto> response =
+                apiExceptionHandler.handleException(new RuntimeException("any message", causeMessage));
+        assertEquals(500, response.getStatusCodeValue());
+        assertEquals("cause message", Objects.requireNonNull(response.getBody()).getMessage() );
+        assertNull(Objects.requireNonNull(response.getBody()).getDetail());
+    }
 }
