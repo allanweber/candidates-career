@@ -19,5 +19,9 @@ app:
     client-id-query: client_id={client_id}
     redirect-uri-query: redirect_uri={redirect_uri}
     state-query: state={state}
-  read-timeout-in-ms: 5000
-  connect-timeout-in-ms: 5000
+  rest:
+    read-timeout-in-ms: 5000
+    connect-timeout-in-ms: 5000
+  registration:
+    email-verification-enabled: false
+    verification-host: http://localhost:8080

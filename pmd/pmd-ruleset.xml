@@ -19,13 +19,16 @@
     <rule ref="category/java/errorprone.xml">
         <exclude name="BeanMembersShouldSerialize"/>
         <exclude name="DataflowAnomalyAnalysis"/>
+        <exclude name="AvoidFieldNameMatchingTypeName"/>
     </rule>
     <rule ref="category/java/multithreading.xml"/>
-    <rule ref="category/java/performance.xml"/>
     <rule ref="category/java/security.xml"/>
     <rule ref="category/java/design.xml">
         <exclude name="LawOfDemeter"/>
     </rule>
     <rule ref="category/java/design.xml/UseUtilityClass"/>
+    <rule ref="category/java/performance.xml">
+        <exclude name="AvoidInstantiatingObjectsInLoops"/>
+    </rule>
 
 </ruleset>
