@@ -4,7 +4,7 @@ import com.allanweber.candidatescareer.domain.user.dto.UserDto;
 import com.allanweber.candidatescareer.domain.user.registration.dto.UserRegistration;
 import com.allanweber.candidatescareer.domain.user.repository.AppUser;
 import com.allanweber.candidatescareer.domain.user.repository.AppUserRepository;
-import com.allanweber.candidatescareer.infrastructure.configuration.registration.RegistrationConfiguration;
+import com.allanweber.candidatescareer.infrastructure.configuration.security.AppSecurityConfiguration;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -36,7 +36,7 @@ class UserServiceTest {
     AppUserRepository repository;
 
     @Mock
-    RegistrationConfiguration registrationConfiguration;
+    AppSecurityConfiguration appSecurityConfiguration;
 
     @Mock
     PasswordEncoder encoder;
@@ -127,7 +127,7 @@ class UserServiceTest {
         UserRegistration registration = new UserRegistration("user", "user", USER_NAME, "email", "pass", "pass");
         when(repository.existsByUserName(USER_NAME)).thenReturn(false);
         when(repository.existsByEmail(any())).thenReturn(false);
-        when(registrationConfiguration.isEmailVerificationEnabled()).thenReturn(false);
+        when(appSecurityConfiguration.isEmailVerificationEnabled()).thenReturn(false);
         when(encoder.encode(anyString())).thenReturn("pass");
         when(repository.save(any())).thenReturn(user);
 

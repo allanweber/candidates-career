@@ -1,6 +1,7 @@
 package com.allanweber.candidatescareer.domain.auth.jwt;
 
 import com.allanweber.candidatescareer.domain.helper.DateHelper;
+import com.allanweber.candidatescareer.infrastructure.configuration.security.AppSecurityConfiguration;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
@@ -22,14 +23,22 @@ import java.util.stream.Collectors;
 @Component
 @Slf4j
 public class JwtUtils {
-    private static final SecretKey SECRETKEY = Keys.hmacShaKeyFor(JwtConstantsHelper.JWT_SECRET.getBytes());
+
+    private final AppSecurityConfiguration appSecurityConfiguration;
+
+    private final SecretKey secretKey;
+
+    public JwtUtils(AppSecurityConfiguration appSecurityConfiguration) {
+        this.appSecurityConfiguration = appSecurityConfiguration;
+        this.secretKey = Keys.hmacShaKeyFor(appSecurityConfiguration.getJwtSecret().getBytes());
+    }
 
     public TokenDto generateJwtToken(String user, List<String> roles) {
 
         Date issuedAt = DateHelper.getUTCDatetimeAsDate();
 
         String token = Jwts.builder()
-                .signWith(SECRETKEY, SignatureAlgorithm.HS512)
+                .signWith(secretKey, SignatureAlgorithm.HS512)
                 .setHeaderParam(JwtConstantsHelper.HEADER_TYP, JwtConstantsHelper.TOKEN_TYPE)
                 .setIssuer(JwtConstantsHelper.TOKEN_ISSUER)
                 .setAudience(JwtConstantsHelper.TOKEN_AUDIENCE)
@@ -45,7 +54,7 @@ public class JwtUtils {
     @SuppressWarnings("PMD")
     public Jws<Claims> parseAndValidateToken(String token) throws HttpClientErrorException {
         try {
-            return Jwts.parser().setSigningKey(JwtConstantsHelper.JWT_SECRET.getBytes()).parseClaimsJws(resolveToken(token));
+            return Jwts.parser().setSigningKey(appSecurityConfiguration.getJwtSecret().getBytes()).parseClaimsJws(resolveToken(token));
         } catch (ExpiredJwtException exception) {
             throw new HttpClientErrorException(HttpStatus.UNAUTHORIZED,
                     String.format("Request to parse expired JWT : %s failed : %s", token, exception.getMessage()));
@@ -102,7 +111,7 @@ public class JwtUtils {
         Claims claims = jwsClaims.getBody();
         claims.setIssuedAt(issuedAt);
         claims.setExpiration(getExpirationDate());
-        String newToken = Jwts.builder().setClaims(claims).signWith(SECRETKEY, SignatureAlgorithm.HS256).compact();
+        String newToken = Jwts.builder().setClaims(claims).signWith(secretKey, SignatureAlgorithm.HS256).compact();
         return new TokenDto(newToken, JwtConstantsHelper.TOKEN_DURATION_SECONDS, issuedAt);
     }
 

@@ -22,6 +22,7 @@ app:
   rest:
     read-timeout-in-ms: 5000
     connect-timeout-in-ms: 5000
-  registration:
+  security:
     email-verification-enabled: false
     verification-host: http://localhost:8080
+    jwt-secret: ${JWT_SECRET}

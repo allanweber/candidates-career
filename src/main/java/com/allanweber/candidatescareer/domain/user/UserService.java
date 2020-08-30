@@ -5,7 +5,7 @@ import com.allanweber.candidatescareer.domain.user.mapper.UserMapper;
 import com.allanweber.candidatescareer.domain.user.registration.dto.UserRegistration;
 import com.allanweber.candidatescareer.domain.user.repository.AppUser;
 import com.allanweber.candidatescareer.domain.user.repository.AppUserRepository;
-import com.allanweber.candidatescareer.infrastructure.configuration.registration.RegistrationConfiguration;
+import com.allanweber.candidatescareer.infrastructure.configuration.security.AppSecurityConfiguration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -26,7 +26,7 @@ public class UserService implements UserDetailsService {
 
     private final AppUserRepository repository;
     private final PasswordEncoder encoder;
-    private final RegistrationConfiguration registrationConfiguration;
+    private final AppSecurityConfiguration appSecurityConfiguration;
 
     @Override
     public UserDetails loadUserByUsername(String userName) {
@@ -61,8 +61,8 @@ public class UserService implements UserDetailsService {
         }
         AppUser userToSave = UserMapper.toEntity(userRegistration);
         userToSave.setPassword(encoder.encode(userToSave.getPassword()));
-        userToSave.setEnabled(!registrationConfiguration.isEmailVerificationEnabled());
-        userToSave.setVerified(!registrationConfiguration.isEmailVerificationEnabled());
+        userToSave.setEnabled(!appSecurityConfiguration.isEmailVerificationEnabled());
+        userToSave.setVerified(!appSecurityConfiguration.isEmailVerificationEnabled());
         userToSave.addAuthority(AuthoritiesHelper.USER);
         AppUser userSaved = repository.save(userToSave);
         return UserMapper.mapToDto(userSaved);

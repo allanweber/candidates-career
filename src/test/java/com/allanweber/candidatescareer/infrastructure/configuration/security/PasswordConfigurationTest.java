@@ -1,4 +1,4 @@
-package com.allanweber.candidatescareer.infrastructure.configuration.registration;
+package com.allanweber.candidatescareer.infrastructure.configuration.security;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

@@ -1,4 +1,4 @@
-package com.allanweber.candidatescareer.infrastructure.configuration.registration;
+package com.allanweber.candidatescareer.infrastructure.configuration.security;
 
 import org.passay.*;
 import org.springframework.context.annotation.Bean;
