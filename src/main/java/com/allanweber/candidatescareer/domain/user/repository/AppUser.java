@@ -26,20 +26,13 @@ public class AppUser {
 
     private String email;
 
+    @Builder.Default
     private Boolean enabled = false;
 
+    @Builder.Default
     private Boolean verified = false;
 
     private List<Authority> authorities;
-
-//    public AppUser(String username, String password, String email, Boolean enabled, List<Authority> authorities, Boolean verified) {
-//        this.userName = username;
-//        this.password = password;
-//        this.email = email;
-//        this.enabled = enabled;
-//        this.authorities = authorities;
-//        this.verified = verified;
-//    }
 
     public void addAuthority(String authority) {
         if (authorities == null) {

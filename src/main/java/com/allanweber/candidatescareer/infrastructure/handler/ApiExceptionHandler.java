@@ -43,7 +43,6 @@ public class ApiExceptionHandler {
         return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ResponseErrorDto(message));
     }
 
-    //TODO: need test
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody

@@ -58,4 +58,5 @@ class UserDetailsHelperTest {
         UserDetails userDetails = UserDetailsHelper.createUserDetails(user);
         assertFalse(userDetails.isEnabled());
     }
+
 }

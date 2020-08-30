@@ -1,6 +1,6 @@
 package com.allanweber.candidatescareer.domain.candidate.repository;
 
-import com.allanweber.candidatescareer.domain.user.UserService;
+import com.allanweber.candidatescareer.domain.auth.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -11,24 +11,24 @@ import java.util.Optional;
 @Repository
 public class CandidateRepository  {
 
-    private final UserService userService;
+    private final AuthService authService;
     private final CandidateMongoRepository mongoRepository;
 
     public List<Candidate> findAll() {
-        return mongoRepository.findAllByOwner(userService.getUserName());
+        return mongoRepository.findAllByOwner(authService.getUserName());
     }
 
     public Optional<Candidate> findById(String id) {
-        return mongoRepository.findByIdAndOwner(id, userService.getUserName());
+        return mongoRepository.findByIdAndOwner(id, authService.getUserName());
     }
 
     public Candidate save(Candidate candidate) {
-        Candidate entity = candidate.withOwner(userService.getUserName());
+        Candidate entity = candidate.withOwner(authService.getUserName());
         return mongoRepository.save(entity);
     }
 
     public Optional<Candidate> getByEmail(String email) {
-        return mongoRepository.getByEmailAndOwner(email, userService.getUserName());
+        return mongoRepository.getByEmailAndOwner(email, authService.getUserName());
     }
 
     public void deleteById(String id) {

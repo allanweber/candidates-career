@@ -28,10 +28,6 @@ public class UserService implements UserDetailsService {
     private final PasswordEncoder encoder;
     private final RegistrationConfiguration registrationConfiguration;
 
-    public String getUserName() {
-        return "anonymous";
-    }
-
     @Override
     public UserDetails loadUserByUsername(String userName) {
         AppUser user = repository.findById(userName).orElseThrow(() -> new UsernameNotFoundException(userName));

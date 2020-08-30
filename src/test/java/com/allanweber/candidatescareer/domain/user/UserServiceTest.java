@@ -45,11 +45,6 @@ class UserServiceTest {
     UserService service;
 
     @Test
-    void getUserName() {
-        assertEquals("anonymous", service.getUserName());
-    }
-
-    @Test
     void test_loadUserByUsername() {
         AppUser user = new AppUser("user", "password", "user", "user", "email", true, true,
                 Collections.singletonList(new Authority(AuthoritiesHelper.ADMIN)));

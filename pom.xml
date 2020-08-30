@@ -19,6 +19,7 @@
 		<mapstruct>1.3.0.Final</mapstruct>
 		<swagger>2.9.2</swagger>
 		<io.jsonwebtoken>0.10.5</io.jsonwebtoken>
+		<org.apache.commons>1.8</org.apache.commons>
 	</properties>
 
 	<dependencies>
@@ -93,6 +94,11 @@
 			<artifactId>jjwt-jackson</artifactId>
 			<version>${io.jsonwebtoken}</version>
 			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-text</artifactId>
+			<version>${org.apache.commons}</version>
 		</dependency>
 
 		<dependency>
