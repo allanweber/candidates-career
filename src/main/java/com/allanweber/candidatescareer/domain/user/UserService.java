@@ -3,10 +3,12 @@ package com.allanweber.candidatescareer.domain.user;
 import com.allanweber.candidatescareer.domain.user.dto.UserDto;
 import com.allanweber.candidatescareer.domain.user.mapper.UserMapper;
 import com.allanweber.candidatescareer.domain.user.registration.dto.UserRegistration;
+import com.allanweber.candidatescareer.domain.user.registration.event.UserRegistrationEvent;
 import com.allanweber.candidatescareer.domain.user.repository.AppUser;
 import com.allanweber.candidatescareer.domain.user.repository.AppUserRepository;
 import com.allanweber.candidatescareer.infrastructure.configuration.security.AppSecurityConfiguration;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -27,6 +29,7 @@ public class UserService implements UserDetailsService {
     private final AppUserRepository repository;
     private final PasswordEncoder encoder;
     private final AppSecurityConfiguration appSecurityConfiguration;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
     public UserDetails loadUserByUsername(String userName) {
@@ -65,14 +68,15 @@ public class UserService implements UserDetailsService {
         userToSave.setVerified(!appSecurityConfiguration.isEmailVerificationEnabled());
         userToSave.addAuthority(AuthoritiesHelper.USER);
         AppUser userSaved = repository.save(userToSave);
-        return UserMapper.mapToDto(userSaved);
-//        if (registrationConfiguration.isEmailVerificationEnabled()) {
-//            eventPublisher.publishEvent(new UserRegistrationEvent(userDto));
-//        }
+        UserDto userDto = UserMapper.mapToDto(userSaved);
+        if (appSecurityConfiguration.isEmailVerificationEnabled()) {
+            eventPublisher.publishEvent(new UserRegistrationEvent(userDto));
+        }
+        return userDto;
     }
 
-    public void setUserVerified(String userName) {
-        AppUser user = repository.findById(userName).orElseThrow(() -> new UsernameNotFoundException(userName));
+    public void setUserVerified(String email) {
+        AppUser user = repository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email));
         user.setEnabled(true);
         user.setVerified(true);
         repository.save(user);

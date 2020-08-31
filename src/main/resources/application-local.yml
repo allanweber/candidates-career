@@ -6,3 +6,5 @@ spring:
 app:
   linkedin:
     redirectHost: http://localhost:8080
+  security:
+    verification-host: http://localhost:8080

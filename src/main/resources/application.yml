@@ -10,6 +10,20 @@ spring:
     mongodb:
       database: candidates
       uri: mongodb+srv://${MONGO_USER:user}:${MONGO_PASS:user}@${MONGO_HOST:host}/candidates?retryWrites=true&w=majority&serverSelectionTimeoutMS=2000&connectTimeoutMS=2000
+  mail:
+    host: smtp.gmail.com
+    password: ${SMTP_PASSWORD}
+    port: 587
+    properties:
+      mail:
+        smtp:
+          auth: true
+          connectiontimeout: 5000
+          starttls:
+            enable: true
+          timeout: 5000
+          writetimeout: 5000
+    username: allanweberdevtests
 
 app:
   linkedin:
@@ -23,6 +37,6 @@ app:
     read-timeout-in-ms: 5000
     connect-timeout-in-ms: 5000
   security:
-    email-verification-enabled: false
-    verification-host: http://localhost:8080
+    email-verification-enabled: true
+    verification-host: https://candidates-career.herokuapp.com
     jwt-secret: ${JWT_SECRET}
