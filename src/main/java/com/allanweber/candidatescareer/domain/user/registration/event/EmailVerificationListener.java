@@ -29,6 +29,7 @@ public class EmailVerificationListener implements ApplicationListener<UserRegist
         Verification verification = verificationService.createVerification(userRegistrationEvent.getUser().getEmail());
         SimpleMailMessage message = new SimpleMailMessage();
         message.setSubject("New account created");
+        message.setFrom("activation@candidates-career.tech");
 
         String verificationUri = UriComponentsBuilder.newInstance()
                 .uri(URI.create(applicationConfiguration.getVerificationHost()))
