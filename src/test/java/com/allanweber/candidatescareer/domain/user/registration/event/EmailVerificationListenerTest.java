@@ -41,6 +41,7 @@ class EmailVerificationListenerTest {
         message.setSubject("New account created");
         message.setText(emailText);
         message.setTo(email);
+        message.setFrom("activation@candidates-career.tech");
 
         Verification verification = new Verification(email);
         verification.setId(id);
