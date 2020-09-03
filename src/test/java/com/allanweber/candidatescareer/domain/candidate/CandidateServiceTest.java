@@ -5,8 +5,9 @@ import com.allanweber.candidatescareer.domain.candidate.dto.CandidateResponse;
 import com.allanweber.candidatescareer.domain.candidate.dto.SocialEntry;
 import com.allanweber.candidatescareer.domain.candidate.dto.SocialNetworkType;
 import com.allanweber.candidatescareer.domain.candidate.repository.Candidate;
-import com.allanweber.candidatescareer.domain.candidate.repository.CandidateRepository;
-import com.allanweber.candidatescareer.domain.linkedin.dto.LinkedInProfile;
+import com.allanweber.candidatescareer.domain.candidate.repository.CandidateAuthenticatedRepository;
+import com.allanweber.candidatescareer.domain.candidate.repository.CandidateMongoRepository;
+import com.allanweber.candidatescareer.domain.social.linkedin.dto.LinkedInProfile;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,7 +27,10 @@ import static org.mockito.Mockito.when;
 class CandidateServiceTest {
 
     @Mock
-    CandidateRepository repository;
+    CandidateAuthenticatedRepository repository;
+
+    @Mock
+    CandidateMongoRepository candidateMongoRepository;
 
     @InjectMocks
     CandidateService service;
@@ -129,7 +133,7 @@ class CandidateServiceTest {
     void getSocialEntry() {
         Candidate entity = mockEntities().get(0);
         entity = entity.addSocialEntriesPending(Arrays.asList(SocialNetworkType.LINKEDIN, SocialNetworkType.TWITTER));
-        when(repository.findById(entity.getId())).thenReturn(Optional.of(entity));
+        when(candidateMongoRepository.findById(entity.getId())).thenReturn(Optional.of(entity));
         SocialEntry socialEntry = service.getSocialEntry(entity.getId(), SocialNetworkType.TWITTER);
         assertEquals(SocialNetworkType.TWITTER, socialEntry.getType());
     }
@@ -144,19 +148,18 @@ class CandidateServiceTest {
     void saveLinkedInData() {
         Candidate entity = mockEntities().get(0);
         entity = entity.addSocialEntriesPending(Arrays.asList(SocialNetworkType.LINKEDIN, SocialNetworkType.TWITTER));
-        when(repository.findById(entity.getId())).thenReturn(Optional.of(entity));
+        when(candidateMongoRepository.findById(entity.getId())).thenReturn(Optional.of(entity));
         LinkedInProfile linkedInProfile = new LinkedInProfile("fist", "last", "image");
         Candidate candidateWithLinkedInData = entity.addLinkedInData(linkedInProfile);
-        when(repository.save(eq(candidateWithLinkedInData))).thenReturn(candidateWithLinkedInData);
+        when(candidateMongoRepository.save(eq(candidateWithLinkedInData))).thenReturn(candidateWithLinkedInData);
         service.saveLinkedInData(entity.getId(), linkedInProfile);
     }
 
     @Test
     void saveLinkedInData_notFound() {
-        when(repository.findById(anyString())).thenReturn(Optional.empty());
+        when(candidateMongoRepository.findById(anyString())).thenReturn(Optional.empty());
         assertThrows(HttpClientErrorException.class, () -> service.saveLinkedInData("", null));
     }
-
 
     List<Candidate> mockEntities() {
         return Arrays.asList(

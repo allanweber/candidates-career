@@ -14,10 +14,4 @@ public class LinkedInConfiguration {
     private String clientSecret;
 
     private String redirectHost;
-
-    private String clientIdQuery;
-
-    private String redirectUriQuery;
-
-    private String stateQuery;
 }

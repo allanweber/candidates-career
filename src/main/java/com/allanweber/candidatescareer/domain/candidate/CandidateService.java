@@ -6,8 +6,10 @@ import com.allanweber.candidatescareer.domain.candidate.dto.SocialEntry;
 import com.allanweber.candidatescareer.domain.candidate.dto.SocialNetworkType;
 import com.allanweber.candidatescareer.domain.candidate.mapper.CandidateMapper;
 import com.allanweber.candidatescareer.domain.candidate.repository.Candidate;
-import com.allanweber.candidatescareer.domain.candidate.repository.CandidateRepository;
-import com.allanweber.candidatescareer.domain.linkedin.dto.LinkedInProfile;
+import com.allanweber.candidatescareer.domain.candidate.repository.CandidateAuthenticatedRepository;
+import com.allanweber.candidatescareer.domain.candidate.repository.CandidateMongoRepository;
+import com.allanweber.candidatescareer.domain.social.github.dto.GitHubProfile;
+import com.allanweber.candidatescareer.domain.social.linkedin.dto.LinkedInProfile;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -27,7 +29,8 @@ public class CandidateService {
     private static final String INVALID_SOCIAL_NETWORK_MESSAGE = "Social network request is invalid";
     private static final String EMAIL_EXIST_MESSAGE = "Candidate email %s already exist";
 
-    private final CandidateRepository repository;
+    private final CandidateAuthenticatedRepository repository;
+    private final CandidateMongoRepository candidateMongoRepository;
 
     public List<CandidateResponse> getAll() {
         return repository.findAll()
@@ -79,8 +82,12 @@ public class CandidateService {
                 .orElseThrow(() -> new HttpClientErrorException(NOT_FOUND, NOT_FOUND_MESSAGE));
     }
 
+    //
+    // These methods below does not need a authenticated user
+    //
+
     public SocialEntry getSocialEntry(String id, SocialNetworkType socialNetworkType) {
-        return repository.findById(id)
+        return candidateMongoRepository.findById(id)
                 .map(Candidate::getSocialEntries)
                 .orElse(Collections.emptyList())
                 .stream()
@@ -90,10 +97,18 @@ public class CandidateService {
     }
 
     public void saveLinkedInData(String id, LinkedInProfile linkedInProfile) {
-        repository.findById(id)
+        candidateMongoRepository.findById(id)
                 .map(candidate -> candidate.markSocialEntryDone(LINKEDIN))
                 .map(candidate -> candidate.addLinkedInData(linkedInProfile))
-                .map(repository::save)
+                .map(candidateMongoRepository::save)
+                .orElseThrow(() -> new HttpClientErrorException(NOT_FOUND, NOT_FOUND_MESSAGE));
+    }
+
+    public void saveGitGithubData(String id, GitHubProfile githubProfile) {
+        candidateMongoRepository.findById(id)
+                .map(candidate -> candidate.markSocialEntryDone(LINKEDIN))
+                .map(candidate -> candidate.addGithubData(githubProfile))
+                .map(candidateMongoRepository::save)
                 .orElseThrow(() -> new HttpClientErrorException(NOT_FOUND, NOT_FOUND_MESSAGE));
     }
 }

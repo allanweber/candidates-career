@@ -30,9 +30,9 @@ app:
     client-id: ${LINKEDIN_CLIENT_ID}
     clientSecret: ${LINKEDIN_CLIENT_SECRET}
     redirectHost: https://candidates-career.herokuapp.com/
-    client-id-query: client_id={client_id}
-    redirect-uri-query: redirect_uri={redirect_uri}
-    state-query: state={state}
+  github:
+    client-id: ${GITHUB_CLIENT_ID}
+    clientSecret: ${GITHUB_CLIENT_SECRET}
   rest:
     read-timeout-in-ms: 5000
     connect-timeout-in-ms: 5000

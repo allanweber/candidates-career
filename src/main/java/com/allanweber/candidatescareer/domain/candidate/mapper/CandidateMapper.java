@@ -33,6 +33,9 @@ public class CandidateMapper {
                     .email(entity.getEmail())
                     .socialEntries(entity.getSocialEntries())
                     .socialNetwork(entity.getSocialNetwork())
+                    .location(entity.getLocation())
+                    .bio(entity.getBio())
+                    .currentCompany(entity.getCurrentCompany())
                     .build();
         }
         return response;
