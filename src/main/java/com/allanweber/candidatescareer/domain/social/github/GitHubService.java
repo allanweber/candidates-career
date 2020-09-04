@@ -1,6 +1,6 @@
 package com.allanweber.candidatescareer.domain.social.github;
 
-import com.allanweber.candidatescareer.domain.candidate.SocialServiceHelper;
+import com.allanweber.candidatescareer.domain.social.SocialServiceHelper;
 import com.allanweber.candidatescareer.domain.social.github.dto.GitHubProfile;
 import com.allanweber.candidatescareer.infrastructure.configuration.GitHubConfiguration;
 import lombok.RequiredArgsConstructor;

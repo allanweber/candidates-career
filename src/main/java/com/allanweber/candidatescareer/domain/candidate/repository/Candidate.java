@@ -3,6 +3,7 @@ package com.allanweber.candidatescareer.domain.candidate.repository;
 import com.allanweber.candidatescareer.domain.candidate.dto.SocialEntry;
 import com.allanweber.candidatescareer.domain.candidate.dto.SocialNetworkDto;
 import com.allanweber.candidatescareer.domain.candidate.dto.SocialNetworkType;
+import com.allanweber.candidatescareer.domain.candidate.dto.SocialStatus;
 import com.allanweber.candidatescareer.domain.social.github.dto.GitHubProfile;
 import com.allanweber.candidatescareer.domain.social.linkedin.dto.LinkedInProfile;
 import lombok.*;
@@ -13,7 +14,6 @@ import javax.validation.constraints.NotBlank;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.allanweber.candidatescareer.domain.candidate.dto.SocialStatus.GRANTED;
 import static com.allanweber.candidatescareer.domain.candidate.dto.SocialStatus.PENDING;
 
 @Document(collection = "candidate")
@@ -66,11 +66,11 @@ public class Candidate {
         return candidate.withSocialNetwork(current);
     }
 
-    public Candidate markSocialEntryDone(SocialNetworkType type) {
+    public Candidate markSocialEntry(SocialNetworkType type, SocialStatus status) {
         if (Optional.ofNullable(socialEntries).isPresent()) {
             for (SocialEntry socialEntry : socialEntries) {
                 if (socialEntry.getType().equals(type)) {
-                    socialEntry.setStatus(GRANTED);
+                    socialEntry.setStatus(status);
                     break;
                 }
             }

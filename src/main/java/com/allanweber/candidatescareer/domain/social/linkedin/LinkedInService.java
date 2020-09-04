@@ -1,6 +1,6 @@
 package com.allanweber.candidatescareer.domain.social.linkedin;
 
-import com.allanweber.candidatescareer.domain.candidate.SocialServiceHelper;
+import com.allanweber.candidatescareer.domain.social.SocialServiceHelper;
 import com.allanweber.candidatescareer.domain.helper.ObjectMapperHelper;
 import com.allanweber.candidatescareer.domain.social.linkedin.dto.LinkedInProfile;
 import com.allanweber.candidatescareer.infrastructure.configuration.LinkedInConfiguration;

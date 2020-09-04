@@ -18,7 +18,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.allanweber.candidatescareer.domain.candidate.dto.SocialNetworkType.GITHUB;
 import static com.allanweber.candidatescareer.domain.candidate.dto.SocialNetworkType.LINKEDIN;
+import static com.allanweber.candidatescareer.domain.candidate.dto.SocialStatus.DENIED;
+import static com.allanweber.candidatescareer.domain.candidate.dto.SocialStatus.GRANTED;
 import static org.springframework.http.HttpStatus.*;
 
 @Service
@@ -31,6 +34,7 @@ public class CandidateService {
 
     private final CandidateAuthenticatedRepository repository;
     private final CandidateMongoRepository candidateMongoRepository;
+    private final CandidateSocialEmailService candidateSocialEmailService;
 
     public List<CandidateResponse> getAll() {
         return repository.findAll()
@@ -67,25 +71,26 @@ public class CandidateService {
     }
 
     public String getImage(String id) {
-        return  repository
+        return repository
                 .findById(id)
                 .map(Candidate::getImage)
                 .orElseThrow(() -> new HttpClientErrorException(NOT_FOUND, NOT_FOUND_MESSAGE));
     }
 
     public CandidateResponse addSocialEntries(String id, List<SocialNetworkType> networkTypes) {
-        return repository.findById(id)
+        CandidateResponse candidateResponse = repository.findById(id)
                 .map(candidate -> candidate.addSocialEntriesPending(networkTypes))
                 .map(repository::save)
                 .map(CandidateMapper::toResponse)
-                // Send email
                 .orElseThrow(() -> new HttpClientErrorException(NOT_FOUND, NOT_FOUND_MESSAGE));
+
+        networkTypes.forEach(networkType -> candidateSocialEmailService.sendSocialAccess(candidateResponse, networkType));
+        return candidateResponse;
     }
 
     //
     // These methods below does not need a authenticated user
     //
-
     public SocialEntry getSocialEntry(String id, SocialNetworkType socialNetworkType) {
         return candidateMongoRepository.findById(id)
                 .map(Candidate::getSocialEntries)
@@ -98,7 +103,7 @@ public class CandidateService {
 
     public void saveLinkedInData(String id, LinkedInProfile linkedInProfile) {
         candidateMongoRepository.findById(id)
-                .map(candidate -> candidate.markSocialEntryDone(LINKEDIN))
+                .map(candidate -> candidate.markSocialEntry(LINKEDIN, GRANTED))
                 .map(candidate -> candidate.addLinkedInData(linkedInProfile))
                 .map(candidateMongoRepository::save)
                 .orElseThrow(() -> new HttpClientErrorException(NOT_FOUND, NOT_FOUND_MESSAGE));
@@ -106,8 +111,15 @@ public class CandidateService {
 
     public void saveGitGithubData(String id, GitHubProfile githubProfile) {
         candidateMongoRepository.findById(id)
-                .map(candidate -> candidate.markSocialEntryDone(LINKEDIN))
+                .map(candidate -> candidate.markSocialEntry(GITHUB, GRANTED))
                 .map(candidate -> candidate.addGithubData(githubProfile))
+                .map(candidateMongoRepository::save)
+                .orElseThrow(() -> new HttpClientErrorException(NOT_FOUND, NOT_FOUND_MESSAGE));
+    }
+
+    public void denySocialAccess(String id, SocialNetworkType network) {
+        candidateMongoRepository.findById(id)
+                .map(candidate -> candidate.markSocialEntry(network, DENIED))
                 .map(candidateMongoRepository::save)
                 .orElseThrow(() -> new HttpClientErrorException(NOT_FOUND, NOT_FOUND_MESSAGE));
     }

@@ -1,4 +1,4 @@
-package com.allanweber.candidatescareer.domain.candidate;
+package com.allanweber.candidatescareer.domain.social;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.configurationprocessor.json.JSONException;

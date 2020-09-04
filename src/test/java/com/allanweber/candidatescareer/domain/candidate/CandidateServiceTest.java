@@ -18,8 +18,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
@@ -31,6 +30,9 @@ class CandidateServiceTest {
 
     @Mock
     CandidateMongoRepository candidateMongoRepository;
+
+    @Mock
+    CandidateSocialEmailService candidateSocialEmailService;
 
     @InjectMocks
     CandidateService service;
@@ -118,6 +120,7 @@ class CandidateServiceTest {
         List<SocialNetworkType> socialNetworkTypes = Collections.singletonList(SocialNetworkType.LINKEDIN);
         entity = entity.addSocialEntriesPending(socialNetworkTypes);
         when(repository.save(eq(entity))).thenReturn(entity);
+        doNothing().when(candidateSocialEmailService).sendSocialAccess(any(), any());
         CandidateResponse response = service.addSocialEntries(entity.getId(), socialNetworkTypes);
         assertNotNull(response);
     }

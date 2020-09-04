@@ -39,6 +39,12 @@ public class AppsAuthorizationController implements AppsAuthorizationApi {
         return ok().build();
     }
 
+    @Override
+    public ResponseEntity<Void> denySocialAuthorization(String candidateId, SocialNetworkType network) {
+        socialService.denyAccess(candidateId, network);
+        return ok().build();
+    }
+
     private ResponseEntity<Void> redirectSocialAuth(String candidateId, SocialNetworkType socialNetworkType) {
         String authorizationUri = socialService.getAuthorizationUri(candidateId, socialNetworkType);
         return ResponseEntity.status(HttpStatus.FOUND)

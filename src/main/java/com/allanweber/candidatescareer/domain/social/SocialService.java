@@ -53,6 +53,11 @@ public class SocialService {
         candidateService.saveGitGithubData(candidateId, githubProfile);
     }
 
+    public void denyAccess(String candidateId, SocialNetworkType network) {
+        validateSocialEntry(candidateId, network);
+        candidateService.denySocialAccess(candidateId, network);
+    }
+
     private void validateSocialEntry(String candidateId, SocialNetworkType socialNetworkType) {
         SocialEntry socialEntry = candidateService.getSocialEntry(candidateId, socialNetworkType);
         if (!socialEntry.getStatus().equals(PENDING)) {
