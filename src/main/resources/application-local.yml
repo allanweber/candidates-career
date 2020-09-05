@@ -2,9 +2,18 @@ spring:
   data:
     mongodb:
       uri: mongodb://${MONGO_HOST:localhost:27017}/career?serverSelectionTimeoutMS=2000&connectTimeoutMS=2000
+#  rabbitmq:
+#    host: localhost
+#    port: 5672
+#    username: guest
+#    password: guest
 
 app:
   linkedin:
     redirectHost: http://localhost:8080
   security:
     verification-host: http://localhost:8080
+  queue:
+    candidate:
+      exchange: candidate.exchange.local
+      routing-key: candidate.routing.local

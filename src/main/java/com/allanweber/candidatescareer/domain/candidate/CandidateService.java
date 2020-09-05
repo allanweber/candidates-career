@@ -20,8 +20,7 @@ import java.util.stream.Collectors;
 
 import static com.allanweber.candidatescareer.domain.candidate.dto.SocialNetworkType.GITHUB;
 import static com.allanweber.candidatescareer.domain.candidate.dto.SocialNetworkType.LINKEDIN;
-import static com.allanweber.candidatescareer.domain.candidate.dto.SocialStatus.DENIED;
-import static com.allanweber.candidatescareer.domain.candidate.dto.SocialStatus.GRANTED;
+import static com.allanweber.candidatescareer.domain.candidate.dto.SocialStatus.*;
 import static org.springframework.http.HttpStatus.*;
 
 @Service
@@ -111,7 +110,7 @@ public class CandidateService {
 
     public void saveGitGithubData(String id, GitHubProfile githubProfile) {
         candidateMongoRepository.findById(id)
-                .map(candidate -> candidate.markSocialEntry(GITHUB, GRANTED))
+                .map(candidate -> candidate.markSocialEntry(GITHUB, RUNNING))
                 .map(candidate -> candidate.addGithubData(githubProfile))
                 .map(candidateMongoRepository::save)
                 .orElseThrow(() -> new HttpClientErrorException(NOT_FOUND, NOT_FOUND_MESSAGE));
@@ -120,6 +119,13 @@ public class CandidateService {
     public void denySocialAccess(String id, SocialNetworkType network) {
         candidateMongoRepository.findById(id)
                 .map(candidate -> candidate.markSocialEntry(network, DENIED))
+                .map(candidateMongoRepository::save)
+                .orElseThrow(() -> new HttpClientErrorException(NOT_FOUND, NOT_FOUND_MESSAGE));
+    }
+
+    public void invalidateSocialEntry(String id, SocialNetworkType network, String error) {
+        candidateMongoRepository.findById(id)
+                .map(candidate -> candidate.markSocialEntry(network, ERROR, error))
                 .map(candidateMongoRepository::save)
                 .orElseThrow(() -> new HttpClientErrorException(NOT_FOUND, NOT_FOUND_MESSAGE));
     }

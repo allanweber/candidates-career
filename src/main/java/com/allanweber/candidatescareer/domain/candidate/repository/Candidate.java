@@ -67,10 +67,15 @@ public class Candidate {
     }
 
     public Candidate markSocialEntry(SocialNetworkType type, SocialStatus status) {
+        return markSocialEntry(type, status, null);
+    }
+
+    public Candidate markSocialEntry(SocialNetworkType type, SocialStatus status, String error) {
         if (Optional.ofNullable(socialEntries).isPresent()) {
             for (SocialEntry socialEntry : socialEntries) {
                 if (socialEntry.getType().equals(type)) {
                     socialEntry.setStatus(status);
+                    socialEntry.setError(error);
                     break;
                 }
             }

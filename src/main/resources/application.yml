@@ -24,6 +24,11 @@ spring:
           timeout: 5000
           writetimeout: 5000
     username: activation@candidates-career.tech
+  rabbitmq:
+    host: ${RABBIT_HOST}
+    username: ${RABBIT_USER}
+    password: ${RABBIT_PASSWORD}
+    virtual-host: ${RABBIT_VHOST}
 
 app:
   linkedin:
@@ -40,3 +45,8 @@ app:
     email-verification-enabled: true
     verification-host: https://candidates-career.herokuapp.com
     jwt-secret: ${JWT_SECRET}
+  queue:
+    candidate:
+      exchange: candidate.exchange.production
+      routing-key: candidate.routing.production
+      candidate-code-queue: candidate.code
