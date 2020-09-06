@@ -24,15 +24,20 @@ spring:
           timeout: 5000
           writetimeout: 5000
     username: activation@candidates-career.tech
+  rabbitmq:
+    host: ${RABBIT_HOST}
+    username: ${RABBIT_USER}
+    password: ${RABBIT_PASSWORD}
+    virtual-host: ${RABBIT_VHOST}
 
 app:
   linkedin:
     client-id: ${LINKEDIN_CLIENT_ID}
     clientSecret: ${LINKEDIN_CLIENT_SECRET}
     redirectHost: https://candidates-career.herokuapp.com/
-    client-id-query: client_id={client_id}
-    redirect-uri-query: redirect_uri={redirect_uri}
-    state-query: state={state}
+  github:
+    client-id: ${GITHUB_CLIENT_ID}
+    clientSecret: ${GITHUB_CLIENT_SECRET}
   rest:
     read-timeout-in-ms: 5000
     connect-timeout-in-ms: 5000
@@ -40,3 +45,8 @@ app:
     email-verification-enabled: true
     verification-host: https://candidates-career.herokuapp.com
     jwt-secret: ${JWT_SECRET}
+  queue:
+    candidate:
+      exchange: candidate.exchange
+      routing-key: candidate.routingkey
+      candidate-code-queue: candidate.code

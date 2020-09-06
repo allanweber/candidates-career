@@ -15,4 +15,7 @@ public class SocialEntry {
 
     @Setter
     private SocialStatus status;
+
+    @Setter
+    private String error;
 }

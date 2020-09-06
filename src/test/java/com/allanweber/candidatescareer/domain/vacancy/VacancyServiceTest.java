@@ -2,7 +2,7 @@ package com.allanweber.candidatescareer.domain.vacancy;
 
 import com.allanweber.candidatescareer.domain.vacancy.dto.VacancyDto;
 import com.allanweber.candidatescareer.domain.vacancy.repository.Vacancy;
-import com.allanweber.candidatescareer.domain.vacancy.repository.VacancyRepository;
+import com.allanweber.candidatescareer.domain.vacancy.repository.VacancyAuthenticatedRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class VacancyServiceTest {
 
     @Mock
-    VacancyRepository repository;
+    VacancyAuthenticatedRepository repository;
 
     @InjectMocks
     VacancyService service;

@@ -19,6 +19,12 @@ public class CandidateResponse {
 
     private String email;
 
+    private String location;
+
+    private String bio;
+
+    private String currentCompany;
+
     private List<SocialNetworkDto> socialNetwork;
 
     private List<SocialEntry> socialEntries;

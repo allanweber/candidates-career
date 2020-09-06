@@ -6,8 +6,10 @@ import com.allanweber.candidatescareer.domain.candidate.dto.SocialEntry;
 import com.allanweber.candidatescareer.domain.candidate.dto.SocialNetworkType;
 import com.allanweber.candidatescareer.domain.candidate.mapper.CandidateMapper;
 import com.allanweber.candidatescareer.domain.candidate.repository.Candidate;
-import com.allanweber.candidatescareer.domain.candidate.repository.CandidateRepository;
-import com.allanweber.candidatescareer.domain.linkedin.dto.LinkedInProfile;
+import com.allanweber.candidatescareer.domain.candidate.repository.CandidateAuthenticatedRepository;
+import com.allanweber.candidatescareer.domain.candidate.repository.CandidateMongoRepository;
+import com.allanweber.candidatescareer.domain.social.github.dto.GitHubProfile;
+import com.allanweber.candidatescareer.domain.social.linkedin.dto.LinkedInProfile;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -16,7 +18,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.allanweber.candidatescareer.domain.candidate.dto.SocialNetworkType.GITHUB;
 import static com.allanweber.candidatescareer.domain.candidate.dto.SocialNetworkType.LINKEDIN;
+import static com.allanweber.candidatescareer.domain.candidate.dto.SocialStatus.*;
 import static org.springframework.http.HttpStatus.*;
 
 @Service
@@ -27,7 +31,9 @@ public class CandidateService {
     private static final String INVALID_SOCIAL_NETWORK_MESSAGE = "Social network request is invalid";
     private static final String EMAIL_EXIST_MESSAGE = "Candidate email %s already exist";
 
-    private final CandidateRepository repository;
+    private final CandidateAuthenticatedRepository repository;
+    private final CandidateMongoRepository candidateMongoRepository;
+    private final CandidateSocialEmailService candidateSocialEmailService;
 
     public List<CandidateResponse> getAll() {
         return repository.findAll()
@@ -64,23 +70,28 @@ public class CandidateService {
     }
 
     public String getImage(String id) {
-        return  repository
+        return repository
                 .findById(id)
                 .map(Candidate::getImage)
                 .orElseThrow(() -> new HttpClientErrorException(NOT_FOUND, NOT_FOUND_MESSAGE));
     }
 
     public CandidateResponse addSocialEntries(String id, List<SocialNetworkType> networkTypes) {
-        return repository.findById(id)
+        CandidateResponse candidateResponse = repository.findById(id)
                 .map(candidate -> candidate.addSocialEntriesPending(networkTypes))
                 .map(repository::save)
                 .map(CandidateMapper::toResponse)
-                // Send email
                 .orElseThrow(() -> new HttpClientErrorException(NOT_FOUND, NOT_FOUND_MESSAGE));
+
+        networkTypes.forEach(networkType -> candidateSocialEmailService.sendSocialAccess(candidateResponse, networkType));
+        return candidateResponse;
     }
 
+    //
+    // These methods below does not need a authenticated user
+    //
     public SocialEntry getSocialEntry(String id, SocialNetworkType socialNetworkType) {
-        return repository.findById(id)
+        return candidateMongoRepository.findById(id)
                 .map(Candidate::getSocialEntries)
                 .orElse(Collections.emptyList())
                 .stream()
@@ -90,10 +101,32 @@ public class CandidateService {
     }
 
     public void saveLinkedInData(String id, LinkedInProfile linkedInProfile) {
-        repository.findById(id)
-                .map(candidate -> candidate.markSocialEntryDone(LINKEDIN))
+        candidateMongoRepository.findById(id)
+                .map(candidate -> candidate.markSocialEntry(LINKEDIN, GRANTED))
                 .map(candidate -> candidate.addLinkedInData(linkedInProfile))
-                .map(repository::save)
+                .map(candidateMongoRepository::save)
+                .orElseThrow(() -> new HttpClientErrorException(NOT_FOUND, NOT_FOUND_MESSAGE));
+    }
+
+    public void saveGitGithubData(String id, GitHubProfile githubProfile) {
+        candidateMongoRepository.findById(id)
+                .map(candidate -> candidate.markSocialEntry(GITHUB, RUNNING))
+                .map(candidate -> candidate.addGithubData(githubProfile))
+                .map(candidateMongoRepository::save)
+                .orElseThrow(() -> new HttpClientErrorException(NOT_FOUND, NOT_FOUND_MESSAGE));
+    }
+
+    public void denySocialAccess(String id, SocialNetworkType network) {
+        candidateMongoRepository.findById(id)
+                .map(candidate -> candidate.markSocialEntry(network, DENIED))
+                .map(candidateMongoRepository::save)
+                .orElseThrow(() -> new HttpClientErrorException(NOT_FOUND, NOT_FOUND_MESSAGE));
+    }
+
+    public void invalidateSocialEntry(String id, SocialNetworkType network, String error) {
+        candidateMongoRepository.findById(id)
+                .map(candidate -> candidate.markSocialEntry(network, ERROR, error))
+                .map(candidateMongoRepository::save)
                 .orElseThrow(() -> new HttpClientErrorException(NOT_FOUND, NOT_FOUND_MESSAGE));
     }
 }

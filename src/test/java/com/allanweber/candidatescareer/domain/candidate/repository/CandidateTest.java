@@ -3,7 +3,8 @@ package com.allanweber.candidatescareer.domain.candidate.repository;
 import com.allanweber.candidatescareer.domain.candidate.dto.SocialEntry;
 import com.allanweber.candidatescareer.domain.candidate.dto.SocialNetworkType;
 import com.allanweber.candidatescareer.domain.candidate.dto.SocialStatus;
-import com.allanweber.candidatescareer.domain.linkedin.dto.LinkedInProfile;
+import com.allanweber.candidatescareer.domain.social.github.dto.GitHubProfile;
+import com.allanweber.candidatescareer.domain.social.linkedin.dto.LinkedInProfile;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -104,8 +105,30 @@ class CandidateTest {
     @Test
     void test_addLinkedInData_null() {
         Candidate candidate = Candidate.builder().email("mail@mail.com").build();
-
         assertThrows(NullPointerException.class, () -> candidate.addLinkedInData(null), "LinkedIn Profile had no data");
+    }
+
+    @Test
+    void test_addGithubData() {
+        Candidate candidate = Candidate.builder().name("initial").build();
+        GitHubProfile gitHubProfile = GitHubProfile.builder()
+                .name("new name")
+                .company("company")
+                .bio("my bio")
+                .apiProfile("my profile")
+                .imageBase64("base64image")
+                .location("where I live")
+                .build();
+
+        Candidate updated = candidate.addGithubData(gitHubProfile);
+        assertEquals(gitHubProfile.getName(), updated.getName());
+        assertEquals(gitHubProfile.getImageBase64(), updated.getImage());
+    }
+
+    @Test
+    void test_addGithubData_null() {
+        Candidate candidate = Candidate.builder().email("mail@mail.com").build();
+        assertThrows(NullPointerException.class, () -> candidate.addGithubData(null), "Github Profile had no data");
     }
 
     private SocialStatus getSocialStatus(List<SocialEntry> socialEntries, SocialNetworkType networkType) {

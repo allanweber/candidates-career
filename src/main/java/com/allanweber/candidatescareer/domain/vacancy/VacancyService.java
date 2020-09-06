@@ -2,7 +2,7 @@ package com.allanweber.candidatescareer.domain.vacancy;
 
 import com.allanweber.candidatescareer.domain.vacancy.dto.VacancyDto;
 import com.allanweber.candidatescareer.domain.vacancy.mapper.VacancyMapper;
-import com.allanweber.candidatescareer.domain.vacancy.repository.VacancyRepository;
+import com.allanweber.candidatescareer.domain.vacancy.repository.VacancyAuthenticatedRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -16,7 +16,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 @RequiredArgsConstructor
 public class VacancyService {
 
-    private final VacancyRepository repository;
+    private final VacancyAuthenticatedRepository repository;
 
     public List<VacancyDto> getAll() {
         return repository.findAll()

@@ -4,6 +4,17 @@
 
 `docker run -p 27017:27017 --name career-app-mongo -d mongo`
 
+## Run RabbitMQ on Docker
+
+`docker run -d --name career-rabbit -p 5672:5672 -p 5673:5673 -p 15672:15672 rabbitmq:3-management`
+
+[http://localhost:15672/](http://localhost:15672/)
+
+#### Credentials
+
+* guest
+* guest 
+
 ## Run Tests Locally
 
 To run integrated tests locally, need to inform the environment variables to maven, get it from credentials to run in Mongo INT Tests

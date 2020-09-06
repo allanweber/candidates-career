@@ -5,7 +5,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.List;
 import java.util.Optional;
 
-interface CandidateMongoRepository extends MongoRepository<Candidate, String> {
+public interface CandidateMongoRepository extends MongoRepository<Candidate, String> {
     Optional<Candidate> getByEmailAndOwner(String email, String owner);
 
     List<Candidate> findAllByOwner(String owner);

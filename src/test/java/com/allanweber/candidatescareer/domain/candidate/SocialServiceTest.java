@@ -1,8 +1,12 @@
 package com.allanweber.candidatescareer.domain.candidate;
 
 import com.allanweber.candidatescareer.domain.candidate.dto.SocialEntry;
-import com.allanweber.candidatescareer.domain.linkedin.LinkedInService;
-import com.allanweber.candidatescareer.domain.linkedin.dto.LinkedInProfile;
+import com.allanweber.candidatescareer.domain.social.github.GithubMessageQueue;
+import com.allanweber.candidatescareer.domain.social.SocialService;
+import com.allanweber.candidatescareer.domain.social.github.GitHubService;
+import com.allanweber.candidatescareer.domain.social.github.dto.GitHubProfile;
+import com.allanweber.candidatescareer.domain.social.linkedin.LinkedInService;
+import com.allanweber.candidatescareer.domain.social.linkedin.dto.LinkedInProfile;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -10,16 +14,14 @@ import org.mockito.Mock;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.HttpClientErrorException;
 
-import static com.allanweber.candidatescareer.domain.candidate.dto.SocialNetworkType.LINKEDIN;
-import static com.allanweber.candidatescareer.domain.candidate.dto.SocialNetworkType.TWITTER;
+import static com.allanweber.candidatescareer.domain.candidate.dto.SocialNetworkType.*;
 import static com.allanweber.candidatescareer.domain.candidate.dto.SocialStatus.GRANTED;
 import static com.allanweber.candidatescareer.domain.candidate.dto.SocialStatus.PENDING;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
 class SocialServiceTest {
@@ -28,13 +30,19 @@ class SocialServiceTest {
     LinkedInService linkedInService;
 
     @Mock
+    GitHubService gitHubService;
+
+    @Mock
     CandidateService candidateService;
+
+    @Mock
+    GithubMessageQueue githubMessageQueue;
 
     @InjectMocks
     SocialService socialService;
 
     @Test
-    void getAuthorizationUri() {
+    void getAuthorizationUri_linkedIn() {
         when(candidateService.getSocialEntry(anyString(), any())).thenReturn(SocialEntry.builder().type(LINKEDIN).status(PENDING).build());
         when(linkedInService.getAuthorizationUri(anyString())).thenReturn("linkedinUri");
         String uri = socialService.getAuthorizationUri("candidateId", LINKEDIN);
@@ -68,9 +76,9 @@ class SocialServiceTest {
         String candidateId = "candidateId";
         LinkedInProfile linkedInProfile = new LinkedInProfile("fist", "last", "image");
         when(candidateService.getSocialEntry(anyString(), any())).thenReturn(SocialEntry.builder().type(LINKEDIN).status(PENDING).build());
-        when(linkedInService.callBackLinkedIn(authorizationCode)).thenReturn(linkedInProfile);
+        when(linkedInService.callback(authorizationCode)).thenReturn(linkedInProfile);
         doNothing().when(candidateService).saveLinkedInData(candidateId, linkedInProfile);
-        socialService.callBackLinkedIn(authorizationCode, candidateId);
+        socialService.callbackLinkedIn(authorizationCode, candidateId);
     }
 
     @Test
@@ -78,7 +86,45 @@ class SocialServiceTest {
         when(candidateService.getSocialEntry(anyString(), any())).thenReturn(SocialEntry.builder().type(LINKEDIN).status(GRANTED).build());
         assertThrows(
                 HttpClientErrorException.class,
-                () -> socialService.callBackLinkedIn("authorizationCode", "candidateId"),
+                () -> socialService.callbackLinkedIn("authorizationCode", "candidateId"),
+                "Social network request was completed"
+        );
+    }
+
+    @Test
+    void getAuthorizationUri_github() {
+        when(candidateService.getSocialEntry(anyString(), any())).thenReturn(SocialEntry.builder().type(GITHUB).status(PENDING).build());
+        when(gitHubService.getAuthorizationUri(anyString())).thenReturn("githubUri");
+        String uri = socialService.getAuthorizationUri("candidateId", GITHUB);
+        assertEquals("githubUri", uri);
+    }
+
+    @Test
+    void callBackGithub() {
+        String authorizationCode = "authorizationCode";
+        String candidateId = "candidateId";
+        GitHubProfile githubProfile = GitHubProfile.builder()
+                .name("new name")
+                .company("company")
+                .bio("my bio")
+                .apiProfile("my profile")
+                .imageBase64("base64image")
+                .location("where I live")
+                .build();
+        when(candidateService.getSocialEntry(anyString(), any())).thenReturn(SocialEntry.builder().type(GITHUB).status(PENDING).build());
+        when(gitHubService.callback(authorizationCode)).thenReturn(githubProfile);
+        doNothing().when(candidateService).saveGitGithubData(candidateId, githubProfile);
+        doNothing().when(githubMessageQueue).send(any());
+        socialService.callbackGithub(authorizationCode, candidateId);
+        verify(candidateService).saveGitGithubData(candidateId, githubProfile);
+    }
+
+    @Test
+    void callBackGithub_socialEntry_not_pending() {
+        when(candidateService.getSocialEntry(anyString(), any())).thenReturn(SocialEntry.builder().type(GITHUB).status(GRANTED).build());
+        assertThrows(
+                HttpClientErrorException.class,
+                () -> socialService.callbackLinkedIn("authorizationCode", "candidateId"),
                 "Social network request was completed"
         );
     }
