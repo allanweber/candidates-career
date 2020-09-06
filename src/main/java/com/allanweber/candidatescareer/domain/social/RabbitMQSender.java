@@ -7,8 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.UUID;
-
 @RequiredArgsConstructor
 @Service
 @Slf4j
@@ -18,9 +16,10 @@ public class RabbitMQSender {
     private final RabbitMQProperties rabbitProperties;
 
     public void send(GitHubProfileMessage message) {
-        rabbitTemplate.convertAndSend(rabbitProperties.getExchange(), UUID.randomUUID().toString(), message);
+        rabbitTemplate.convertAndSend(rabbitProperties.getExchange(), rabbitProperties.getRoutingKey(), message);
         if (log.isInfoEnabled()) {
-            log.info("Message sent: {}", message);
+            log.info("Message sent Queue -> {} | Exchange -> {} | RoutingKey -> {}: {}",
+                    rabbitProperties.getCandidateCodeQueue(), rabbitProperties.getExchange(), rabbitProperties.getRoutingKey(), message);
         }
     }
 }

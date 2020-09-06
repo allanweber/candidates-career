@@ -48,4 +48,5 @@ app:
   queue:
     candidate:
       exchange: candidate.exchange
+      routing-key: candidate.routingkey
       candidate-code-queue: candidate.code
