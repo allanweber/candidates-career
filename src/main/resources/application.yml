@@ -47,6 +47,5 @@ app:
     jwt-secret: ${JWT_SECRET}
   queue:
     candidate:
-      exchange: candidate.exchange.production
-      routing-key: candidate.routing.production
+      exchange: candidate.exchange
       candidate-code-queue: candidate.code

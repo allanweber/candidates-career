@@ -10,5 +10,4 @@ app:
     verification-host: https://candidates-career-dev.herokuapp.com
   queue:
     candidate:
-      exchange: candidate.exchange.develop
-      routing-key: candidate.routing.develop
+      candidate-code-queue: candidate.code.develop

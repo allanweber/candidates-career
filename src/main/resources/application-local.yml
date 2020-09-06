@@ -15,5 +15,4 @@ app:
     verification-host: http://localhost:8080
   queue:
     candidate:
-      exchange: candidate.exchange.local
-      routing-key: candidate.routing.local
+      candidate-code-queue: candidate.code.local
