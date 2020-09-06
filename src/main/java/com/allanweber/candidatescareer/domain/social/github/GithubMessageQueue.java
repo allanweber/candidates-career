@@ -1,4 +1,4 @@
-package com.allanweber.candidatescareer.domain.social;
+package com.allanweber.candidatescareer.domain.social.github;
 
 import com.allanweber.candidatescareer.domain.social.dto.GitHubProfileMessage;
 import com.allanweber.candidatescareer.infrastructure.configuration.RabbitMQProperties;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Service
 @Slf4j
-public class RabbitMQSender {
+public class GithubMessageQueue {
 
     private final AmqpTemplate rabbitTemplate;
     private final RabbitMQProperties rabbitProperties;

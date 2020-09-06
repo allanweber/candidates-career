@@ -15,31 +15,6 @@ public class RabbitMQConfiguration {
 
     private final RabbitMQProperties rabbitProperties;
 
-//    @Bean
-//    FanoutExchange exchange() {
-//        return new FanoutExchange(rabbitProperties.getExchange());
-//    }
-//
-//    @Bean
-//    Queue codeQueue() {
-//        return new Queue(rabbitProperties.getCandidateCodeQueue(), true);
-//    }
-
-
-//    @Bean
-//    public Binding binding() {
-//        return BindingBuilder.bind(new Queue(rabbitProperties.getCandidateCodeQueue(), true))
-//                .to(new DirectExchange(rabbitProperties.getExchange()))
-//                .with(rabbitProperties.getRoutingKey());
-//    }
-
-//    @Bean
-//    Binding binding(Queue codeQueue, FanoutExchange exchange) {
-//        return BindingBuilder.bind(codeQueue).to(exchange);
-//    }
-
-
-
     @Bean
     public Declarables fanoutBindings() {
         Queue codeQueue = new Queue(rabbitProperties.getCandidateCodeQueue(), true);

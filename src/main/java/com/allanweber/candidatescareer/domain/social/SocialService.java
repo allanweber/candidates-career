@@ -5,6 +5,7 @@ import com.allanweber.candidatescareer.domain.candidate.dto.SocialEntry;
 import com.allanweber.candidatescareer.domain.candidate.dto.SocialNetworkType;
 import com.allanweber.candidatescareer.domain.social.dto.GitHubProfileMessage;
 import com.allanweber.candidatescareer.domain.social.github.GitHubService;
+import com.allanweber.candidatescareer.domain.social.github.GithubMessageQueue;
 import com.allanweber.candidatescareer.domain.social.github.dto.GitHubProfile;
 import com.allanweber.candidatescareer.domain.social.linkedin.LinkedInService;
 import com.allanweber.candidatescareer.domain.social.linkedin.dto.LinkedInProfile;
@@ -29,8 +30,7 @@ public class SocialService {
     private final LinkedInService linkedInService;
     private final GitHubService gitHubService;
     private final CandidateService candidateService;
-
-    private final RabbitMQSender rabbitMQSender;
+    private final GithubMessageQueue githubMessageQueue;
 
     public String getAuthorizationUri(String candidateId, SocialNetworkType socialNetworkType) {
         validateSocialEntry(candidateId, socialNetworkType);
@@ -56,7 +56,7 @@ public class SocialService {
         GitHubProfile githubProfile = gitHubService.callback(authorizationCode);
         candidateService.saveGitGithubData(candidateId, githubProfile);
         try {
-            rabbitMQSender.send(GitHubProfileMessage.builder().apiProfile(githubProfile.getApiProfile()).token(githubProfile.getToken()).build());
+            githubMessageQueue.send(GitHubProfileMessage.builder().apiProfile(githubProfile.getApiProfile()).token(githubProfile.getToken()).build());
         } catch (AmqpException e) {
             candidateService.invalidateSocialEntry(candidateId, GITHUB, e.getMessage());
         }

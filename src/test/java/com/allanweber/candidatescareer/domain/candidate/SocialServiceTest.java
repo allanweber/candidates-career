@@ -1,7 +1,7 @@
 package com.allanweber.candidatescareer.domain.candidate;
 
 import com.allanweber.candidatescareer.domain.candidate.dto.SocialEntry;
-import com.allanweber.candidatescareer.domain.social.RabbitMQSender;
+import com.allanweber.candidatescareer.domain.social.github.GithubMessageQueue;
 import com.allanweber.candidatescareer.domain.social.SocialService;
 import com.allanweber.candidatescareer.domain.social.github.GitHubService;
 import com.allanweber.candidatescareer.domain.social.github.dto.GitHubProfile;
@@ -36,7 +36,7 @@ class SocialServiceTest {
     CandidateService candidateService;
 
     @Mock
-    RabbitMQSender rabbitMQSender;
+    GithubMessageQueue githubMessageQueue;
 
     @InjectMocks
     SocialService socialService;
@@ -114,7 +114,7 @@ class SocialServiceTest {
         when(candidateService.getSocialEntry(anyString(), any())).thenReturn(SocialEntry.builder().type(GITHUB).status(PENDING).build());
         when(gitHubService.callback(authorizationCode)).thenReturn(githubProfile);
         doNothing().when(candidateService).saveGitGithubData(candidateId, githubProfile);
-        doNothing().when(rabbitMQSender).send(any());
+        doNothing().when(githubMessageQueue).send(any());
         socialService.callbackGithub(authorizationCode, candidateId);
         verify(candidateService).saveGitGithubData(candidateId, githubProfile);
     }
