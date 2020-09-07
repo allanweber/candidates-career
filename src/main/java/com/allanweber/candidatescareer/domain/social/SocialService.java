@@ -56,7 +56,9 @@ public class SocialService {
         GitHubProfile githubProfile = gitHubService.callback(authorizationCode);
         candidateService.saveGitGithubData(candidateId, githubProfile);
         try {
-            githubMessageQueue.send(GitHubProfileMessage.builder().apiProfile(githubProfile.getApiProfile()).token(githubProfile.getToken()).build());
+            githubMessageQueue.send(GitHubProfileMessage.builder()
+                    .candidateId(candidateId).apiProfile(githubProfile.getApiProfile()).token(githubProfile.getToken()).build()
+            );
         } catch (AmqpException e) {
             candidateService.invalidateSocialEntry(candidateId, GITHUB, e.getMessage());
         }
