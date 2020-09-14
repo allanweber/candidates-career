@@ -9,10 +9,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      MONGO_PASSWORD: ${{ secrets.MONGO_PASSWORD }}
-      MONGO_USER: ${{ secrets.MONGO_USER }}
-      MONGO_HOST: ${{ secrets.MONGO_HOST }}
     steps:
     - uses: actions/checkout@v2
     - name: Set up JDK 1.11
@@ -20,7 +16,7 @@ jobs:
       with:
         java-version: 1.11
     - name: Build with Maven
-      run: mvn -B clean package -DMONGO_PASSWORD=${MONGO_PASSWORD} -DMONGO_USER=${MONGO_USER} -DMONGO_HOST=${MONGO_HOST} --file pom.xml
+      run: mvn -B clean package --file pom.xml
 
   heroku-deploy-branch:
     name: Heroku Deploy Branch
