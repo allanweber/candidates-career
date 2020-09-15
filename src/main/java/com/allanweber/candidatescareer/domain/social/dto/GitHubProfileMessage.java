@@ -10,6 +10,9 @@ import lombok.Data;
 @Builder
 @JsonPropertyOrder({ "candidateId", "apiProfile", "token" })
 public class GitHubProfileMessage {
+
+    private String user;
+
     private String candidateId;
 
     private String apiProfile;
