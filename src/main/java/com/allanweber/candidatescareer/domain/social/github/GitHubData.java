@@ -14,6 +14,8 @@ import lombok.NoArgsConstructor;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 class GitHubData {
 
+    private String login;
+
     private String name;
 
     private String location;

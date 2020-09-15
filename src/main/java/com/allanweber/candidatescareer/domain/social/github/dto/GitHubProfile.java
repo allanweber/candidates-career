@@ -11,6 +11,8 @@ import lombok.Data;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class GitHubProfile {
 
+    private String user;
+
     private String name;
 
     private String location;

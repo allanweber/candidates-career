@@ -8,6 +8,9 @@ import lombok.Data;
 @Data
 @Builder
 public class GitHubProfileMessage {
+
+    private String user;
+
     private String candidateId;
 
     private String apiProfile;

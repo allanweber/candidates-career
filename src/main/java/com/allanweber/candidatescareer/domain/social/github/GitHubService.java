@@ -25,8 +25,6 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 @Slf4j
 public class GitHubService {
 
-    //https://github.com/login/oauth/authorize?client_id=63782440d3404970c42f&state=5f480133fe157c7cd88332c2
-
     private static final String GITHUB_AUTH_URL = "https://github.com/login/oauth/authorize";
     private static final String GITHUB_TOKEN_URL = "https://github.com/login/oauth/access_token";
     private static final String GITHUB_PROFILE_URL = "https://api.github.com/user";
@@ -83,6 +81,7 @@ public class GitHubService {
             }
 
             return GitHubProfile.builder()
+                    .user(gitHubData.getLogin())
                     .name(gitHubData.getName())
                     .company(gitHubData.getCompany())
                     .location(gitHubData.getLocation())
