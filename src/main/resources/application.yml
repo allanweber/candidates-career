@@ -23,7 +23,7 @@ spring:
             enable: true
           timeout: 5000
           writetimeout: 5000
-    username: activation@candidates-career.tech
+    username: candidates-career@candidates-career.tech
   rabbitmq:
     host: ${RABBIT_HOST}
     username: ${RABBIT_USER}
