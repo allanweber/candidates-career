@@ -121,8 +121,8 @@ class CandidateServiceTest {
         entity = entity.addSocialEntriesPending(socialNetworkTypes);
         when(repository.save(eq(entity))).thenReturn(entity);
         doNothing().when(candidateSocialEmailService).sendSocialAccess(any(), any());
-        CandidateResponse response = service.addSocialEntries(entity.getId(), socialNetworkTypes);
-        assertNotNull(response);
+        List<SocialEntry> entries = service.addSocialEntries(entity.getId(), socialNetworkTypes);
+        assertNotNull(entries);
     }
 
     @Test
