@@ -2,6 +2,7 @@ package com.allanweber.candidatescareer.api;
 
 import com.allanweber.candidatescareer.domain.candidate.dto.CandidateRequest;
 import com.allanweber.candidatescareer.domain.candidate.dto.CandidateResponse;
+import com.allanweber.candidatescareer.domain.candidate.dto.SocialEntry;
 import com.allanweber.candidatescareer.domain.candidate.dto.SocialNetworkType;
 import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
@@ -19,7 +20,8 @@ public interface CandidateApi {
     String ID_DESCRIPTION = "candidate id";
     String CANDIDATE_NOT_FOUND = "Could not find the candidate";
 
-    @ApiOperation(notes = "Return all Candidates", value = "Return all Candidates", response = CandidateResponse.class)
+    @ApiOperation(notes = "Return all Candidates", value = "Return all Candidates", response = CandidateResponse.class,
+            responseContainer = "List")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Candidates returned"),
             @ApiResponse(code = 400, message = ConstantsUtils.HTTP_400_MESSAGE)})
@@ -49,7 +51,7 @@ public interface CandidateApi {
             @ApiResponse(code = 404, message = CANDIDATE_NOT_FOUND)})
     @PutMapping("/{candidateId}")
     ResponseEntity<CandidateResponse> update(@ApiParam(name = ID, value = ID_DESCRIPTION, required = true) @PathVariable(name = ID) String id,
-                                            @Valid @RequestBody CandidateRequest body);
+                                             @Valid @RequestBody CandidateRequest body);
 
     @ApiOperation(notes = "Delete the candidate by id", value = "Delete a candidate")
     @ApiResponses({
@@ -60,14 +62,15 @@ public interface CandidateApi {
     @DeleteMapping("/{candidateId}")
     ResponseEntity<?> delete(@ApiParam(name = ID, value = ID_DESCRIPTION, required = true) @PathVariable(name = ID) String id);
 
-    @ApiOperation(notes = "Add requests to social entries for candidate by id", value = "Add social entries a candidate", response = CandidateResponse.class)
+    @ApiOperation(notes = "Add requests to social entries for candidate by id", value = "Add social entries a candidate", response = SocialEntry.class,
+            responseContainer = "List")
     @ApiResponses({
             @ApiResponse(code = 200, message = "candidate updated"),
             @ApiResponse(code = 400, message = ConstantsUtils.HTTP_400_MESSAGE),
             @ApiResponse(code = 404, message = CANDIDATE_NOT_FOUND)})
     @PutMapping("/{candidateId}/social-entry")
-    ResponseEntity<CandidateResponse> addSocialEntry(@ApiParam(name = ID, value = ID_DESCRIPTION, required = true) @PathVariable(name = ID) String id,
-                                             @Valid @RequestBody List<SocialNetworkType> networkTypes);
+    ResponseEntity<List<SocialEntry>> addSocialEntry(@ApiParam(name = ID, value = ID_DESCRIPTION, required = true) @PathVariable(name = ID) String id,
+                                                     @Valid @RequestBody List<SocialNetworkType> networkTypes);
 
     @ApiOperation(notes = "Return candidate image by id", value = "Candidate Image")
     @ApiResponses({

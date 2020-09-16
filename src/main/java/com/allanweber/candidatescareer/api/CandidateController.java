@@ -3,6 +3,7 @@ package com.allanweber.candidatescareer.api;
 import com.allanweber.candidatescareer.domain.candidate.CandidateService;
 import com.allanweber.candidatescareer.domain.candidate.dto.CandidateRequest;
 import com.allanweber.candidatescareer.domain.candidate.dto.CandidateResponse;
+import com.allanweber.candidatescareer.domain.candidate.dto.SocialEntry;
 import com.allanweber.candidatescareer.domain.candidate.dto.SocialNetworkType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -49,7 +50,7 @@ public class CandidateController implements CandidateApi {
     }
 
     @Override
-    public ResponseEntity<CandidateResponse> addSocialEntry(String id, @Valid List<SocialNetworkType> networkTypes) {
+    public ResponseEntity<List<SocialEntry>> addSocialEntry(String id, @Valid List<SocialNetworkType> networkTypes) {
         return ok(service.addSocialEntries(id, networkTypes));
     }
 

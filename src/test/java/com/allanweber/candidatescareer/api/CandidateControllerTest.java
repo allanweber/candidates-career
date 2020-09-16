@@ -3,6 +3,7 @@ package com.allanweber.candidatescareer.api;
 import com.allanweber.candidatescareer.domain.candidate.CandidateService;
 import com.allanweber.candidatescareer.domain.candidate.dto.CandidateRequest;
 import com.allanweber.candidatescareer.domain.candidate.dto.CandidateResponse;
+import com.allanweber.candidatescareer.domain.candidate.dto.SocialEntry;
 import com.allanweber.candidatescareer.domain.candidate.dto.SocialNetworkType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,6 +14,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.*;
 
+import static com.allanweber.candidatescareer.domain.candidate.dto.SocialNetworkType.LINKEDIN;
+import static com.allanweber.candidatescareer.domain.candidate.dto.SocialStatus.GRANTED;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doNothing;
@@ -78,12 +81,12 @@ class CandidateControllerTest {
     @Test
     void addSocialEntry() {
         String id = UUID.randomUUID().toString();
-        CandidateResponse response = mockResponses().get(0);
-        List<SocialNetworkType> socialNetworkTypes = Collections.singletonList(SocialNetworkType.LINKEDIN);
-        when(service.addSocialEntries(id, socialNetworkTypes)).thenReturn(response);
-        ResponseEntity<CandidateResponse> responseEntity = controller.addSocialEntry(id, socialNetworkTypes);
-        assertEquals(200, responseEntity.getStatusCodeValue());
-        assertEquals(response, Objects.requireNonNull(responseEntity.getBody()));
+        List<SocialNetworkType> socialNetworkTypes = Collections.singletonList(LINKEDIN);
+        List<SocialEntry> entries = Collections.singletonList(SocialEntry.builder().type(LINKEDIN).status(GRANTED).build());
+        when(service.addSocialEntries(id, socialNetworkTypes)).thenReturn(entries);
+        ResponseEntity<List<SocialEntry>> listResponseEntity = controller.addSocialEntry(id, socialNetworkTypes);
+        assertEquals(200, listResponseEntity.getStatusCodeValue());
+        assertEquals(entries, Objects.requireNonNull(listResponseEntity.getBody()));
     }
 
     @Test

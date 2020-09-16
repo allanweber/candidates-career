@@ -76,7 +76,7 @@ public class CandidateService {
                 .orElseThrow(() -> new HttpClientErrorException(NOT_FOUND, NOT_FOUND_MESSAGE));
     }
 
-    public CandidateResponse addSocialEntries(String id, List<SocialNetworkType> networkTypes) {
+    public List<SocialEntry> addSocialEntries(String id, List<SocialNetworkType> networkTypes) {
         CandidateResponse candidateResponse = repository.findById(id)
                 .map(candidate -> candidate.addSocialEntriesPending(networkTypes))
                 .map(repository::save)
@@ -84,7 +84,11 @@ public class CandidateService {
                 .orElseThrow(() -> new HttpClientErrorException(NOT_FOUND, NOT_FOUND_MESSAGE));
 
         networkTypes.forEach(networkType -> candidateSocialEmailService.sendSocialAccess(candidateResponse, networkType));
-        return candidateResponse;
+
+        return candidateResponse.getSocialEntries()
+                .stream()
+                .filter(entry -> networkTypes.contains(entry.getType()))
+                .collect(Collectors.toList());
     }
 
     //
