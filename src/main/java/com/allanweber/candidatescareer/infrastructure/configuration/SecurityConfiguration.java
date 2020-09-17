@@ -25,6 +25,7 @@ import static org.springframework.http.HttpMethod.OPTIONS;
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private static final String[] PUBLIC_PATH = {
+            "/health",
             "/auth/login", "/registration/**", "/social-authorization/**", "/auth/callback/**",
             "/", "/v2/api-docs", "/swagger*/**", "/webjars/**"};
 
