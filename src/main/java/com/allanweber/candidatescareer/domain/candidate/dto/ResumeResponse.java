@@ -1,0 +1,14 @@
+package com.allanweber.candidatescareer.domain.candidate.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Builder
+public class ResumeResponse {
+    private String fileName;
+}

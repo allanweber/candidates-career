@@ -29,9 +29,6 @@ class CandidateServiceTest {
     CandidateAuthenticatedRepository repository;
 
     @Mock
-    CandidateMongoRepository candidateMongoRepository;
-
-    @Mock
     CandidateSocialEmailService candidateSocialEmailService;
 
     @InjectMocks
@@ -129,39 +126,6 @@ class CandidateServiceTest {
     void addSocialEntries_notFound() {
         when(repository.findById(anyString())).thenReturn(Optional.empty());
         assertThrows(HttpClientErrorException.class, () -> service.addSocialEntries("", Collections.emptyList()));
-    }
-
-
-    @Test
-    void getSocialEntry() {
-        Candidate entity = mockEntities().get(0);
-        entity = entity.addSocialEntriesPending(Arrays.asList(SocialNetworkType.LINKEDIN, SocialNetworkType.TWITTER));
-        when(candidateMongoRepository.findById(entity.getId())).thenReturn(Optional.of(entity));
-        SocialEntry socialEntry = service.getSocialEntry(entity.getId(), SocialNetworkType.TWITTER);
-        assertEquals(SocialNetworkType.TWITTER, socialEntry.getType());
-    }
-
-    @Test
-    void getSocialEntry_notFound() {
-        when(repository.findById(anyString())).thenReturn(Optional.empty());
-        assertThrows(HttpClientErrorException.class, () -> service.getSocialEntry("", SocialNetworkType.TWITTER));
-    }
-
-    @Test
-    void saveLinkedInData() {
-        Candidate entity = mockEntities().get(0);
-        entity = entity.addSocialEntriesPending(Arrays.asList(SocialNetworkType.LINKEDIN, SocialNetworkType.TWITTER));
-        when(candidateMongoRepository.findById(entity.getId())).thenReturn(Optional.of(entity));
-        LinkedInProfile linkedInProfile = new LinkedInProfile("fist", "last", "image");
-        Candidate candidateWithLinkedInData = entity.addLinkedInData(linkedInProfile);
-        when(candidateMongoRepository.save(eq(candidateWithLinkedInData))).thenReturn(candidateWithLinkedInData);
-        service.saveLinkedInData(entity.getId(), linkedInProfile);
-    }
-
-    @Test
-    void saveLinkedInData_notFound() {
-        when(candidateMongoRepository.findById(anyString())).thenReturn(Optional.empty());
-        assertThrows(HttpClientErrorException.class, () -> service.saveLinkedInData("", null));
     }
 
     List<Candidate> mockEntities() {

@@ -1,13 +1,11 @@
 package com.allanweber.candidatescareer.api;
 
-import com.allanweber.candidatescareer.domain.candidate.dto.CandidateRequest;
-import com.allanweber.candidatescareer.domain.candidate.dto.CandidateResponse;
-import com.allanweber.candidatescareer.domain.candidate.dto.SocialEntry;
-import com.allanweber.candidatescareer.domain.candidate.dto.SocialNetworkType;
+import com.allanweber.candidatescareer.domain.candidate.dto.*;
 import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -65,7 +63,7 @@ public interface CandidateApi {
     @ApiOperation(notes = "Add requests to social entries for candidate by id", value = "Add social entries a candidate", response = SocialEntry.class,
             responseContainer = "List")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "candidate updated"),
+            @ApiResponse(code = 200, message = "Candidate updated"),
             @ApiResponse(code = 400, message = ConstantsUtils.HTTP_400_MESSAGE),
             @ApiResponse(code = 404, message = CANDIDATE_NOT_FOUND)})
     @PutMapping("/{candidateId}/social-entry")
@@ -80,4 +78,14 @@ public interface CandidateApi {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{candidateId}/image")
     ResponseEntity<String> image(@ApiParam(name = ID, value = ID_DESCRIPTION, required = true) @PathVariable(name = ID) String id);
+
+    @ApiOperation(notes = "Upload resume file for candidate by id", value = "Upload resume file for candidate", response = ResumeResponse.class,
+            responseContainer = "List")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Resume uploaded"),
+            @ApiResponse(code = 400, message = ConstantsUtils.HTTP_400_MESSAGE),
+            @ApiResponse(code = 404, message = CANDIDATE_NOT_FOUND)})
+    @PostMapping("/{candidateId}/resume-upload")
+    ResponseEntity<ResumeResponse> uploadResume(@ApiParam(name = ID, value = ID_DESCRIPTION, required = true) @PathVariable(name = ID) String id,
+                                                   @RequestParam("file") MultipartFile file);
 }

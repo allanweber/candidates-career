@@ -33,7 +33,7 @@ class SocialServiceTest {
     GitHubService gitHubService;
 
     @Mock
-    CandidateService candidateService;
+    CandidateAnonymousService candidateAnonymousService;
 
     @Mock
     GithubMessageQueue githubMessageQueue;
@@ -43,7 +43,7 @@ class SocialServiceTest {
 
     @Test
     void getAuthorizationUri_linkedIn() {
-        when(candidateService.getSocialEntry(anyString(), any())).thenReturn(SocialEntry.builder().type(LINKEDIN).status(PENDING).build());
+        when(candidateAnonymousService.getSocialEntry(anyString(), any())).thenReturn(SocialEntry.builder().type(LINKEDIN).status(PENDING).build());
         when(linkedInService.getAuthorizationUri(anyString())).thenReturn("linkedinUri");
         String uri = socialService.getAuthorizationUri("candidateId", LINKEDIN);
         assertEquals("linkedinUri", uri);
@@ -51,7 +51,7 @@ class SocialServiceTest {
 
     @Test
     void getAuthorizationUri_exception_not_linkedin() {
-        when(candidateService.getSocialEntry(anyString(), any())).thenReturn(SocialEntry.builder().type(LINKEDIN).status(PENDING).build());
+        when(candidateAnonymousService.getSocialEntry(anyString(), any())).thenReturn(SocialEntry.builder().type(LINKEDIN).status(PENDING).build());
         assertThrows(
                 HttpClientErrorException.class,
                 () -> socialService.getAuthorizationUri("candidateId", TWITTER),
@@ -61,7 +61,7 @@ class SocialServiceTest {
 
     @Test
     void getAuthorizationUri_socialEntry_not_pending() {
-        when(candidateService.getSocialEntry(anyString(), any())).thenReturn(SocialEntry.builder().type(LINKEDIN).status(GRANTED).build());
+        when(candidateAnonymousService.getSocialEntry(anyString(), any())).thenReturn(SocialEntry.builder().type(LINKEDIN).status(GRANTED).build());
         assertThrows(
                 HttpClientErrorException.class,
                 () -> socialService.getAuthorizationUri("candidateId", LINKEDIN),
@@ -75,15 +75,15 @@ class SocialServiceTest {
         String authorizationCode = "authorizationCode";
         String candidateId = "candidateId";
         LinkedInProfile linkedInProfile = new LinkedInProfile("fist", "last", "image");
-        when(candidateService.getSocialEntry(anyString(), any())).thenReturn(SocialEntry.builder().type(LINKEDIN).status(PENDING).build());
+        when(candidateAnonymousService.getSocialEntry(anyString(), any())).thenReturn(SocialEntry.builder().type(LINKEDIN).status(PENDING).build());
         when(linkedInService.callback(authorizationCode)).thenReturn(linkedInProfile);
-        doNothing().when(candidateService).saveLinkedInData(candidateId, linkedInProfile);
+        doNothing().when(candidateAnonymousService).saveLinkedInData(candidateId, linkedInProfile);
         socialService.callbackLinkedIn(authorizationCode, candidateId);
     }
 
     @Test
     void callBackLinkedIn_socialEntry_not_pending() {
-        when(candidateService.getSocialEntry(anyString(), any())).thenReturn(SocialEntry.builder().type(LINKEDIN).status(GRANTED).build());
+        when(candidateAnonymousService.getSocialEntry(anyString(), any())).thenReturn(SocialEntry.builder().type(LINKEDIN).status(GRANTED).build());
         assertThrows(
                 HttpClientErrorException.class,
                 () -> socialService.callbackLinkedIn("authorizationCode", "candidateId"),
@@ -93,7 +93,7 @@ class SocialServiceTest {
 
     @Test
     void getAuthorizationUri_github() {
-        when(candidateService.getSocialEntry(anyString(), any())).thenReturn(SocialEntry.builder().type(GITHUB).status(PENDING).build());
+        when(candidateAnonymousService.getSocialEntry(anyString(), any())).thenReturn(SocialEntry.builder().type(GITHUB).status(PENDING).build());
         when(gitHubService.getAuthorizationUri(anyString())).thenReturn("githubUri");
         String uri = socialService.getAuthorizationUri("candidateId", GITHUB);
         assertEquals("githubUri", uri);
@@ -111,17 +111,17 @@ class SocialServiceTest {
                 .imageBase64("base64image")
                 .location("where I live")
                 .build();
-        when(candidateService.getSocialEntry(anyString(), any())).thenReturn(SocialEntry.builder().type(GITHUB).status(PENDING).build());
+        when(candidateAnonymousService.getSocialEntry(anyString(), any())).thenReturn(SocialEntry.builder().type(GITHUB).status(PENDING).build());
         when(gitHubService.callback(authorizationCode)).thenReturn(githubProfile);
-        doNothing().when(candidateService).saveGitGithubData(candidateId, githubProfile);
+        doNothing().when(candidateAnonymousService).saveGitGithubData(candidateId, githubProfile);
         doNothing().when(githubMessageQueue).send(any());
         socialService.callbackGithub(authorizationCode, candidateId);
-        verify(candidateService).saveGitGithubData(candidateId, githubProfile);
+        verify(candidateAnonymousService).saveGitGithubData(candidateId, githubProfile);
     }
 
     @Test
     void callBackGithub_socialEntry_not_pending() {
-        when(candidateService.getSocialEntry(anyString(), any())).thenReturn(SocialEntry.builder().type(GITHUB).status(GRANTED).build());
+        when(candidateAnonymousService.getSocialEntry(anyString(), any())).thenReturn(SocialEntry.builder().type(GITHUB).status(GRANTED).build());
         assertThrows(
                 HttpClientErrorException.class,
                 () -> socialService.callbackLinkedIn("authorizationCode", "candidateId"),

@@ -1,6 +1,6 @@
 package com.allanweber.candidatescareer.domain.social;
 
-import com.allanweber.candidatescareer.domain.candidate.CandidateService;
+import com.allanweber.candidatescareer.domain.candidate.CandidateAnonymousService;
 import com.allanweber.candidatescareer.domain.candidate.dto.SocialEntry;
 import com.allanweber.candidatescareer.domain.candidate.dto.SocialNetworkType;
 import com.allanweber.candidatescareer.domain.social.dto.GitHubProfileMessage;
@@ -29,7 +29,7 @@ public class SocialService {
 
     private final LinkedInService linkedInService;
     private final GitHubService gitHubService;
-    private final CandidateService candidateService;
+    private final CandidateAnonymousService candidateAnonymousService;
     private final GithubMessageQueue githubMessageQueue;
 
     public String getAuthorizationUri(String candidateId, SocialNetworkType socialNetworkType) {
@@ -48,13 +48,13 @@ public class SocialService {
     public void callbackLinkedIn(String authorizationCode, String candidateId) {
         validateSocialEntry(candidateId, LINKEDIN);
         LinkedInProfile linkedInProfile = linkedInService.callback(authorizationCode);
-        candidateService.saveLinkedInData(candidateId, linkedInProfile);
+        candidateAnonymousService.saveLinkedInData(candidateId, linkedInProfile);
     }
 
     public void callbackGithub(String authorizationCode, String candidateId) {
         validateSocialEntry(candidateId, GITHUB);
         GitHubProfile githubProfile = gitHubService.callback(authorizationCode);
-        candidateService.saveGitGithubData(candidateId, githubProfile);
+        candidateAnonymousService.saveGitGithubData(candidateId, githubProfile);
         try {
             githubMessageQueue.send(
                     GitHubProfileMessage.builder()
@@ -65,17 +65,17 @@ public class SocialService {
                             .build()
             );
         } catch (AmqpException e) {
-            candidateService.invalidateSocialEntry(candidateId, GITHUB, e.getMessage());
+            candidateAnonymousService.invalidateSocialEntry(candidateId, GITHUB, e.getMessage());
         }
     }
 
     public void denyAccess(String candidateId, SocialNetworkType network) {
         validateSocialEntry(candidateId, network);
-        candidateService.denySocialAccess(candidateId, network);
+        candidateAnonymousService.denySocialAccess(candidateId, network);
     }
 
     private void validateSocialEntry(String candidateId, SocialNetworkType socialNetworkType) {
-        SocialEntry socialEntry = candidateService.getSocialEntry(candidateId, socialNetworkType);
+        SocialEntry socialEntry = candidateAnonymousService.getSocialEntry(candidateId, socialNetworkType);
         if (!socialEntry.getStatus().equals(PENDING)) {
             throw new HttpClientErrorException(BAD_REQUEST, SOCIAL_NETWORK_COMPLETED);
         }
