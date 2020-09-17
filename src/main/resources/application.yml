@@ -50,3 +50,7 @@ app:
       exchange: candidate.exchange
       routing-key: candidate.routingkey
       candidate-code-queue: candidate.code
+  upload:
+    resume:
+      max-size: 2000000
+      extensions-allowed: pdf, docx, doc, odt

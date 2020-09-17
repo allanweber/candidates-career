@@ -20,6 +20,7 @@
 		<swagger>2.9.2</swagger>
 		<io.jsonwebtoken>0.10.5</io.jsonwebtoken>
 		<org.apache.commons>1.8</org.apache.commons>
+		<commons.io>2.8.0</commons.io>
 	</properties>
 
 	<dependencies>
@@ -108,6 +109,11 @@
 			<artifactId>commons-text</artifactId>
 			<version>${org.apache.commons}</version>
 		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>${commons.io}</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -151,7 +157,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-pmd-plugin</artifactId>
-				<version>3.12.0</version>
+				<version>3.13.0</version>
 				<executions>
 					<execution>
 						<phase>compile</phase>

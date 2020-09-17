@@ -24,11 +24,11 @@ import static org.springframework.http.HttpMethod.OPTIONS;
 @RequiredArgsConstructor
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    private static final String[] PUBLIC_PATH = new String[]{
+    private static final String[] PUBLIC_PATH = {
             "/auth/login", "/registration/**", "/social-authorization/**", "/auth/callback/**",
             "/", "/v2/api-docs", "/swagger*/**", "/webjars/**"};
 
-    private static final String[] ADMIN_PATH = new String[]{"/admin/**", "/users/**"};
+    private static final String[] ADMIN_PATH = {"/admin/**", "/users/**"};
 
     private final UserService userService;
     private final PasswordEncoder encoder;
