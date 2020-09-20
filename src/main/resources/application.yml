@@ -31,6 +31,8 @@ spring:
     virtual-host: ${RABBIT_VHOST}
 
 app:
+  host:
+    front-end: https://candidates-app-prd.herokuapp.com/
   linkedin:
     client-id: ${LINKEDIN_CLIENT_ID}
     clientSecret: ${LINKEDIN_CLIENT_SECRET}

@@ -5,10 +5,12 @@ import com.allanweber.candidatescareer.domain.user.dto.UserDto;
 import com.allanweber.candidatescareer.domain.user.registration.VerificationService;
 import com.allanweber.candidatescareer.domain.user.registration.dto.UserRegistration;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.net.URI;
 
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -26,7 +28,9 @@ public class RegistrationController implements RegistrationApi {
 
     @Override
     public ResponseEntity<Void> verify(String id, String email) {
-        verificationService.verify(id, email);
-        return ok().build();
+        String redirection = verificationService.verify(id, email);
+        return ResponseEntity.status(HttpStatus.FOUND)
+                .location(URI.create(redirection))
+                .build();
     }
 }
