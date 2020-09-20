@@ -30,7 +30,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(SpringExtension.class)
 class UserServiceTest {
 
-    private static final String USER_NAME = "userName";
+    private static final String USER_NAME = "email";
 
     @Mock
     AppUserRepository repository;
@@ -48,7 +48,7 @@ class UserServiceTest {
     void test_loadUserByUsername() {
         AppUser user = new AppUser("user", "password", "user", "user", "email", true, true,
                 Collections.singletonList(new Authority(AuthoritiesHelper.ADMIN)));
-        when(repository.findById(USER_NAME)).thenReturn(Optional.of(user));
+        when(repository.findByEmail(USER_NAME)).thenReturn(Optional.of(user));
 
         UserDetails userDetails = service.loadUserByUsername(USER_NAME);
         assertEquals(user.getUserName(), userDetails.getUsername());
