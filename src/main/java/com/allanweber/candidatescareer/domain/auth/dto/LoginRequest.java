@@ -3,6 +3,7 @@ package com.allanweber.candidatescareer.domain.auth.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 @AllArgsConstructor
@@ -10,7 +11,8 @@ import javax.validation.constraints.NotBlank;
 public class LoginRequest {
 
     @NotBlank
-    private String user;
+    @Email
+    private String email;
 
     @NotBlank
     private String password;

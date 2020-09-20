@@ -32,8 +32,8 @@ public class UserService implements UserDetailsService {
     private final ApplicationEventPublisher eventPublisher;
 
     @Override
-    public UserDetails loadUserByUsername(String userName) {
-        AppUser user = repository.findById(userName).orElseThrow(() -> new UsernameNotFoundException(userName));
+    public UserDetails loadUserByUsername(String email) {
+        AppUser user = repository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email));
         if (user.getAuthorities() == null || user.getAuthorities().isEmpty()) {
             throw new UsernameNotFoundException("No authorities for the user");
         }
