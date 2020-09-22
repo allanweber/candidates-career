@@ -1,6 +1,7 @@
 package com.allanweber.candidatescareer.api;
 
 import com.allanweber.candidatescareer.domain.vacancy.VacancyService;
+import com.allanweber.candidatescareer.domain.vacancy.dto.Skill;
 import com.allanweber.candidatescareer.domain.vacancy.dto.VacancyDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -74,9 +75,9 @@ class VacancyControllerTest {
 
     List<VacancyDto> mockDtos() {
         return Arrays.asList(
-                VacancyDto.builder().id(UUID.randomUUID().toString()).name("NET").skills(Arrays.asList(".NET", "SQL")).build(),
-                VacancyDto.builder().id(UUID.randomUUID().toString()).name("JAVA").skills(Arrays.asList("JAVA", "SQL")).build(),
-                VacancyDto.builder().id(UUID.randomUUID().toString()).name("PYTHON").skills(Arrays.asList("PYTHON", "SQL")).build()
+                VacancyDto.builder().id(UUID.randomUUID().toString()).name("NET").skills(Arrays.asList(new Skill(".NET"), new Skill("SQL"))).build(),
+                VacancyDto.builder().id(UUID.randomUUID().toString()).name("NET").skills(Arrays.asList(new Skill("JAVA"), new Skill("SQL"))).build(),
+                VacancyDto.builder().id(UUID.randomUUID().toString()).name("NET").skills(Arrays.asList(new Skill("PYTHON"), new Skill("SQL"))).build()
         );
     }
 }

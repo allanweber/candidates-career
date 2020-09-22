@@ -20,5 +20,5 @@ public class VacancyDto {
     private String name;
 
     @NotEmpty(message = "Skills are required")
-    private List<String> skills;
+    private List<Skill> skills;
 }

@@ -1,5 +1,6 @@
 package com.allanweber.candidatescareer.domain.vacancy.repository;
 
+import com.allanweber.candidatescareer.domain.vacancy.dto.Skill;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -22,5 +23,5 @@ public class Vacancy {
 
     private final String name;
 
-    private final List<String> skills;
+    private final List<Skill> skills;
 }
