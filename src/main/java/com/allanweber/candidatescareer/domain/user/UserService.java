@@ -90,4 +90,11 @@ public class UserService implements UserDetailsService {
         return repository.existsByEmail(email);
     }
 
+    public void changePassword(String email, String plainPassword) {
+        AppUser user = repository.findByEmail(email)
+                .orElseThrow(() -> new HttpClientErrorException(NOT_FOUND, "User not found"));
+
+        user.setPassword(encoder.encode(plainPassword));
+        repository.save(user);
+    }
 }
