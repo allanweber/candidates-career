@@ -1,6 +1,9 @@
 package com.allanweber.candidatescareer.api;
 
 import com.allanweber.candidatescareer.domain.user.dto.UserDto;
+import com.allanweber.candidatescareer.domain.user.registration.dto.ChangePasswordRequest;
+import com.allanweber.candidatescareer.domain.user.registration.dto.RememberMeRequest;
+import com.allanweber.candidatescareer.domain.user.registration.dto.RememberMeResponse;
 import com.allanweber.candidatescareer.domain.user.registration.dto.UserRegistration;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -28,4 +31,16 @@ public interface RegistrationApi {
             @ApiResponse(code = 404, message = "Verification does not exist or is invalid")})
     @GetMapping("/verify/email")
     ResponseEntity<Void> verify(@RequestParam("id") String id, @RequestParam("email") String email);
+
+    @ApiOperation(notes = "Apply user data to change password", value = "Change password", response = RememberMeResponse.class)
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Change password sent"),})
+    @PostMapping("/remember-me")
+    ResponseEntity<RememberMeResponse> rememberMe(@Valid @RequestBody RememberMeRequest rememberMe);
+
+    @ApiOperation(notes = "Change user password", value = "Change user password", response = RememberMeResponse.class)
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Password changed"),})
+    @PostMapping("/change-password")
+    ResponseEntity<RememberMeResponse> changePassword(@Valid @RequestBody ChangePasswordRequest changePasswordRequest);
 }
