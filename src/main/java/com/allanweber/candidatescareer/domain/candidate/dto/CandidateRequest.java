@@ -15,10 +15,10 @@ import javax.validation.constraints.NotBlank;
 public class CandidateRequest {
     private String id;
 
-    @NotBlank(message = "Name is required")
+    @NotBlank(message = "Nome é obrigatório")
     private String name;
 
-    @NotBlank(message = "Email is required")
-    @Email(message = "Email is invalid")
+    @NotBlank(message = "Email é obrigatório")
+    @Email(message = "Email é inválido")
     private String email;
 }

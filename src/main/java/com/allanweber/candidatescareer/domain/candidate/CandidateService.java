@@ -21,8 +21,8 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 @RequiredArgsConstructor
 public class CandidateService {
 
-    private static final String NOT_FOUND_MESSAGE = "Candidate not found.";
-    private static final String EMAIL_EXIST_MESSAGE = "Candidate email %s already exist";
+    private static final String NOT_FOUND_MESSAGE = "Candidato não encontrado.";
+    private static final String EMAIL_EXIST_MESSAGE = "Email %s já existe para outro candidato";
 
     private final CandidateAuthenticatedRepository repository;
     private final CandidateSocialEmailService candidateSocialEmailService;

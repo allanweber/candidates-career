@@ -16,9 +16,9 @@ import java.util.List;
 public class VacancyDto {
     private String id;
 
-    @NotBlank(message = "Name is required")
+    @NotBlank(message = "Name é obrigatório")
     private String name;
 
-    @NotEmpty(message = "Skills are required")
+    @NotEmpty(message = "Skills é obrigatório")
     private List<Skill> skills;
 }
