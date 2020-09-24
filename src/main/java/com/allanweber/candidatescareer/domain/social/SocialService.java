@@ -24,8 +24,8 @@ import static org.springframework.http.HttpStatus.NOT_IMPLEMENTED;
 @Service
 public class SocialService {
 
-    private static final String NOT_IMPLEMENTED_MESSAGE = "Social network request %s not implemented";
-    private static final String SOCIAL_NETWORK_COMPLETED = "Social network request was completed";
+    private static final String NOT_IMPLEMENTED_MESSAGE = "Acesso ao tipo de rede social %s não está disponível";
+    private static final String SOCIAL_NETWORK_COMPLETED = "Acesso à rede social já foi concluído";
 
     private final LinkedInService linkedInService;
     private final GitHubService gitHubService;
