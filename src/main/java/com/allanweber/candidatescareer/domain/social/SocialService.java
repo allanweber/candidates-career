@@ -9,10 +9,14 @@ import com.allanweber.candidatescareer.domain.social.github.GithubMessageQueue;
 import com.allanweber.candidatescareer.domain.social.github.dto.GitHubProfile;
 import com.allanweber.candidatescareer.domain.social.linkedin.LinkedInService;
 import com.allanweber.candidatescareer.domain.social.linkedin.dto.LinkedInProfile;
+import com.allanweber.candidatescareer.infrastructure.configuration.AppHostConfiguration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.AmqpException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.net.URI;
 
 import static com.allanweber.candidatescareer.domain.candidate.dto.SocialNetworkType.GITHUB;
 import static com.allanweber.candidatescareer.domain.candidate.dto.SocialNetworkType.LINKEDIN;
@@ -26,11 +30,15 @@ public class SocialService {
 
     private static final String NOT_IMPLEMENTED_MESSAGE = "Acesso ao tipo de rede social %s não está disponível";
     private static final String SOCIAL_NETWORK_COMPLETED = "Acesso à rede social já foi concluído";
+    private static final String AUTH_PATH = "auth";
+    private static final String SOCIAL_GRANTED_PATH = "social-granted";
+    private static final String SOCIAL_DENIED_PATH = "social-denied";
 
     private final LinkedInService linkedInService;
     private final GitHubService gitHubService;
     private final CandidateAnonymousService candidateAnonymousService;
     private final GithubMessageQueue githubMessageQueue;
+    private final AppHostConfiguration appHostConfiguration;
 
     public String getAuthorizationUri(String candidateId, SocialNetworkType socialNetworkType) {
         validateSocialEntry(candidateId, socialNetworkType);
@@ -51,7 +59,7 @@ public class SocialService {
         candidateAnonymousService.saveLinkedInData(candidateId, linkedInProfile);
     }
 
-    public void callbackGithub(String authorizationCode, String candidateId) {
+    public String callbackGithub(String authorizationCode, String candidateId) {
         validateSocialEntry(candidateId, GITHUB);
         GitHubProfile githubProfile = gitHubService.callback(authorizationCode);
         candidateAnonymousService.saveGitGithubData(candidateId, githubProfile);
@@ -67,11 +75,22 @@ public class SocialService {
         } catch (AmqpException e) {
             candidateAnonymousService.invalidateSocialEntry(candidateId, GITHUB, e.getMessage());
         }
+
+        return UriComponentsBuilder.newInstance()
+                .uri(URI.create(appHostConfiguration.getFrontEnd()))
+                .pathSegment(AUTH_PATH)
+                .pathSegment(SOCIAL_GRANTED_PATH)
+                .toUriString();
     }
 
-    public void denyAccess(String candidateId, SocialNetworkType network) {
+    public String denyAccess(String candidateId, SocialNetworkType network) {
         validateSocialEntry(candidateId, network);
         candidateAnonymousService.denySocialAccess(candidateId, network);
+        return UriComponentsBuilder.newInstance()
+                .uri(URI.create(appHostConfiguration.getFrontEnd()))
+                .pathSegment(AUTH_PATH)
+                .pathSegment(SOCIAL_DENIED_PATH)
+                .toUriString();
     }
 
     private void validateSocialEntry(String candidateId, SocialNetworkType socialNetworkType) {

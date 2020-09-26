@@ -7,6 +7,7 @@ import com.allanweber.candidatescareer.domain.social.github.GitHubService;
 import com.allanweber.candidatescareer.domain.social.github.dto.GitHubProfile;
 import com.allanweber.candidatescareer.domain.social.linkedin.LinkedInService;
 import com.allanweber.candidatescareer.domain.social.linkedin.dto.LinkedInProfile;
+import com.allanweber.candidatescareer.infrastructure.configuration.AppHostConfiguration;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -37,6 +38,9 @@ class SocialServiceTest {
 
     @Mock
     GithubMessageQueue githubMessageQueue;
+
+    @Mock
+    AppHostConfiguration appHostConfiguration;
 
     @InjectMocks
     SocialService socialService;
@@ -113,9 +117,11 @@ class SocialServiceTest {
                 .build();
         when(candidateAnonymousService.getSocialEntry(anyString(), any())).thenReturn(SocialEntry.builder().type(GITHUB).status(PENDING).build());
         when(gitHubService.callback(authorizationCode)).thenReturn(githubProfile);
+        when(appHostConfiguration.getFrontEnd()).thenReturn("http://localhost");
         doNothing().when(candidateAnonymousService).saveGitGithubData(candidateId, githubProfile);
         doNothing().when(githubMessageQueue).send(any());
-        socialService.callbackGithub(authorizationCode, candidateId);
+        String redirect = socialService.callbackGithub(authorizationCode, candidateId);
+        assertEquals("http://localhost/auth/social-granted", redirect);
         verify(candidateAnonymousService).saveGitGithubData(candidateId, githubProfile);
     }
 
