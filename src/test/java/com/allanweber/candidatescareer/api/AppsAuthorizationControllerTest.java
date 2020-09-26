@@ -52,9 +52,9 @@ class AppsAuthorizationControllerTest {
 
     @Test
     void githubCallback() {
-        doNothing().when(socialService).callbackLinkedIn(anyString(), anyString());
+        when(socialService.callbackGithub(anyString(), anyString())).thenReturn("");
         ResponseEntity<Void> response = controller.githubCallback("", "");
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(302, response.getStatusCodeValue());
         assertNull(response.getBody());
     }
 }

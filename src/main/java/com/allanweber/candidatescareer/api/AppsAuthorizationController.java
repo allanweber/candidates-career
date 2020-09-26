@@ -35,14 +35,18 @@ public class AppsAuthorizationController implements AppsAuthorizationApi {
 
     @Override
     public ResponseEntity<Void> githubCallback(String authorizationCode, String state) {
-        socialService.callbackGithub(authorizationCode, state);
-        return ok().build();
+        String redirection = socialService.callbackGithub(authorizationCode, state);
+        return ResponseEntity.status(HttpStatus.FOUND)
+                .location(URI.create(redirection))
+                .build();
     }
 
     @Override
     public ResponseEntity<Void> denySocialAuthorization(String candidateId, SocialNetworkType network) {
-        socialService.denyAccess(candidateId, network);
-        return ok().build();
+        String redirection = socialService.denyAccess(candidateId, network);
+        return ResponseEntity.status(HttpStatus.FOUND)
+                .location(URI.create(redirection))
+                .build();
     }
 
     private ResponseEntity<Void> redirectSocialAuth(String candidateId, SocialNetworkType socialNetworkType) {
