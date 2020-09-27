@@ -49,7 +49,7 @@ public interface CandidateApi {
             @ApiResponse(code = 404, message = CANDIDATE_NOT_FOUND)})
     @PutMapping("/{candidateId}")
     ResponseEntity<CandidateResponse> update(@ApiParam(name = ID, value = ID_DESCRIPTION, required = true) @PathVariable(name = ID) String id,
-                                             @Valid @RequestBody CandidateRequest body);
+                                             @Valid @RequestBody CandidateUpdate body);
 
     @ApiOperation(notes = "Delete the candidate by id", value = "Delete a candidate")
     @ApiResponses({
@@ -79,8 +79,7 @@ public interface CandidateApi {
     @GetMapping("/{candidateId}/image")
     ResponseEntity<String> image(@ApiParam(name = ID, value = ID_DESCRIPTION, required = true) @PathVariable(name = ID) String id);
 
-    @ApiOperation(notes = "Upload resume file for candidate by id", value = "Upload resume file for candidate", response = ResumeResponse.class,
-            responseContainer = "List")
+    @ApiOperation(notes = "Upload resume file for candidate by id", value = "Upload resume file for candidate", response = ResumeResponse.class)
     @ApiResponses({
             @ApiResponse(code = 200, message = "Resume uploaded"),
             @ApiResponse(code = 400, message = ConstantsUtils.HTTP_400_MESSAGE),
@@ -88,4 +87,20 @@ public interface CandidateApi {
     @PostMapping("/{candidateId}/resume-upload")
     ResponseEntity<ResumeResponse> uploadResume(@ApiParam(name = ID, value = ID_DESCRIPTION, required = true) @PathVariable(name = ID) String id,
                                                    @RequestParam("file") MultipartFile file);
+
+    @ApiOperation(notes = "Get resume file for candidate by id", value = "Get resume file for candidate", response = byte.class, responseContainer = "List")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Get Resume"),
+            @ApiResponse(code = 400, message = ConstantsUtils.HTTP_400_MESSAGE),
+            @ApiResponse(code = 404, message = CANDIDATE_NOT_FOUND)})
+    @GetMapping("/{candidateId}/resume")
+    ResponseEntity<byte[]> getResume(@ApiParam(name = ID, value = ID_DESCRIPTION, required = true) @PathVariable(name = ID) String id);
+
+    @ApiOperation(notes = "Get resume information for candidate by id", value = "Get resume information for candidate", response = ResumeResponse.class)
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Get Resume information"),
+            @ApiResponse(code = 400, message = ConstantsUtils.HTTP_400_MESSAGE),
+            @ApiResponse(code = 404, message = CANDIDATE_NOT_FOUND)})
+    @GetMapping("/{candidateId}/resume-info")
+    ResponseEntity<ResumeResponse> getResumeInfo(@ApiParam(name = ID, value = ID_DESCRIPTION, required = true) @PathVariable(name = ID) String id);
 }

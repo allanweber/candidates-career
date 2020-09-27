@@ -1,9 +1,6 @@
 package com.allanweber.candidatescareer.domain.candidate;
 
-import com.allanweber.candidatescareer.domain.candidate.dto.CandidateRequest;
-import com.allanweber.candidatescareer.domain.candidate.dto.CandidateResponse;
-import com.allanweber.candidatescareer.domain.candidate.dto.SocialEntry;
-import com.allanweber.candidatescareer.domain.candidate.dto.SocialNetworkType;
+import com.allanweber.candidatescareer.domain.candidate.dto.*;
 import com.allanweber.candidatescareer.domain.candidate.mapper.CandidateMapper;
 import com.allanweber.candidatescareer.domain.candidate.repository.Candidate;
 import com.allanweber.candidatescareer.domain.candidate.repository.CandidateAuthenticatedRepository;
@@ -40,7 +37,7 @@ public class CandidateService {
                 .orElseThrow(() -> new HttpClientErrorException(NOT_FOUND, NOT_FOUND_MESSAGE));
     }
 
-    public CandidateResponse update(String id, CandidateRequest body) {
+    public CandidateResponse update(String id, CandidateUpdate body) {
         return repository.findById(id)
                 .map(entity -> CandidateMapper.mapToUpdate(entity, body))
                 .map(repository::save)
@@ -62,10 +59,10 @@ public class CandidateService {
     }
 
     public String getImage(String id) {
-        return repository
+        Candidate candidate = repository
                 .findById(id)
-                .map(Candidate::getImage)
                 .orElseThrow(() -> new HttpClientErrorException(NOT_FOUND, NOT_FOUND_MESSAGE));
+        return candidate.getImage();
     }
 
     public List<SocialEntry> addSocialEntries(String id, List<SocialNetworkType> networkTypes) {

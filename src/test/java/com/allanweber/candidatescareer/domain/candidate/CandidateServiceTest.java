@@ -1,9 +1,6 @@
 package com.allanweber.candidatescareer.domain.candidate;
 
-import com.allanweber.candidatescareer.domain.candidate.dto.CandidateRequest;
-import com.allanweber.candidatescareer.domain.candidate.dto.CandidateResponse;
-import com.allanweber.candidatescareer.domain.candidate.dto.SocialEntry;
-import com.allanweber.candidatescareer.domain.candidate.dto.SocialNetworkType;
+import com.allanweber.candidatescareer.domain.candidate.dto.*;
 import com.allanweber.candidatescareer.domain.candidate.repository.Candidate;
 import com.allanweber.candidatescareer.domain.candidate.repository.CandidateAuthenticatedRepository;
 import com.allanweber.candidatescareer.domain.candidate.repository.CandidateMongoRepository;
@@ -58,17 +55,17 @@ class CandidateServiceTest {
     @Test
     void update() {
         Candidate entity = mockEntities().get(0);
-        CandidateRequest candidateRequest = CandidateRequest.builder().name("NET").email("mail@mail.com").build();
+        CandidateUpdate dto = CandidateUpdate.builder().name("NET").email("mail@mail.com").build();
         entity = entity.withName("NET");
         when(repository.findById(entity.getId())).thenReturn(Optional.of(entity));
         when(repository.save(eq(entity))).thenReturn(entity);
-        CandidateResponse response = service.update(entity.getId(), candidateRequest);
+        CandidateResponse response = service.update(entity.getId(), dto);
         assertNotNull(response);
     }
 
     @Test
     void update_notFound() {
-        CandidateRequest candidateRequest = CandidateRequest.builder().build();
+        CandidateUpdate candidateRequest = CandidateUpdate.builder().build();
         when(repository.findById(anyString())).thenReturn(Optional.empty());
         assertThrows(HttpClientErrorException.class, () -> service.update("", candidateRequest));
     }

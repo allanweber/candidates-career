@@ -1,10 +1,7 @@
 package com.allanweber.candidatescareer.api;
 
 import com.allanweber.candidatescareer.domain.candidate.CandidateService;
-import com.allanweber.candidatescareer.domain.candidate.dto.CandidateRequest;
-import com.allanweber.candidatescareer.domain.candidate.dto.CandidateResponse;
-import com.allanweber.candidatescareer.domain.candidate.dto.SocialEntry;
-import com.allanweber.candidatescareer.domain.candidate.dto.SocialNetworkType;
+import com.allanweber.candidatescareer.domain.candidate.dto.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -62,7 +59,7 @@ class CandidateControllerTest {
     @Test
     void update() {
         String id = UUID.randomUUID().toString();
-        CandidateRequest request = CandidateRequest.builder().name("name").email("mail").build();
+        CandidateUpdate request = CandidateUpdate.builder().name("name").email("mail").bio("bio").currentCompany("cia").location("local").build();
         CandidateResponse response = mockResponses().get(0);
         when(service.update(id, request)).thenReturn(response);
         ResponseEntity<CandidateResponse> responseEntity = controller.update(id, request);

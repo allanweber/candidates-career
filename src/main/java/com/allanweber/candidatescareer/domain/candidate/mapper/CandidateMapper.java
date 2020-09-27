@@ -2,6 +2,7 @@ package com.allanweber.candidatescareer.domain.candidate.mapper;
 
 import com.allanweber.candidatescareer.domain.candidate.dto.CandidateRequest;
 import com.allanweber.candidatescareer.domain.candidate.dto.CandidateResponse;
+import com.allanweber.candidatescareer.domain.candidate.dto.CandidateUpdate;
 import com.allanweber.candidatescareer.domain.candidate.repository.Candidate;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -41,7 +42,11 @@ public class CandidateMapper {
         return response;
     }
 
-    public static Candidate mapToUpdate(Candidate entity, CandidateRequest dto) {
-        return entity.withName(dto.getName()).withEmail(dto.getEmail());
+    public static Candidate mapToUpdate(Candidate entity, CandidateUpdate dto) {
+        return entity.withName(dto.getName())
+                .withEmail(dto.getEmail())
+                .withLocation(dto.getLocation())
+                .withCurrentCompany(dto.getCurrentCompany())
+                .withBio(dto.getBio());
     }
 }
