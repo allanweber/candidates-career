@@ -39,7 +39,7 @@ public class CandidateController implements CandidateApi {
     }
 
     @Override
-    public ResponseEntity<CandidateResponse> update(String id, @Valid CandidateRequest body) {
+    public ResponseEntity<CandidateResponse> update(String id, @Valid CandidateUpdate body) {
         return ok(candidateService.update(id, body));
     }
 
@@ -62,5 +62,15 @@ public class CandidateController implements CandidateApi {
     @Override
     public ResponseEntity<ResumeResponse> uploadResume(String id, MultipartFile file) {
         return ok(resumeService.uploadResume(id, file));
+    }
+
+    @Override
+    public ResponseEntity<byte[]> getResume(String id) {
+        return ok(resumeService.getResumeFile(id));
+    }
+
+    @Override
+    public ResponseEntity<ResumeResponse> getResumeInfo(String id) {
+        return ok(resumeService.getResumeInfo(id));
     }
 }

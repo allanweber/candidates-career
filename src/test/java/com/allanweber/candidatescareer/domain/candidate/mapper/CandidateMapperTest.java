@@ -103,7 +103,7 @@ class CandidateMapperTest {
                 ))
                 .build();
 
-        CandidateRequest dto = CandidateRequest.builder().email("allan@mail.com").name("allan weber").build();
+        CandidateUpdate dto = CandidateUpdate.builder().name("name").email("mail").bio("bio").currentCompany("cia").location("local").build();
 
         Candidate toUpdate = CandidateMapper.mapToUpdate(candidate, dto);
         assertEquals(toUpdate.getId(), candidate.getId());

@@ -56,7 +56,7 @@ public class CandidateResumeService {
             base64File = Base64.getEncoder().encodeToString(file.getBytes());
         } catch (IOException e) {
             log.error("Error to base64 file {} ", file.getOriginalFilename(), e);
-            throw (HttpClientErrorException)new HttpClientErrorException(INTERNAL_SERVER_ERROR, FILE_IO_MESSAGE).initCause(e);
+            throw (HttpClientErrorException) new HttpClientErrorException(INTERNAL_SERVER_ERROR, FILE_IO_MESSAGE).initCause(e);
         }
 
         candidateResumeRepository.findByCandidateIdAndOwner(candidateId, owner)
@@ -73,5 +73,26 @@ public class CandidateResumeService {
 
         candidateResumeRepository.save(resume);
         return ResumeResponse.builder().fileName(file.getOriginalFilename()).build();
+    }
+
+    public ResumeResponse getResumeInfo(String candidateId) {
+        final String owner = authService.getUserName();
+        candidateMongoRepository.findByIdAndOwner(candidateId, owner)
+                .orElseThrow(() -> new HttpClientErrorException(NOT_FOUND, NOT_FOUND_MESSAGE));
+
+        return candidateResumeRepository.findByCandidateIdAndOwner(candidateId, owner)
+                .map(resume -> ResumeResponse.builder()
+                        .fileName(resume.getFileName()).build())
+                .orElse(null);
+    }
+
+    public byte[] getResumeFile(String candidateId) {
+        final String owner = authService.getUserName();
+        candidateMongoRepository.findByIdAndOwner(candidateId, owner)
+                .orElseThrow(() -> new HttpClientErrorException(NOT_FOUND, NOT_FOUND_MESSAGE));
+
+        return candidateResumeRepository.findByCandidateIdAndOwner(candidateId, owner)
+                .map(resume -> Base64.getDecoder().decode(resume.getFile().getBytes()))
+                .orElse(null);
     }
 }
