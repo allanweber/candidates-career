@@ -32,6 +32,7 @@ public class CandidateMapper {
                     .id(entity.getId())
                     .name(entity.getName())
                     .email(entity.getEmail())
+                    .owner(entity.getOwner())
                     .socialEntries(entity.getSocialEntries())
                     .socialNetwork(entity.getSocialNetwork())
                     .location(entity.getLocation())

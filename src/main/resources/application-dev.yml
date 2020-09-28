@@ -1,10 +1,9 @@
 app:
   host:
     front-end: https://candidates-app-dev.herokuapp.com/
+    back-end: https://candidates-career-dev.herokuapp.com
   linkedin:
     redirectHost: https://candidates-career-dev.herokuapp.com/
-  security:
-    verification-host: https://candidates-career-dev.herokuapp.com
   queue:
     candidate:
       exchange: candidate.exchange.develop

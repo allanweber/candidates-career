@@ -13,11 +13,14 @@ import java.util.List;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @EqualsAndHashCode
-public class VacancyDto {
+public class  VacancyDto {
     private String id;
 
     @NotBlank(message = "Name é obrigatório")
     private String name;
+
+    @NotBlank(message = "Descrição é obrigatório")
+    private String description;
 
     @NotEmpty(message = "Skills é obrigatório")
     private List<Skill> skills;

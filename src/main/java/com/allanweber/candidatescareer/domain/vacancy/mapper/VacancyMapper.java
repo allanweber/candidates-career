@@ -17,6 +17,7 @@ public class VacancyMapper {
                 .builder()
                 .name(vacancyDto.getName())
                 .skills(vacancyDto.getSkills())
+                .description(vacancyDto.getDescription())
                 .build();
     }
 
@@ -30,12 +31,13 @@ public class VacancyMapper {
                     .id(entity.getId())
                     .name(entity.getName())
                     .skills(entity.getSkills())
+                    .description(entity.getDescription())
                     .build();
         }
         return dto;
     }
 
     public static Vacancy mapToUpdate(Vacancy entity, VacancyDto dto) {
-        return entity.withName(dto.getName()).withSkills(dto.getSkills());
+        return entity.withName(dto.getName()).withDescription(dto.getDescription()).withSkills(dto.getSkills());
     }
 }

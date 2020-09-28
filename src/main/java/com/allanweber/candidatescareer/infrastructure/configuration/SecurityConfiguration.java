@@ -26,7 +26,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private static final String[] PUBLIC_PATH = {
             "/health",
-            "/auth/login", "/registration/**", "/social-authorization/**", "/auth/callback/**",
+            "/auth/login", "/registration/**", "/social-authorization/**", "/auth/callback/**", "/candidate-register/**",
             "/", "/v2/api-docs", "/swagger*/**", "/webjars/**"};
 
     private static final String[] ADMIN_PATH = {"/admin/**", "/users/**"};

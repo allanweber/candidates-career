@@ -5,10 +5,9 @@ spring:
 app:
   host:
     front-end: http://localhost:4200
+    back-end: http://localhost:8080
   linkedin:
     redirectHost: http://localhost:8080
-  security:
-    verification-host: http://localhost:8080
   queue:
     candidate:
       exchange: candidate.exchange.local

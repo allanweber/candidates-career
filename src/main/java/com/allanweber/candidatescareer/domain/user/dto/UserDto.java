@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Objects;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -29,4 +30,12 @@ public class UserDto {
     private Boolean verified = false;
 
     private List<Authority> authorities;
+
+    public String getFullName() {
+        String fullName = this.firstName;
+        if(Objects.nonNull(this.lastName)){
+            fullName = fullName + " " + this.lastName;
+        }
+        return fullName;
+    }
 }

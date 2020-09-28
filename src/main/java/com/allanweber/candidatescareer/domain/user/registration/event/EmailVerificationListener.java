@@ -3,6 +3,7 @@ package com.allanweber.candidatescareer.domain.user.registration.event;
 import com.allanweber.candidatescareer.domain.email.EmailService;
 import com.allanweber.candidatescareer.domain.user.registration.VerificationService;
 import com.allanweber.candidatescareer.domain.user.registration.repository.Verification;
+import com.allanweber.candidatescareer.infrastructure.configuration.AppHostConfiguration;
 import com.allanweber.candidatescareer.infrastructure.configuration.security.AppSecurityConfiguration;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,14 +30,14 @@ public class EmailVerificationListener implements ApplicationListener<UserRegist
     public static final String URL = "$URL";
 
     private final VerificationService verificationService;
-    private final AppSecurityConfiguration applicationConfiguration;
+    private final AppHostConfiguration appHostConfiguration;
     private final EmailService emailService;
 
     @Override
     public void onApplicationEvent(UserRegistrationEvent userRegistrationEvent) {
         Verification verification = verificationService.createVerification(userRegistrationEvent.getUser().getEmail());
         String verificationUrl = UriComponentsBuilder.newInstance()
-                .uri(URI.create(applicationConfiguration.getVerificationHost()))
+                .uri(URI.create(appHostConfiguration.getBackEnd()))
                 .path(REGISTRATION_VERIFY_EMAIL)
                 .queryParam(ID, verification.getId())
                 .queryParam(EMAIL, verification.getEmail())

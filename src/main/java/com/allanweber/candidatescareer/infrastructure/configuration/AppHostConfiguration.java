@@ -10,4 +10,6 @@ import org.springframework.context.annotation.Configuration;
 public class AppHostConfiguration {
 
     private String frontEnd;
+
+    private String backEnd;
 }
