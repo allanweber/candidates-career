@@ -38,6 +38,9 @@ public class CandidateService {
     }
 
     public CandidateResponse update(String id, CandidateUpdate body) {
+        if (repository.getByEmail(body.getEmail()).filter(candidate -> !candidate.getId().equals(id)).isPresent()) {
+            throw new HttpClientErrorException(CONFLICT, String.format(EMAIL_EXIST_MESSAGE, body.getEmail()));
+        }
         return repository.findById(id)
                 .map(entity -> CandidateMapper.mapToUpdate(entity, body))
                 .map(repository::save)
