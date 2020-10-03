@@ -19,6 +19,8 @@ public class CandidateResponse {
 
     private String email;
 
+    private String owner;
+
     private String location;
 
     private String bio;

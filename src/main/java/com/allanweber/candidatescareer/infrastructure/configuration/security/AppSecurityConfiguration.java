@@ -11,9 +11,6 @@ import javax.validation.constraints.NotBlank;
 @Data
 public class AppSecurityConfiguration {
 
-    @NotBlank
-    private String verificationHost;
-
     private boolean emailVerificationEnabled;
 
     @NotBlank

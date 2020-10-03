@@ -23,5 +23,7 @@ public class Vacancy {
 
     private final String name;
 
+    private final String description;
+
     private final List<Skill> skills;
 }

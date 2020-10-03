@@ -1,5 +1,6 @@
 package com.allanweber.candidatescareer.api;
 
+import com.allanweber.candidatescareer.domain.candidate.CandidateRegisterRecruiterActionsService;
 import com.allanweber.candidatescareer.domain.candidate.CandidateResumeService;
 import com.allanweber.candidatescareer.domain.candidate.CandidateService;
 import com.allanweber.candidatescareer.domain.candidate.dto.*;
@@ -21,6 +22,7 @@ public class CandidateController implements CandidateApi {
 
     private final CandidateService candidateService;
     private final CandidateResumeService resumeService;
+    private final CandidateRegisterRecruiterActionsService candidateRegisterService;
 
     @Override
     public ResponseEntity<List<CandidateResponse>> getAll() {
@@ -72,5 +74,15 @@ public class CandidateController implements CandidateApi {
     @Override
     public ResponseEntity<ResumeResponse> getResumeInfo(String id) {
         return ok(resumeService.getResumeInfo(id));
+    }
+
+    @Override
+    public ResponseEntity<CandidateRegisterResponse> sendRegister(String candidateId, String vacancyId) {
+        return ok(candidateRegisterService.sendRegister(candidateId, vacancyId));
+    }
+
+    @Override
+    public ResponseEntity<List<CandidateRegisterResponse>> getRegisters(String candidateId) {
+        return ok(candidateRegisterService.getRegisters(candidateId));
     }
 }

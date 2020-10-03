@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-@Api(tags = "Candidates Api")
+@Api(tags = "Candidates Repositories Api")
 @RequestMapping("/candidates/{candidateId}/repositories")
 public interface CandidateRepositoriesApi {
 
@@ -14,8 +14,7 @@ public interface CandidateRepositoriesApi {
     String ID_DESCRIPTION = "candidate id";
     String CANDIDATE_NOT_FOUND = "Could not find the candidate";
 
-    @ApiOperation(notes = "Count Candidate repositories", value = "Count Candidate repositories", response = Integer.class,
-            responseContainer = "List")
+    @ApiOperation(notes = "Count Candidate repositories", value = "Count Candidate repositories", response = Integer.class)
     @ApiResponses({
             @ApiResponse(code = 200, message = "Quantity returned"),
             @ApiResponse(code = 400, message = ConstantsUtils.HTTP_400_MESSAGE),

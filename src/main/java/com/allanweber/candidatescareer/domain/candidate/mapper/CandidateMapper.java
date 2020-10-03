@@ -1,14 +1,12 @@
 package com.allanweber.candidatescareer.domain.candidate.mapper;
 
-import com.allanweber.candidatescareer.domain.candidate.dto.CandidateRequest;
-import com.allanweber.candidatescareer.domain.candidate.dto.CandidateResponse;
-import com.allanweber.candidatescareer.domain.candidate.dto.CandidateUpdate;
+import com.allanweber.candidatescareer.domain.candidate.dto.*;
 import com.allanweber.candidatescareer.domain.candidate.repository.Candidate;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CandidateMapper {
@@ -22,6 +20,19 @@ public class CandidateMapper {
                 .build();
     }
 
+    public static Candidate toEntity(Candidate entity, CandidateRegisterProfile registerProfile) {
+
+        List<CandidateExperience> experiences = registerProfile
+                .getExperiences()
+                .stream()
+                .sorted(Comparator.comparing(CandidateExperience::getStart).reversed()).collect(Collectors.toList());
+
+        return entity.withName(registerProfile.getName()).withLocation(registerProfile.getLocation())
+                .withBio(registerProfile.getBio())
+                .withExperiences(experiences)
+                .withCurrentCompany(experiences.stream().findFirst().map(CandidateExperience::getCompanyName).orElse(null));
+    }
+
     public static CandidateResponse toResponse(Candidate entity) {
         CandidateResponse response;
         if (Objects.isNull(entity)) {
@@ -32,6 +43,7 @@ public class CandidateMapper {
                     .id(entity.getId())
                     .name(entity.getName())
                     .email(entity.getEmail())
+                    .owner(entity.getOwner())
                     .socialEntries(entity.getSocialEntries())
                     .socialNetwork(entity.getSocialNetwork())
                     .location(entity.getLocation())
@@ -43,10 +55,17 @@ public class CandidateMapper {
     }
 
     public static Candidate mapToUpdate(Candidate entity, CandidateUpdate dto) {
+
+        List<CandidateExperience> experiences = Optional.ofNullable(entity
+                .getExperiences())
+                .orElse(Collections.emptyList())
+                .stream()
+                .sorted(Comparator.comparing(CandidateExperience::getStart).reversed()).collect(Collectors.toList());
+
         return entity.withName(dto.getName())
                 .withEmail(dto.getEmail())
                 .withLocation(dto.getLocation())
-                .withCurrentCompany(dto.getCurrentCompany())
-                .withBio(dto.getBio());
+                .withBio(dto.getBio())
+                .withCurrentCompany(experiences.stream().findFirst().map(CandidateExperience::getCompanyName).orElse(dto.getCurrentCompany()));
     }
 }

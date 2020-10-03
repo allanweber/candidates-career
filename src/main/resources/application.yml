@@ -33,6 +33,7 @@ spring:
 app:
   host:
     front-end: https://candidates-app-prd.herokuapp.com/
+    back-end: https://candidates-career.herokuapp.com
   linkedin:
     client-id: ${LINKEDIN_CLIENT_ID}
     clientSecret: ${LINKEDIN_CLIENT_SECRET}
@@ -45,7 +46,6 @@ app:
     connect-timeout-in-ms: 5000
   security:
     email-verification-enabled: true
-    verification-host: https://candidates-career.herokuapp.com
     jwt-secret: ${JWT_SECRET}
   queue:
     candidate:

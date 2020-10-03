@@ -1,6 +1,7 @@
 package com.allanweber.candidatescareer.domain.candidate;
 
 import com.allanweber.candidatescareer.domain.candidate.dto.*;
+import com.allanweber.candidatescareer.domain.candidate.email.CandidateSocialEmailService;
 import com.allanweber.candidatescareer.domain.candidate.mapper.CandidateMapper;
 import com.allanweber.candidatescareer.domain.candidate.repository.Candidate;
 import com.allanweber.candidatescareer.domain.candidate.repository.CandidateAuthenticatedRepository;

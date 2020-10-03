@@ -4,6 +4,7 @@ import com.allanweber.candidatescareer.domain.email.EmailService;
 import com.allanweber.candidatescareer.domain.user.dto.UserDto;
 import com.allanweber.candidatescareer.domain.user.registration.VerificationService;
 import com.allanweber.candidatescareer.domain.user.registration.repository.Verification;
+import com.allanweber.candidatescareer.infrastructure.configuration.AppHostConfiguration;
 import com.allanweber.candidatescareer.infrastructure.configuration.security.AppSecurityConfiguration;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,7 +28,7 @@ class EmailVerificationListenerTest {
     @Mock
     VerificationService verificationService;
     @Mock
-    AppSecurityConfiguration applicationConfiguration;
+    AppHostConfiguration appHostConfiguration;
 
     @InjectMocks
     EmailVerificationListener listener;
@@ -48,7 +49,7 @@ class EmailVerificationListenerTest {
         Verification verification = new Verification(email);
         verification.setId(id);
         when(verificationService.createVerification(email)).thenReturn(verification);
-        when(applicationConfiguration.getVerificationHost()).thenReturn(host);
+        when(appHostConfiguration.getBackEnd()).thenReturn(host);
         doNothing().when(emailService).sendHtmlTemplate("Candidates Career - verificar conta de email.", emailMessage, email);
 
 

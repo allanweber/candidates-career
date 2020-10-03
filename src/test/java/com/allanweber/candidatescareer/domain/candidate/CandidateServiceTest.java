@@ -1,10 +1,9 @@
 package com.allanweber.candidatescareer.domain.candidate;
 
 import com.allanweber.candidatescareer.domain.candidate.dto.*;
+import com.allanweber.candidatescareer.domain.candidate.email.CandidateSocialEmailService;
 import com.allanweber.candidatescareer.domain.candidate.repository.Candidate;
 import com.allanweber.candidatescareer.domain.candidate.repository.CandidateAuthenticatedRepository;
-import com.allanweber.candidatescareer.domain.candidate.repository.CandidateMongoRepository;
-import com.allanweber.candidatescareer.domain.social.linkedin.dto.LinkedInProfile;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
