@@ -21,4 +21,6 @@ public class SendRegisterDto {
     private final List<String> vacancySkills;
 
     private final String candidateRegisterId;
+
+    private final String accessCode;
 }

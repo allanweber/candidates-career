@@ -11,13 +11,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class CandidateRegisterResponse {
+public class CandidateRegisterVacancy {
+    private String id;
 
-    private CandidateRegisterStatus status;
-
-    private String accessCode;
-
-    private String error;
-
-    private CandidateRegisterVacancy vacancy;
+    private String name;
 }

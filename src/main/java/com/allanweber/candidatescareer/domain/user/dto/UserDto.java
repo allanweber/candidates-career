@@ -32,10 +32,10 @@ public class UserDto {
     private List<Authority> authorities;
 
     public String getFullName() {
-        String fullName = this.firstName;
+        StringBuilder fullName = new StringBuilder(this.firstName);
         if(Objects.nonNull(this.lastName)){
-            fullName = fullName + " " + this.lastName;
+            fullName.append(' ').append(this.lastName);
         }
-        return fullName;
+        return fullName.toString();
     }
 }

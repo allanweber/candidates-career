@@ -2,7 +2,6 @@ package com.allanweber.candidatescareer.domain.candidate.email;
 
 import com.allanweber.candidatescareer.domain.email.EmailService;
 import com.allanweber.candidatescareer.infrastructure.configuration.AppHostConfiguration;
-import com.allanweber.candidatescareer.infrastructure.configuration.security.AppSecurityConfiguration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +19,7 @@ public class CandidateRegisterEmailService {
     public static final String URL = "$URL";
     public static final String DENY_URL = "$DENY_URL";
     public static final String RECRUITER_NAME = "$RECRUITER_NAME";
+    public static final String ACCESS_CODE = "$ACCESS_CODE";
     public static final String SUBJECT = "Candidates Career - Cadastrar Currículo";
 
     private final EmailService emailService;
@@ -39,6 +39,7 @@ public class CandidateRegisterEmailService {
         String emailMessage = emailTemplate.replace(NAME, sendRegisterDto.getCandidateName())
                 .replace(RECRUITER_NAME, sendRegisterDto.getRecruiterName())
                 .replace(VACANCY_NAME, sendRegisterDto.getVacancyName())
+                .replace(ACCESS_CODE, sendRegisterDto.getAccessCode())
                 .replace(SKILLS, skillsFormatted)
                 .replace(URL, accessUrl)
                 .replace(DENY_URL, denyUrl);

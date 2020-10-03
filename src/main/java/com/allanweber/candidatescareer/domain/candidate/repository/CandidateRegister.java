@@ -28,6 +28,9 @@ public class CandidateRegister {
     @NotBlank
     private final String owner;
 
+    @NotBlank
+    private final String accessCode;
+
     private CandidateRegisterStatus status;
 
     private String error;

@@ -19,9 +19,10 @@ public interface CandidateApi {
     String CANDIDATE_ID_DESCRIPTION = "candidate id";
     String VACANCY_ID_DESCRIPTION = "vacancy id";
     String CANDIDATE_NOT_FOUND = "Could not find the candidate";
+    String LIST = "List";
 
     @ApiOperation(notes = "Return all Candidates", value = "Return all Candidates", response = CandidateResponse.class,
-            responseContainer = "List")
+            responseContainer = LIST)
     @ApiResponses({
             @ApiResponse(code = 200, message = "Candidates returned"),
             @ApiResponse(code = 400, message = ConstantsUtils.HTTP_400_MESSAGE)})
@@ -63,7 +64,7 @@ public interface CandidateApi {
     ResponseEntity<?> delete(@ApiParam(name = CANDIDATE_ID, value = CANDIDATE_ID_DESCRIPTION, required = true) @PathVariable(name = CANDIDATE_ID) String id);
 
     @ApiOperation(notes = "Add requests to social entries for candidate by id", value = "Add social entries a candidate", response = SocialEntry.class,
-            responseContainer = "List")
+            responseContainer = LIST)
     @ApiResponses({
             @ApiResponse(code = 200, message = "Candidate updated"),
             @ApiResponse(code = 400, message = ConstantsUtils.HTTP_400_MESSAGE),
@@ -90,7 +91,7 @@ public interface CandidateApi {
     ResponseEntity<ResumeResponse> uploadResume(@ApiParam(name = CANDIDATE_ID, value = CANDIDATE_ID_DESCRIPTION, required = true) @PathVariable(name = CANDIDATE_ID) String id,
                                                    @RequestParam("file") MultipartFile file);
 
-    @ApiOperation(notes = "Get resume file for candidate by id", value = "Get resume file for candidate", response = byte.class, responseContainer = "List")
+    @ApiOperation(notes = "Get resume file for candidate by id", value = "Get resume file for candidate", response = byte.class, responseContainer = LIST)
     @ApiResponses({
             @ApiResponse(code = 200, message = "Get Resume"),
             @ApiResponse(code = 400, message = ConstantsUtils.HTTP_400_MESSAGE),
@@ -115,4 +116,14 @@ public interface CandidateApi {
     ResponseEntity<CandidateRegisterResponse> sendRegister(
             @ApiParam(name = CANDIDATE_ID, value = CANDIDATE_ID_DESCRIPTION, required = true) @PathVariable(name = CANDIDATE_ID) String candidateId,
             @ApiParam(name = VACANCY_ID, value = VACANCY_ID_DESCRIPTION, required = true) @PathVariable(name = VACANCY_ID) String vacancyId);
+
+    @ApiOperation(notes = "Get all registers sent to candidate", value = "Get all registers sent to candidate", response = CandidateRegisterResponse.class,
+            responseContainer = LIST)
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "All registers"),
+            @ApiResponse(code = 400, message = ConstantsUtils.HTTP_400_MESSAGE),
+            @ApiResponse(code = 404, message = CANDIDATE_NOT_FOUND)})
+    @GetMapping("/{candidateId}/registers")
+    ResponseEntity<List<CandidateRegisterResponse>> getRegisters(
+            @ApiParam(name = CANDIDATE_ID, value = CANDIDATE_ID_DESCRIPTION, required = true) @PathVariable(name = CANDIDATE_ID) String candidateId);
 }

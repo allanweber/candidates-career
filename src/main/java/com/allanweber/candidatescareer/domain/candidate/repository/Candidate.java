@@ -1,9 +1,6 @@
 package com.allanweber.candidatescareer.domain.candidate.repository;
 
-import com.allanweber.candidatescareer.domain.candidate.dto.SocialEntry;
-import com.allanweber.candidatescareer.domain.candidate.dto.SocialNetworkDto;
-import com.allanweber.candidatescareer.domain.candidate.dto.SocialNetworkType;
-import com.allanweber.candidatescareer.domain.candidate.dto.SocialStatus;
+import com.allanweber.candidatescareer.domain.candidate.dto.*;
 import com.allanweber.candidatescareer.domain.social.github.dto.GitHubProfile;
 import com.allanweber.candidatescareer.domain.social.linkedin.dto.LinkedInProfile;
 import lombok.*;
@@ -44,6 +41,8 @@ public class Candidate {
     private final List<SocialNetworkDto> socialNetwork;
 
     private final List<SocialEntry> socialEntries;
+
+    private final List<CandidateExperience> experiences;
 
     public Candidate addSocialEntriesPending(List<SocialNetworkType> entries) {
         List<SocialEntry> list = Optional.ofNullable(entries).orElse(Collections.emptyList())
