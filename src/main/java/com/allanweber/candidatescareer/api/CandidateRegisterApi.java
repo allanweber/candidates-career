@@ -1,6 +1,6 @@
 package com.allanweber.candidatescareer.api;
 
-import com.allanweber.candidatescareer.domain.candidate.dto.CandidateRegisterProfile;
+import com.allanweber.candidatescareer.domain.candidate.dto.CandidateProfile;
 import com.allanweber.candidatescareer.domain.vacancy.dto.VacancyDto;
 import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
@@ -41,17 +41,17 @@ public interface CandidateRegisterApi {
     @PostMapping("/{registerId}")
     ResponseEntity<Void> register(@RequestHeader(name = ACCESS_TOKEN) String accessToken,
             @ApiParam(name = ID, value = ID_DESCRIPTION, required = true) @PathVariable(name = ID) String registerId,
-                               @Valid @RequestBody CandidateRegisterProfile body);
+                               @Valid @RequestBody CandidateProfile body);
 
-    @ApiOperation(notes = "Get candidate profile for anonymous register", value = "Get candidate profile for anonymous register", response = CandidateRegisterProfile.class)
+    @ApiOperation(notes = "Get candidate profile for anonymous register", value = "Get candidate profile for anonymous register", response = CandidateProfile.class)
     @ApiResponses({
             @ApiResponse(code = 200, message = "Register completed"),
             @ApiResponse(code = 400, message = ConstantsUtils.HTTP_400_MESSAGE),
             @ApiResponse(code = 404, message = REGISTER_NOT_FOUND),
             @ApiResponse(code = 403, message = "Invalid access token")})
     @GetMapping("/{registerId}/profile")
-    ResponseEntity<CandidateRegisterProfile> getProfile(@RequestHeader(name = ACCESS_TOKEN) String accessToken,
-                                                        @ApiParam(name = ID, value = ID_DESCRIPTION, required = true) @PathVariable(name = ID) String registerId);
+    ResponseEntity<CandidateProfile> getProfile(@RequestHeader(name = ACCESS_TOKEN) String accessToken,
+                                                @ApiParam(name = ID, value = ID_DESCRIPTION, required = true) @PathVariable(name = ID) String registerId);
 
     @ApiOperation(notes = "Validate access token", value = "Validate access token")
     @ApiResponses({

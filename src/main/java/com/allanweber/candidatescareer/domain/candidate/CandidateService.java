@@ -3,6 +3,7 @@ package com.allanweber.candidatescareer.domain.candidate;
 import com.allanweber.candidatescareer.domain.candidate.dto.*;
 import com.allanweber.candidatescareer.domain.candidate.email.CandidateSocialEmailService;
 import com.allanweber.candidatescareer.domain.candidate.mapper.CandidateMapper;
+import com.allanweber.candidatescareer.domain.candidate.mapper.CandidateRegisterMapper;
 import com.allanweber.candidatescareer.domain.candidate.repository.Candidate;
 import com.allanweber.candidatescareer.domain.candidate.repository.CandidateAuthenticatedRepository;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +37,12 @@ public class CandidateService {
         return repository.findById(id)
                 .map(CandidateMapper::toResponse)
                 .orElseThrow(() -> new HttpClientErrorException(NOT_FOUND, NOT_FOUND_MESSAGE));
+    }
+
+    public CandidateProfile getProfile(String id) {
+        Candidate candidate = repository.findById(id)
+                .orElseThrow(() -> new HttpClientErrorException(NOT_FOUND, NOT_FOUND_MESSAGE));
+        return CandidateRegisterMapper.toResponse(candidate);
     }
 
     public CandidateResponse update(String id, CandidateUpdate body) {

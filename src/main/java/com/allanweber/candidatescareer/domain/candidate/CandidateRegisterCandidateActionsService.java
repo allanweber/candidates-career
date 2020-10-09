@@ -1,6 +1,6 @@
 package com.allanweber.candidatescareer.domain.candidate;
 
-import com.allanweber.candidatescareer.domain.candidate.dto.CandidateRegisterProfile;
+import com.allanweber.candidatescareer.domain.candidate.dto.CandidateProfile;
 import com.allanweber.candidatescareer.domain.candidate.mapper.CandidateMapper;
 import com.allanweber.candidatescareer.domain.candidate.mapper.CandidateRegisterMapper;
 import com.allanweber.candidatescareer.domain.candidate.repository.Candidate;
@@ -28,6 +28,8 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 @Service
 @Slf4j
 public class CandidateRegisterCandidateActionsService {
+
+    public static final String EMAIL_ALREADY_EXIST = "Email %s já esta sendo utilizado por outro candidato.";
 
     private final CandidateRegisterRepository candidateRegisterRepository;
     private final AppHostConfiguration appHostConfiguration;
@@ -64,29 +66,36 @@ public class CandidateRegisterCandidateActionsService {
                 .toUriString();
     }
 
-    public void register(String accessToken, String registerId, CandidateRegisterProfile registerProfile) {
+    public void register(String accessToken, String registerId, CandidateProfile registerProfile) {
         CandidateRegister candidateRegister = validateTokenAndGetRegister(accessToken, registerId);
         if (!candidateRegister.getStatus().equals(ACCEPTED)) {
             throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, CandidateRegisterUtils.INVALID_STATUS_MESSAGE);
         }
 
-        Candidate candidate = candidateMongoRepository.findById(candidateRegister.getCandidateId())
+        final Candidate candidate = candidateMongoRepository.findById(candidateRegister.getCandidateId())
                 .orElseThrow(() -> new HttpClientErrorException(NOT_FOUND, CandidateRegisterUtils.CANDIDATE_NOT_FOUND_MESSAGE));
         if (!candidateRegister.getOwner().equals(candidate.getOwner())) {
             throw new HttpClientErrorException(HttpStatus.FORBIDDEN, CandidateRegisterUtils.UNAUTHORIZED_STATUS_MESSAGE);
         }
 
+        candidateMongoRepository.getAllByEmailAndOwner(registerProfile.getEmail(), candidate.getOwner())
+                .stream()
+                .filter(candidateByEmail -> !candidateByEmail.getId().equals(candidate.getId()))
+                .findFirst()
+                .ifPresent(invalidCandidate -> {
+                    throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, String.format(EMAIL_ALREADY_EXIST, invalidCandidate.getEmail()));
+                });
+
         CandidateRegisterUtils.validateDates(registerProfile).ifPresent(message -> {
             throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, String.format(CandidateRegisterUtils.INVALID_DATE_MESSAGE, message));
         });
 
-        candidate = CandidateMapper.toEntity(candidate, registerProfile);
-        candidateMongoRepository.save(candidate);
+        candidateMongoRepository.save(CandidateMapper.toEntity(candidate, registerProfile));
         candidateRegister.setStatus(DONE);
         candidateRegisterRepository.save(candidateRegister);
     }
 
-    public CandidateRegisterProfile getProfile(String accessToken, String registerId) {
+    public CandidateProfile getProfile(String accessToken, String registerId) {
         CandidateRegister candidateRegister = validateTokenAndGetRegister(accessToken, registerId);
         Candidate candidate = candidateMongoRepository.findById(candidateRegister.getCandidateId())
                 .orElseThrow(() -> new HttpClientErrorException(NOT_FOUND, CandidateRegisterUtils.CANDIDATE_NOT_FOUND_MESSAGE));

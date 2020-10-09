@@ -35,6 +35,11 @@ public class CandidateController implements CandidateApi {
     }
 
     @Override
+    public ResponseEntity<CandidateProfile> getProfile(String id) {
+        return ok(candidateService.getProfile(id));
+    }
+
+    @Override
     public ResponseEntity<CandidateResponse> create(@Valid CandidateRequest body) {
         CandidateResponse created = candidateService.insert(body);
         return created(URI.create(String.format("/candidates/%s", created.getId()))).body(created);

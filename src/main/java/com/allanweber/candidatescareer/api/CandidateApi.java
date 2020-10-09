@@ -37,6 +37,15 @@ public interface CandidateApi {
     @GetMapping("/{candidateId}")
     ResponseEntity<CandidateResponse> get(@ApiParam(name = CANDIDATE_ID, value = CANDIDATE_ID_DESCRIPTION, required = true) @PathVariable(name = CANDIDATE_ID) String id);
 
+    @ApiOperation(notes = "Return a candidate full profile by id", value = "Return a candidate full profile", response = CandidateResponse.class)
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "candidate full profile returned"),
+            @ApiResponse(code = 400, message = ConstantsUtils.HTTP_400_MESSAGE),
+            @ApiResponse(code = 404, message = CANDIDATE_NOT_FOUND)})
+    @GetMapping("/{candidateId}/profile")
+    ResponseEntity<CandidateProfile> getProfile(@ApiParam(name = CANDIDATE_ID, value = CANDIDATE_ID_DESCRIPTION, required = true) @PathVariable(name = CANDIDATE_ID) String id);
+
+
     @ApiOperation(notes = "Create a new candidate based", value = "Create new candidate", response = CandidateResponse.class)
     @ApiResponses({
             @ApiResponse(code = 201, message = "candidate created"),
@@ -126,4 +135,5 @@ public interface CandidateApi {
     @GetMapping("/{candidateId}/registers")
     ResponseEntity<List<CandidateRegisterResponse>> getRegisters(
             @ApiParam(name = CANDIDATE_ID, value = CANDIDATE_ID_DESCRIPTION, required = true) @PathVariable(name = CANDIDATE_ID) String candidateId);
+
 }
