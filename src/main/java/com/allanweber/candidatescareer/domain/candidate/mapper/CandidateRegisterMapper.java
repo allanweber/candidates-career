@@ -24,9 +24,11 @@ public class CandidateRegisterMapper {
         return CandidateProfile.builder()
                 .name(candidate.getName())
                 .email(candidate.getEmail())
+                .phone(candidate.getPhone())
                 .bio(candidate.getBio())
                 .location(candidate.getLocation())
                 .experiences(candidate.getExperiences())
+                .lastUpdate(candidate.getLastUpdate())
                 .build();
     }
 }

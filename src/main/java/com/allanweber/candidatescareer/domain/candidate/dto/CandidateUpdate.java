@@ -22,6 +22,9 @@ public class CandidateUpdate {
     @Email(message = "Email é inválido")
     private String email;
 
+    @NotBlank(message = "Telefone é obrigatório")
+    private String phone;
+
     private String location;
 
     private String bio;

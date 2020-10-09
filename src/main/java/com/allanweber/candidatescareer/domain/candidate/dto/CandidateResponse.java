@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @AllArgsConstructor
@@ -27,7 +28,11 @@ public class CandidateResponse {
 
     private String currentCompany;
 
+    private String phone;
+
     private List<SocialNetworkDto> socialNetwork;
 
     private List<SocialEntry> socialEntries;
+
+    private LocalDateTime lastUpdate;
 }
