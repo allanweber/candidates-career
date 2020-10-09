@@ -20,14 +20,16 @@ public class CandidateMapper {
                 .build();
     }
 
-    public static Candidate toEntity(Candidate entity, CandidateRegisterProfile registerProfile) {
+    public static Candidate toEntity(Candidate entity, CandidateProfile registerProfile) {
 
         List<CandidateExperience> experiences = registerProfile
                 .getExperiences()
                 .stream()
                 .sorted(Comparator.comparing(CandidateExperience::getStart).reversed()).collect(Collectors.toList());
 
-        return entity.withName(registerProfile.getName()).withLocation(registerProfile.getLocation())
+        return entity.withName(registerProfile.getName())
+                .withEmail(registerProfile.getEmail())
+                .withLocation(registerProfile.getLocation())
                 .withBio(registerProfile.getBio())
                 .withExperiences(experiences)
                 .withCurrentCompany(experiences.stream().findFirst().map(CandidateExperience::getCompanyName).orElse(null));

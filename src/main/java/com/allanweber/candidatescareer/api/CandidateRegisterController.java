@@ -1,7 +1,7 @@
 package com.allanweber.candidatescareer.api;
 
 import com.allanweber.candidatescareer.domain.candidate.CandidateRegisterCandidateActionsService;
-import com.allanweber.candidatescareer.domain.candidate.dto.CandidateRegisterProfile;
+import com.allanweber.candidatescareer.domain.candidate.dto.CandidateProfile;
 import com.allanweber.candidatescareer.domain.vacancy.dto.VacancyDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -35,13 +35,13 @@ public class CandidateRegisterController implements CandidateRegisterApi {
     }
 
     @Override
-    public ResponseEntity<Void> register( String accessToken, String registerId, CandidateRegisterProfile body) {
+    public ResponseEntity<Void> register( String accessToken, String registerId, CandidateProfile body) {
         candidateRegisterCandidateActionsService.register(accessToken, registerId, body);
         return ok().build();
     }
 
     @Override
-    public ResponseEntity<CandidateRegisterProfile> getProfile(String accessToken, String registerId) {
+    public ResponseEntity<CandidateProfile> getProfile(String accessToken, String registerId) {
         return ok(candidateRegisterCandidateActionsService.getProfile(accessToken, registerId));
     }
 

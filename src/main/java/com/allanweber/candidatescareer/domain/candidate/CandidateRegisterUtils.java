@@ -1,7 +1,7 @@
 package com.allanweber.candidatescareer.domain.candidate;
 
 import com.allanweber.candidatescareer.domain.candidate.dto.CandidateExperience;
-import com.allanweber.candidatescareer.domain.candidate.dto.CandidateRegisterProfile;
+import com.allanweber.candidatescareer.domain.candidate.dto.CandidateProfile;
 import com.allanweber.candidatescareer.domain.candidate.specification.StartDateIsBeforeEndDate;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -23,7 +23,7 @@ public class CandidateRegisterUtils {
     public static final String REGISTER_ACCEPT = "accept";
     public static final String REGISTER_DENIED = "denied";
 
-    public static Optional<String> validateDates(CandidateRegisterProfile registerProfile) {
+    public static Optional<String> validateDates(CandidateProfile registerProfile) {
         List<CandidateExperience> notValidDates = registerProfile.getExperiences().stream()
                 .filter(exp -> !StartDateIsBeforeEndDate.satisfiedBy().test(exp))
                 .collect(Collectors.toList());

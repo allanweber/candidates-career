@@ -12,10 +12,13 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Builder
-public class CandidateRegisterProfile {
+public class CandidateProfile {
 
     @NotBlank
     private String name;
+
+    @NotBlank
+    private String email;
 
     @NotBlank
     private String location;

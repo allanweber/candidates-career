@@ -22,10 +22,8 @@ public class CandidateUpdate {
     @Email(message = "Email é inválido")
     private String email;
 
-    @NotBlank(message = "Localização é obrigatória")
     private String location;
 
-    @NotBlank(message = "Biografia é obrigatória")
     private String bio;
 
     private String currentCompany;

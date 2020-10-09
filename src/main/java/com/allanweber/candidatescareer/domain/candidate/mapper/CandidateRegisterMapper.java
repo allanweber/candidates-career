@@ -1,6 +1,6 @@
 package com.allanweber.candidatescareer.domain.candidate.mapper;
 
-import com.allanweber.candidatescareer.domain.candidate.dto.CandidateRegisterProfile;
+import com.allanweber.candidatescareer.domain.candidate.dto.CandidateProfile;
 import com.allanweber.candidatescareer.domain.candidate.dto.CandidateRegisterResponse;
 import com.allanweber.candidatescareer.domain.candidate.dto.CandidateRegisterVacancy;
 import com.allanweber.candidatescareer.domain.candidate.repository.Candidate;
@@ -20,11 +20,12 @@ public class CandidateRegisterMapper {
         return CandidateRegisterVacancy.builder().id(vacancyDto.getId()).name(vacancyDto.getName()).build();
     }
 
-    public static CandidateRegisterProfile toResponse(Candidate candidate){
-        return CandidateRegisterProfile.builder()
+    public static CandidateProfile toResponse(Candidate candidate){
+        return CandidateProfile.builder()
+                .name(candidate.getName())
+                .email(candidate.getEmail())
                 .bio(candidate.getBio())
                 .location(candidate.getLocation())
-                .name(candidate.getName())
                 .experiences(candidate.getExperiences())
                 .build();
     }

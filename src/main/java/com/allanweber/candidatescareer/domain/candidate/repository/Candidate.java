@@ -93,7 +93,7 @@ public class Candidate {
     public Candidate addGithubData(GitHubProfile githubProfile) {
         Objects.requireNonNull(githubProfile, "Github Profile had no data");
 
-        return this.withName(githubProfile.getName())
+        return this.withName(Optional.ofNullable(githubProfile.getName()).orElse(name))
                 .withLocation(Optional.ofNullable(githubProfile.getLocation()).orElse(location))
                 .withBio(Optional.ofNullable(githubProfile.getBio()).orElse(bio))
                 .withCurrentCompany(Optional.ofNullable(githubProfile.getCompany()).orElse(currentCompany))
