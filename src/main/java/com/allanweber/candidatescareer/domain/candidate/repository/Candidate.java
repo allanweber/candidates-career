@@ -8,6 +8,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -30,6 +31,8 @@ public class Candidate {
 
     private final String email;
 
+    private final String phone;
+
     private final String image;
 
     private final String location;
@@ -37,6 +40,8 @@ public class Candidate {
     private final String bio;
 
     private final String currentCompany;
+
+    private final LocalDateTime lastUpdate;
 
     private final List<SocialNetworkDto> socialNetwork;
 

@@ -35,7 +35,7 @@ public class CandidateRegisterController implements CandidateRegisterApi {
     }
 
     @Override
-    public ResponseEntity<Void> register( String accessToken, String registerId, CandidateProfile body) {
+    public ResponseEntity<Void> register(String accessToken, String registerId, CandidateProfile body) {
         candidateRegisterCandidateActionsService.register(accessToken, registerId, body);
         return ok().build();
     }
@@ -48,7 +48,7 @@ public class CandidateRegisterController implements CandidateRegisterApi {
     @Override
     public ResponseEntity<Void> validateAccess(String accessToken, String registerId) {
         candidateRegisterCandidateActionsService.validateToken(accessToken, registerId);
-         return ok().build();
+        return ok().build();
     }
 
     @Override
