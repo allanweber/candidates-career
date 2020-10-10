@@ -15,7 +15,7 @@ class VacancyMapperTest {
     void test_toEntity() {
         VacancyDto dto = VacancyDto.builder()
                 .name("name")
-                .skills(Arrays.asList(new Skill("JAVA"), new Skill("SQL")))
+                .skills(Arrays.asList(getSkill("JAVA"), getSkill("SQL")))
                 .build();
 
         Vacancy vacancy = VacancyMapper.toEntity(dto);
@@ -37,7 +37,7 @@ class VacancyMapperTest {
         Vacancy entity = Vacancy.builder()
                 .id("id")
                 .name("name")
-                .skills(Arrays.asList(new Skill("JAVA"), new Skill("SQL")))
+                .skills(Arrays.asList(getSkill("JAVA"), getSkill("SQL")))
                 .build();
 
         VacancyDto vacancyDto = VacancyMapper.toResponse(entity);
@@ -59,17 +59,21 @@ class VacancyMapperTest {
         Vacancy entity = Vacancy.builder()
                 .id("id")
                 .name("name")
-                .skills(Arrays.asList(new Skill("JAVA"), new Skill("SQL")))
+                .skills(Arrays.asList(getSkill("JAVA"), getSkill("SQL")))
                 .build();
 
         VacancyDto dto = VacancyDto.builder()
                 .name("my name")
-                .skills(Arrays.asList(new Skill("JAVA"), new Skill("SQL")))
+                .skills(Arrays.asList(getSkill("JAVA"), getSkill("SQL")))
                 .build();
 
         Vacancy update = VacancyMapper.mapToUpdate(entity, dto);
         assertEquals("id", update.getId());
         assertEquals("my name", update.getName());
         assertEquals(2, update.getSkills().size());
+    }
+
+    private Skill getSkill(String java) {
+        return new Skill(java, 1);
     }
 }

@@ -75,9 +75,13 @@ class VacancyControllerTest {
 
     List<VacancyDto> mockDtos() {
         return Arrays.asList(
-                VacancyDto.builder().id(UUID.randomUUID().toString()).name("NET").skills(Arrays.asList(new Skill(".NET"), new Skill("SQL"))).build(),
-                VacancyDto.builder().id(UUID.randomUUID().toString()).name("NET").skills(Arrays.asList(new Skill("JAVA"), new Skill("SQL"))).build(),
-                VacancyDto.builder().id(UUID.randomUUID().toString()).name("NET").skills(Arrays.asList(new Skill("PYTHON"), new Skill("SQL"))).build()
+                VacancyDto.builder().id(UUID.randomUUID().toString()).name("NET").skills(Arrays.asList(getSkill(".NET"), getSkill("SQL"))).build(),
+                VacancyDto.builder().id(UUID.randomUUID().toString()).name("NET").skills(Arrays.asList(getSkill("JAVA"), getSkill("SQL"))).build(),
+                VacancyDto.builder().id(UUID.randomUUID().toString()).name("NET").skills(Arrays.asList(getSkill("PYTHON"), getSkill("SQL"))).build()
         );
+    }
+
+    private Skill getSkill(String s) {
+        return new Skill(s, 1);
     }
 }

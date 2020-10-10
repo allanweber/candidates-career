@@ -55,7 +55,7 @@ class VacancyServiceTest {
     @Test
     void update() {
         Vacancy entity = mockEntities().get(0);
-        VacancyDto vacancyDto = VacancyDto.builder().name("NET").skills(Arrays.asList(new Skill(".NET"), new Skill("SQL"))).build();
+        VacancyDto vacancyDto = VacancyDto.builder().name("NET").skills(Arrays.asList(getSkill(".NET"), getSkill("SQL"))).build();
         when(repository.findById(entity.getId())).thenReturn(Optional.of(entity));
         when(repository.save(eq(entity))).thenReturn(entity);
         VacancyDto dto = service.update(entity.getId(), vacancyDto);
@@ -72,7 +72,7 @@ class VacancyServiceTest {
     @Test
     void insert() {
         Vacancy entity = mockEntities().get(0);
-        VacancyDto vacancyDto = VacancyDto.builder().name("NET").skills(Arrays.asList(new Skill("JAVA"), new Skill("SQL"))).build();
+        VacancyDto vacancyDto = VacancyDto.builder().name("NET").skills(Arrays.asList(getSkill("JAVA"), getSkill("SQL"))).build();
         when(repository.save(eq(entity))).thenReturn(entity);
         VacancyDto dto = service.insert(vacancyDto);
         assertNotNull(dto);
@@ -94,9 +94,13 @@ class VacancyServiceTest {
 
     List<Vacancy> mockEntities() {
         return Arrays.asList(
-                Vacancy.builder().id(UUID.randomUUID().toString()).name("NET").skills(Arrays.asList(new Skill(".NET"), new Skill("SQL"))).build(),
-                Vacancy.builder().id(UUID.randomUUID().toString()).name("NET").skills(Arrays.asList(new Skill("JAVA"), new Skill("SQL"))).build(),
-                Vacancy.builder().id(UUID.randomUUID().toString()).name("NET").skills(Arrays.asList(new Skill("PYTHON"), new Skill("SQL"))).build()
+                Vacancy.builder().id(UUID.randomUUID().toString()).name("NET").skills(Arrays.asList(getSkill(".NET"), getSkill("SQL"))).build(),
+                Vacancy.builder().id(UUID.randomUUID().toString()).name("NET").skills(Arrays.asList(getSkill("JAVA"), getSkill("SQL"))).build(),
+                Vacancy.builder().id(UUID.randomUUID().toString()).name("NET").skills(Arrays.asList(getSkill("PYTHON"), getSkill("SQL"))).build()
         );
+    }
+
+    private Skill getSkill(String s) {
+        return new Skill(s, 1);
     }
 }
