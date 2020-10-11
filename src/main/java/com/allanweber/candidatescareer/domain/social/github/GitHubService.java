@@ -1,6 +1,7 @@
 package com.allanweber.candidatescareer.domain.social.github;
 
 import com.allanweber.candidatescareer.domain.social.SocialServiceHelper;
+import com.allanweber.candidatescareer.domain.social.dto.GitHubCandidate;
 import com.allanweber.candidatescareer.domain.social.github.dto.GitHubProfile;
 import com.allanweber.candidatescareer.infrastructure.configuration.GitHubConfiguration;
 import lombok.RequiredArgsConstructor;
@@ -64,19 +65,18 @@ public class GitHubService {
             HttpEntity<?> entity = new HttpEntity<>(headers);
             ResponseEntity<?> githubDataResponse = restTemplate.exchange(GITHUB_PROFILE_URL, HttpMethod.GET, entity, GitHubData.class);
 
-            if(githubDataResponse.getStatusCode().isError())
-            {
+            if (githubDataResponse.getStatusCode().isError()) {
                 throw new HttpClientErrorException(githubDataResponse.getStatusCode(), githubDataResponse.toString());
             }
 
-            GitHubData gitHubData = (GitHubData)githubDataResponse.getBody();
+            GitHubData gitHubData = (GitHubData) githubDataResponse.getBody();
 
-            if(Objects.isNull(gitHubData)) {
+            if (Objects.isNull(gitHubData)) {
                 throw new HttpClientErrorException(INTERNAL_SERVER_ERROR, "Error to get github profile data, the data is null.");
             }
 
             String base64Image = null;
-            if(Objects.nonNull(gitHubData.getImageUrl())){
+            if (Objects.nonNull(gitHubData.getImageUrl())) {
                 base64Image = socialServiceHelper.getBase64Image(gitHubData.getImageUrl());
             }
 
@@ -90,6 +90,14 @@ public class GitHubService {
                     .apiProfile(gitHubData.getApiProfile())
                     .githubProfile(gitHubData.getGithubProfile())
                     .token(accessToken)
+                    .gitHubCandidate(
+                            GitHubCandidate.builder()
+                                    .followers(gitHubData.getFollowers())
+                                    .following(gitHubData.getFollowing())
+                                    .createdAt(gitHubData.getCreatedAt())
+                                    .updatedAt(gitHubData.getUpdatedAt())
+                                    .build()
+                    )
                     .build();
         } catch (JSONException e) {
             log.error("Error when getting linkedin data.", e);

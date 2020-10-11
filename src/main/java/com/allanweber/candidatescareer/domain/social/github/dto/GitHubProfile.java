@@ -1,5 +1,6 @@
 package com.allanweber.candidatescareer.domain.social.github.dto;
 
+import com.allanweber.candidatescareer.domain.social.dto.GitHubCandidate;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,4 +29,6 @@ public class GitHubProfile {
     private String githubProfile;
 
     private String token;
+
+    private GitHubCandidate gitHubCandidate;
 }

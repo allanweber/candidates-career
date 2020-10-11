@@ -1,6 +1,7 @@
 package com.allanweber.candidatescareer.api;
 
 import com.allanweber.candidatescareer.domain.candidate.CandidateRepositoriesService;
+import com.allanweber.candidatescareer.domain.candidate.dto.RepositoryCounter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,7 +15,7 @@ public class CandidateRepositoriesController implements CandidateRepositoriesApi
     private final CandidateRepositoriesService candidateRepositoriesService;
 
     @Override
-    public ResponseEntity<Integer> count(String id) {
+    public ResponseEntity<RepositoryCounter> count(String id) {
         return ok(candidateRepositoriesService.count(id));
     }
 }
