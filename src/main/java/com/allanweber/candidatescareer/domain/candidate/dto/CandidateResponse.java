@@ -1,5 +1,6 @@
 package com.allanweber.candidatescareer.domain.candidate.dto;
 
+import com.allanweber.candidatescareer.domain.social.dto.GitHubCandidate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -35,4 +36,6 @@ public class CandidateResponse {
     private List<SocialEntry> socialEntries;
 
     private LocalDateTime lastUpdate;
+
+    private GitHubCandidate gitHubCandidate;
 }

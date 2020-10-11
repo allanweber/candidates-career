@@ -58,6 +58,7 @@ public class CandidateMapper {
                     .bio(entity.getBio())
                     .currentCompany(entity.getCurrentCompany())
                     .lastUpdate(entity.getLastUpdate())
+                    .gitHubCandidate(entity.getGitHubCandidate())
                     .build();
         }
         return response;

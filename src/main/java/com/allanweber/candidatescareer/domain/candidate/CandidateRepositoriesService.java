@@ -1,5 +1,6 @@
 package com.allanweber.candidatescareer.domain.candidate;
 
+import com.allanweber.candidatescareer.domain.candidate.dto.RepositoryCounter;
 import com.allanweber.candidatescareer.domain.candidate.repository.Candidate;
 import com.allanweber.candidatescareer.domain.candidate.repository.CandidateAuthenticatedRepository;
 import com.allanweber.candidatescareer.domain.candidate.repository.CandidateRepositoriesRepository;
@@ -18,10 +19,13 @@ public class CandidateRepositoriesService {
     private final CandidateAuthenticatedRepository authenticatedRepository;
     private final CandidateRepositoriesRepository candidateRepositoriesRepository;
 
-    public Integer count(String candidateId) {
+    public RepositoryCounter count(String candidateId) {
         Candidate candidate = authenticatedRepository.findById(candidateId)
                 .orElseThrow(() -> new HttpClientErrorException(NOT_FOUND, NOT_FOUND_MESSAGE));
 
-        return candidateRepositoriesRepository.countRepositories(candidateId, candidate.getOwner());
+        RepositoryCounter repositoryCounter = candidateRepositoriesRepository.countFields(candidateId, candidate.getOwner());
+        Integer repositories = candidateRepositoriesRepository.countRepositories(candidateId, candidate.getOwner());
+        repositoryCounter.setRepositories(repositories);
+        return repositoryCounter;
     }
 }

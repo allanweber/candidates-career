@@ -1,6 +1,7 @@
 package com.allanweber.candidatescareer.domain.candidate.repository;
 
 import com.allanweber.candidatescareer.domain.candidate.dto.*;
+import com.allanweber.candidatescareer.domain.social.dto.GitHubCandidate;
 import com.allanweber.candidatescareer.domain.social.github.dto.GitHubProfile;
 import com.allanweber.candidatescareer.domain.social.linkedin.dto.LinkedInProfile;
 import lombok.*;
@@ -48,6 +49,8 @@ public class Candidate {
     private final List<SocialEntry> socialEntries;
 
     private final List<CandidateExperience> experiences;
+
+    private final GitHubCandidate gitHubCandidate;
 
     public Candidate addSocialEntriesPending(List<SocialNetworkType> entries) {
         List<SocialEntry> list = Optional.ofNullable(entries).orElse(Collections.emptyList())
@@ -103,7 +106,8 @@ public class Candidate {
                 .withBio(Optional.ofNullable(githubProfile.getBio()).orElse(bio))
                 .withCurrentCompany(Optional.ofNullable(githubProfile.getCompany()).orElse(currentCompany))
                 .withImage(Optional.ofNullable(githubProfile.getImageBase64()).orElse(image))
-                .addSocialNetwork(Collections.singletonList(SocialNetworkDto.builder().type(SocialNetworkType.GITHUB).url(githubProfile.getGithubProfile()).build()));
+                .addSocialNetwork(Collections.singletonList(SocialNetworkDto.builder().type(SocialNetworkType.GITHUB).url(githubProfile.getGithubProfile()).build()))
+                .withGitHubCandidate(githubProfile.getGitHubCandidate());
     }
 
     private Candidate removeEqualSocialEntries(List<SocialNetworkType> entries) {
