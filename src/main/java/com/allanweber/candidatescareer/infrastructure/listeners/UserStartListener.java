@@ -1,9 +1,9 @@
 package com.allanweber.candidatescareer.infrastructure.listeners;
 
-import com.allanweber.candidatescareer.domain.user.AuthoritiesHelper;
-import com.allanweber.candidatescareer.domain.user.Authority;
-import com.allanweber.candidatescareer.domain.user.repository.AppUser;
-import com.allanweber.candidatescareer.domain.user.repository.AppUserRepository;
+import com.allanweber.candidatescareer.authentication.user.dto.AuthoritiesHelper;
+import com.allanweber.candidatescareer.authentication.user.dto.Authority;
+import com.allanweber.candidatescareer.authentication.user.repository.AppUser;
+import com.allanweber.candidatescareer.authentication.user.repository.AppUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
