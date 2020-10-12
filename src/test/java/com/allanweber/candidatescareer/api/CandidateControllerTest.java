@@ -1,7 +1,8 @@
 package com.allanweber.candidatescareer.api;
 
-import com.allanweber.candidatescareer.domain.candidate.CandidateService;
-import com.allanweber.candidatescareer.domain.candidate.dto.*;
+import com.allanweber.candidatescareer.app.candidate.api.CandidateController;
+import com.allanweber.candidatescareer.app.candidate.service.CandidateService;
+import com.allanweber.candidatescareer.app.candidate.dto.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -11,8 +12,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.*;
 
-import static com.allanweber.candidatescareer.domain.candidate.dto.SocialNetworkType.LINKEDIN;
-import static com.allanweber.candidatescareer.domain.candidate.dto.SocialStatus.GRANTED;
+import static com.allanweber.candidatescareer.app.candidate.dto.SocialNetworkType.LINKEDIN;
+import static com.allanweber.candidatescareer.app.candidate.dto.SocialStatus.GRANTED;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doNothing;

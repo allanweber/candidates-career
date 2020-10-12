@@ -1,6 +1,7 @@
 package com.allanweber.candidatescareer.api;
 
-import com.allanweber.candidatescareer.domain.social.SocialService;
+import com.allanweber.candidatescareer.app.social.api.SocialController;
+import com.allanweber.candidatescareer.app.social.service.SocialService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,7 +25,7 @@ class AppsAuthorizationControllerTest {
     SocialService socialService;
 
     @InjectMocks
-    AppsAuthorizationController controller;
+    SocialController controller;
 
     @Test
     void socialAuthorizationLinkedIn() {

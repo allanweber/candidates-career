@@ -1,8 +1,9 @@
 package com.allanweber.candidatescareer.api;
 
-import com.allanweber.candidatescareer.domain.vacancy.VacancyService;
-import com.allanweber.candidatescareer.domain.vacancy.dto.Skill;
-import com.allanweber.candidatescareer.domain.vacancy.dto.VacancyDto;
+import com.allanweber.candidatescareer.app.vacancy.api.VacancyController;
+import com.allanweber.candidatescareer.app.vacancy.service.VacancyService;
+import com.allanweber.candidatescareer.app.vacancy.dto.Skill;
+import com.allanweber.candidatescareer.app.vacancy.dto.VacancyDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

@@ -1,9 +1,9 @@
 package com.allanweber.candidatescareer.infrastructure.configuration;
 
-import com.allanweber.candidatescareer.domain.auth.jwt.AuthEntryPointJwt;
-import com.allanweber.candidatescareer.domain.auth.jwt.JwtAuthorizationFilter;
-import com.allanweber.candidatescareer.domain.user.AuthoritiesHelper;
-import com.allanweber.candidatescareer.domain.user.UserService;
+import com.allanweber.candidatescareer.authentication.auth.jwt.AuthEntryPointJwt;
+import com.allanweber.candidatescareer.authentication.auth.jwt.JwtAuthorizationFilter;
+import com.allanweber.candidatescareer.authentication.user.dto.AuthoritiesHelper;
+import com.allanweber.candidatescareer.authentication.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,7 +26,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private static final String[] PUBLIC_PATH = {
             "/health",
-            "/auth/login", "/registration/**", "/social-authorization/**", "/auth/callback/**", "/candidate-register/**",
+            "/auth/login", "/registration/**", "/social-authorization/**", "/auth/callback/**", "/candidate-application/**",
             "/", "/v2/api-docs", "/swagger*/**", "/webjars/**"};
 
     private static final String[] ADMIN_PATH = {"/admin/**", "/users/**"};
