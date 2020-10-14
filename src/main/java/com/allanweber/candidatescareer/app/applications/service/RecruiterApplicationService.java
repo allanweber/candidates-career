@@ -1,12 +1,11 @@
 package com.allanweber.candidatescareer.app.applications.service;
 
-import com.allanweber.candidatescareer.app.applications.dto.CandidateApplicationResponse;
-import com.allanweber.candidatescareer.app.applications.dto.VacancyApplicationResponse;
+import com.allanweber.candidatescareer.app.applications.dto.ApplicationResponse;
 import com.allanweber.candidatescareer.app.applications.repository.CandidateApplication;
 import com.allanweber.candidatescareer.app.applications.repository.CandidateApplicationRepository;
 import com.allanweber.candidatescareer.app.candidate.dto.CandidateResponse;
 import com.allanweber.candidatescareer.app.candidate.email.SendApplicationDto;
-import com.allanweber.candidatescareer.app.candidate.mapper.CandidateApplicationMapper;
+import com.allanweber.candidatescareer.app.applications.mapper.CandidateApplicationMapper;
 import com.allanweber.candidatescareer.app.candidate.service.CandidateService;
 import com.allanweber.candidatescareer.app.vacancy.dto.Skill;
 import com.allanweber.candidatescareer.app.vacancy.dto.VacancyDto;
@@ -24,7 +23,7 @@ import java.util.Locale;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static com.allanweber.candidatescareer.app.applications.dto.CandidateApplicationStatus.PENDING;
+import static com.allanweber.candidatescareer.app.applications.dto.ApplicationStatus.PENDING;
 
 @RequiredArgsConstructor
 @Service
@@ -37,7 +36,7 @@ public class RecruiterApplicationService {
     private final CandidateApplicationEmailService candidateApplicationEmailService;
     private final CandidateApplicationRepository candidateApplicationRepository;
 
-    public CandidateApplicationResponse sendApplication(String candidateId, String vacancyId) {
+    public ApplicationResponse sendApplication(String candidateId, String vacancyId) {
         CandidateResponse candidate = candidateService.getById(candidateId);
         VacancyDto vacancy = vacancyService.getById(vacancyId);
 
@@ -53,6 +52,7 @@ public class RecruiterApplicationService {
                         .owner(candidate.getOwner())
                         .accessCode(accessCode)
                         .status(PENDING)
+                        .statusText(PENDING.getText())
                         .sent(LocalDateTime.now())
                         .build()
         );
@@ -70,7 +70,7 @@ public class RecruiterApplicationService {
         return CandidateApplicationMapper.toResponse(candidateApplication, vacancy);
     }
 
-    public List<CandidateApplicationResponse> getCandidateApplications(String candidateId) {
+    public List<ApplicationResponse> getCandidateApplications(String candidateId) {
         CandidateResponse candidate = candidateService.getById(candidateId);
         return candidateApplicationRepository.findByCandidateId(candidate.getId())
                 .stream()
@@ -78,12 +78,14 @@ public class RecruiterApplicationService {
                     VacancyDto vacancy = vacancyService.getById(entity.getVacancyId());
                     return CandidateApplicationMapper.toResponse(entity, vacancy);
                 })
-                .sorted(Comparator.comparing(CandidateApplicationResponse::getVacancyName))
+                .sorted(Comparator.comparing(application -> application.getVacancy().getName()))
                 .collect(Collectors.toList());
     }
 
-    public List<VacancyApplicationResponse> getVacancyApplications(String vacancyId) {
+    public List<ApplicationResponse> getVacancyApplications(String vacancyId) {
         List<CandidateApplication> applications = candidateApplicationRepository.findByVacancyId(vacancyId);
-        return applications.stream().map(CandidateApplicationMapper::toResponse).collect(Collectors.toList());
+        return applications.stream().map(CandidateApplicationMapper::toResponse)
+                .sorted(Comparator.comparing(application -> application.getCandidate().getName()))
+                .collect(Collectors.toList());
     }
 }

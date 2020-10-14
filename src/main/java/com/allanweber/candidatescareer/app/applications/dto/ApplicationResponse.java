@@ -11,15 +11,21 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class VacancyApplicationResponse {
+public class ApplicationResponse {
 
-    private final CandidateApplicationStatus status;
+    private final ApplicationStatus status;
+
+    private final String statusText;
+
+    private final String extraDenyReason;
+
+    private final String accessCode;
 
     private final String error;
 
-    private final String candidateId;
+    private final ApplicationVacancy vacancy;
 
-    private final String candidateName;
+    private final ApplicationCandidate candidate;
 
     private final LocalDateTime sent;
 

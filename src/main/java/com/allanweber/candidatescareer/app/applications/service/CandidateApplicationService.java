@@ -1,12 +1,14 @@
 package com.allanweber.candidatescareer.app.applications.service;
 
-import com.allanweber.candidatescareer.app.candidate.dto.CandidateProfile;
-import com.allanweber.candidatescareer.app.candidate.mapper.CandidateMapper;
-import com.allanweber.candidatescareer.app.candidate.mapper.CandidateApplicationMapper;
-import com.allanweber.candidatescareer.app.candidate.repository.Candidate;
-import com.allanweber.candidatescareer.app.candidate.repository.CandidateMongoRepository;
+import com.allanweber.candidatescareer.app.applications.dto.ApplicationStatus;
+import com.allanweber.candidatescareer.app.applications.dto.DenyReason;
+import com.allanweber.candidatescareer.app.applications.mapper.CandidateApplicationMapper;
 import com.allanweber.candidatescareer.app.applications.repository.CandidateApplication;
 import com.allanweber.candidatescareer.app.applications.repository.CandidateApplicationRepository;
+import com.allanweber.candidatescareer.app.candidate.dto.CandidateProfile;
+import com.allanweber.candidatescareer.app.candidate.mapper.CandidateMapper;
+import com.allanweber.candidatescareer.app.candidate.repository.Candidate;
+import com.allanweber.candidatescareer.app.candidate.repository.CandidateMongoRepository;
 import com.allanweber.candidatescareer.app.vacancy.dto.VacancyDto;
 import com.allanweber.candidatescareer.app.vacancy.mapper.VacancyMapper;
 import com.allanweber.candidatescareer.app.vacancy.repository.Vacancy;
@@ -21,8 +23,11 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import static com.allanweber.candidatescareer.app.applications.dto.CandidateApplicationStatus.*;
+import static com.allanweber.candidatescareer.app.applications.dto.ApplicationStatus.*;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RequiredArgsConstructor
@@ -38,40 +43,54 @@ public class CandidateApplicationService {
     private final VacancyMongoRepository vacancyMongoRepository;
 
     public void validateToken(String accessToken, String applicationId) {
-        validateTokenAndGetApplication(accessToken, applicationId);
+        validateApplicationTokenAndGet(accessToken, applicationId);
     }
 
-    public String accept(String applicationId) {
-        CandidateApplication candidateApplication = getCandidateApplication(applicationId);
-        candidateApplication.setStatus(ACCEPTED);
-        candidateApplication.setUpdated(LocalDateTime.now());
+    public String view(String applicationId) {
+        CandidateApplication candidateApplication = getCandidateApplication(applicationId)
+                .withStatus(VIEW).withStatusText(VIEW.getText()).withUpdated(LocalDateTime.now());
         candidateApplicationRepository.save(candidateApplication);
         return UriComponentsBuilder.newInstance()
                 .uri(URI.create(appHostConfiguration.getFrontEnd()))
                 .pathSegment(CandidateApplicationUtils.APPLICATION_PATH)
-                .pathSegment(CandidateApplicationUtils.APPLICATION_ACCEPT)
+                .pathSegment(CandidateApplicationUtils.APPLICATION_VIEW)
                 .path(applicationId)
                 .toUriString();
     }
 
-    public String deny(String applicationId) {
+    public void validateView(String applicationId) {
         CandidateApplication candidateApplication = getCandidateApplication(applicationId);
-        if (!candidateApplication.getStatus().equals(PENDING)) {
+        if (!candidateApplication.getStatus().equals(VIEW)) {
             throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, CandidateApplicationUtils.INVALID_STATUS_MESSAGE);
         }
-        candidateApplication.setStatus(DENIED);
-        candidateApplication.setUpdated(LocalDateTime.now());
+    }
+
+    public void accept(String applicationId) {
+        CandidateApplication candidateApplication = getCandidateApplication(applicationId);
+        if (!candidateApplication.getStatus().equals(VIEW)) {
+            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, CandidateApplicationUtils.INVALID_STATUS_MESSAGE);
+        }
+        candidateApplication = candidateApplication.withStatus(ACCEPT).withStatusText(ACCEPT.getText()).withUpdated(LocalDateTime.now());
         candidateApplicationRepository.save(candidateApplication);
-        return UriComponentsBuilder.newInstance()
-                .uri(URI.create(appHostConfiguration.getFrontEnd()))
-                .pathSegment(CandidateApplicationUtils.APPLICATION_PATH)
-                .pathSegment(CandidateApplicationUtils.APPLICATION_DENIED)
-                .toUriString();
+    }
+
+    public void deny(String applicationId, DenyReason denyReason) {
+        CandidateApplication candidateApplication = getCandidateApplication(applicationId);
+        if (candidateApplication.getStatus().equals(VIEW) || candidateApplication.getStatus().equals(ACCEPT)) {
+            candidateApplication = candidateApplication
+                    .withStatus(denyReason.getOption())
+                    .withStatusText(denyReason.getOptionText())
+                    .withExtraDenyReason(denyReason.getExtraReason())
+                    .withUpdated(LocalDateTime.now());
+            candidateApplicationRepository.save(candidateApplication);
+        } else {
+            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, CandidateApplicationUtils.INVALID_STATUS_MESSAGE);
+        }
     }
 
     public void apply(String accessToken, String applicationId, CandidateProfile candidateProfile) {
-        CandidateApplication candidateApplication = validateTokenAndGetApplication(accessToken, applicationId);
-        if (!candidateApplication.getStatus().equals(ACCEPTED)) {
+        CandidateApplication candidateApplication = validateApplicationTokenAndGet(accessToken, applicationId);
+        if (!candidateApplication.getStatus().equals(ACCEPT)) {
             throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, CandidateApplicationUtils.INVALID_STATUS_MESSAGE);
         }
 
@@ -94,13 +113,15 @@ public class CandidateApplicationService {
         });
 
         candidateMongoRepository.save(CandidateMapper.toEntity(candidate, candidateProfile));
-        candidateApplication.setStatus(DONE);
-        candidateApplication.setUpdated(LocalDateTime.now());
+        candidateApplication = candidateApplication.withStatus(DONE).withStatusText(DONE.getText()).withUpdated(LocalDateTime.now());
         candidateApplicationRepository.save(candidateApplication);
     }
 
     public CandidateProfile getProfile(String accessToken, String applicationId) {
-        CandidateApplication candidateApplication = validateTokenAndGetApplication(accessToken, applicationId);
+        CandidateApplication candidateApplication = validateApplicationTokenAndGet(accessToken, applicationId);
+        if (!candidateApplication.getStatus().equals(ACCEPT)) {
+            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, CandidateApplicationUtils.INVALID_STATUS_MESSAGE);
+        }
         Candidate candidate = candidateMongoRepository.findById(candidateApplication.getCandidateId())
                 .orElseThrow(() -> new HttpClientErrorException(NOT_FOUND, CandidateApplicationUtils.CANDIDATE_NOT_FOUND_MESSAGE));
         if (!candidateApplication.getOwner().equals(candidate.getOwner())) {
@@ -110,8 +131,8 @@ public class CandidateApplicationService {
         return CandidateApplicationMapper.toResponse(candidate);
     }
 
-    public VacancyDto getVacancy(String accessToken, String applicationId) {
-        CandidateApplication candidateApplication = validateTokenAndGetApplication(accessToken, applicationId);
+    public VacancyDto getVacancy(String applicationId) {
+        CandidateApplication candidateApplication = getCandidateApplication(applicationId);
         Vacancy vacancy = vacancyMongoRepository.findById(candidateApplication.getVacancyId())
                 .orElseThrow(() -> new HttpClientErrorException(NOT_FOUND, CandidateApplicationUtils.NOT_FOUND_MESSAGE));
 
@@ -122,18 +143,21 @@ public class CandidateApplicationService {
         return VacancyMapper.toResponse(vacancy);
     }
 
+    public List<DenyReason> getDenyReasons() {
+        return Arrays.stream(values())
+                .filter(ApplicationStatus::isChoosable)
+                .map(status -> DenyReason.builder().option(status).optionText(status.getText()).build())
+                .collect(Collectors.toList());
+    }
+
     private CandidateApplication getCandidateApplication(String applicationId) {
         return candidateApplicationRepository.findById(applicationId)
                 .orElseThrow(() -> new HttpClientErrorException(NOT_FOUND, CandidateApplicationUtils.NOT_FOUND_MESSAGE));
     }
 
 
-    private CandidateApplication validateTokenAndGetApplication(String accessToken, String applicationId) {
+    private CandidateApplication validateApplicationTokenAndGet(String accessToken, String applicationId) {
         CandidateApplication candidateApplication = getCandidateApplication(applicationId);
-        if (!candidateApplication.getStatus().equals(ACCEPTED)) {
-            log.error("Candidate application id {} has status {}", applicationId, candidateApplication.getStatus());
-            throw new HttpClientErrorException(HttpStatus.FORBIDDEN, CandidateApplicationUtils.UNAUTHORIZED_STATUS_MESSAGE);
-        }
         if (!candidateApplication.getAccessCode().equals(accessToken)) {
             log.error("Access token for candidate application id {} is not {}", applicationId, accessToken);
             throw new HttpClientErrorException(HttpStatus.FORBIDDEN, CandidateApplicationUtils.UNAUTHORIZED_STATUS_MESSAGE);

@@ -3,7 +3,7 @@ package com.allanweber.candidatescareer.app.candidate.service;
 import com.allanweber.candidatescareer.app.candidate.dto.*;
 import com.allanweber.candidatescareer.app.candidate.email.CandidateSocialEmailService;
 import com.allanweber.candidatescareer.app.candidate.mapper.CandidateMapper;
-import com.allanweber.candidatescareer.app.candidate.mapper.CandidateApplicationMapper;
+import com.allanweber.candidatescareer.app.applications.mapper.CandidateApplicationMapper;
 import com.allanweber.candidatescareer.app.candidate.repository.Candidate;
 import com.allanweber.candidatescareer.app.candidate.repository.CandidateAuthenticatedRepository;
 import lombok.RequiredArgsConstructor;
