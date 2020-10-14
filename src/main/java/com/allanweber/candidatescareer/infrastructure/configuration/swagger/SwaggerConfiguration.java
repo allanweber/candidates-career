@@ -17,7 +17,7 @@ import java.util.List;
 @Configuration
 @EnableSwagger2
 public class SwaggerConfiguration {
-    private static final String API_BASE_PACKAGE = "com.allanweber.candidatescareer.api";
+    private static final String API_BASE_PACKAGE = "com.allanweber.candidatescareer.app";
     public static final String AUTHORIZATION_HEADER = "Authorization";
 
     @Bean

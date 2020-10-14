@@ -1,10 +1,7 @@
 package com.allanweber.candidatescareer.app.applications.repository;
 
-import com.allanweber.candidatescareer.app.applications.dto.CandidateApplicationStatus;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import com.allanweber.candidatescareer.app.applications.dto.ApplicationStatus;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -12,10 +9,11 @@ import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 
 @Document(collection = "candidate-applications")
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Getter
-@Setter
+@With
 @Builder
+@EqualsAndHashCode
 public class CandidateApplication {
     @Id
     private final String id;
@@ -35,11 +33,15 @@ public class CandidateApplication {
     @NotBlank
     private final String accessCode;
 
-    private CandidateApplicationStatus status;
+    private final ApplicationStatus status;
 
-    private String error;
+    private final String statusText;
 
-    private LocalDateTime sent;
+    private final String extraDenyReason;
 
-    private LocalDateTime updated;
+    private final String error;
+
+    private final LocalDateTime sent;
+
+    private final LocalDateTime updated;
 }

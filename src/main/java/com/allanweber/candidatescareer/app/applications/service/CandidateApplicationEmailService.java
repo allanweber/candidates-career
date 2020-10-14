@@ -18,7 +18,6 @@ public class CandidateApplicationEmailService {
     public static final String VACANCY_NAME = "$VACANCY_NAME";
     public static final String SKILLS = "$SKILLS";
     public static final String URL = "$URL";
-    public static final String DENY_URL = "$DENY_URL";
     public static final String RECRUITER_NAME = "$RECRUITER_NAME";
     public static final String ACCESS_CODE = "$ACCESS_CODE";
     public static final String SUBJECT = "Candidates Career - Aplicar para vaga";
@@ -28,8 +27,6 @@ public class CandidateApplicationEmailService {
 
     public void sendEmail(SendApplicationDto sendApplicationDto) {
         String accessUrl = String.format("%s/candidate-application/%s", appHostConfiguration.getBackEnd(), sendApplicationDto.getCandidateApplicationId());
-
-        String denyUrl = String.format("%s/candidate-application/%s/deny", appHostConfiguration.getBackEnd(), sendApplicationDto.getCandidateApplicationId());
 
         String emailTemplate = new BufferedReader(
                 new InputStreamReader(this.getClass().getResourceAsStream("/mail/candidate_application.html"), StandardCharsets.UTF_8))
@@ -42,8 +39,7 @@ public class CandidateApplicationEmailService {
                 .replace(VACANCY_NAME, sendApplicationDto.getVacancyName())
                 .replace(ACCESS_CODE, sendApplicationDto.getAccessCode())
                 .replace(SKILLS, skillsFormatted)
-                .replace(URL, accessUrl)
-                .replace(DENY_URL, denyUrl);
+                .replace(URL, accessUrl);
 
         emailService.sendHtmlTemplate(SUBJECT, emailMessage, sendApplicationDto.getCandidateEmail());
     }

@@ -16,12 +16,11 @@ public class CandidateApplicationUtils {
 
     public static final String NOT_FOUND_MESSAGE = "Solicitação de registro não encontrada";
     public static final String CANDIDATE_NOT_FOUND_MESSAGE = "Candidato não encontrado.";
-    public static final String INVALID_STATUS_MESSAGE = "Solicitação de registro não é inválida e já foi concluída.";
+    public static final String INVALID_STATUS_MESSAGE = "Solicitação de registro não é válida ou já foi concluída.";
     public static final String INVALID_DATE_MESSAGE = "Data de início e fim são inválidas para %s.";
     public static final String UNAUTHORIZED_STATUS_MESSAGE = "Você não possui acesso a essa solicitação de registro.";
     public static final String APPLICATION_PATH = "candidate-application";
-    public static final String APPLICATION_ACCEPT = "accept";
-    public static final String APPLICATION_DENIED = "denied";
+    public static final String APPLICATION_VIEW = "view";
 
     public static Optional<String> validateDates(CandidateProfile candidateProfile) {
         List<CandidateExperience> notValidDates = candidateProfile.getExperiences().stream()
