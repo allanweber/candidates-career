@@ -2,6 +2,7 @@ package com.allanweber.candidatescareer.app.candidate.mapper;
 
 import com.allanweber.candidatescareer.app.candidate.dto.*;
 import com.allanweber.candidatescareer.app.candidate.repository.Candidate;
+import com.allanweber.candidatescareer.app.shared.CandidateExperience;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 

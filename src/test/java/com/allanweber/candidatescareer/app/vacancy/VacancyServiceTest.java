@@ -1,6 +1,6 @@
 package com.allanweber.candidatescareer.app.vacancy;
 
-import com.allanweber.candidatescareer.app.vacancy.dto.Skill;
+import com.allanweber.candidatescareer.app.shared.Skill;
 import com.allanweber.candidatescareer.app.vacancy.dto.VacancyDto;
 import com.allanweber.candidatescareer.app.vacancy.repository.Vacancy;
 import com.allanweber.candidatescareer.app.vacancy.repository.VacancyAuthenticatedRepository;
@@ -56,7 +56,7 @@ class VacancyServiceTest {
     @Test
     void update() {
         Vacancy entity = mockEntities().get(0);
-        VacancyDto vacancyDto = VacancyDto.builder().name("NET").skills(Arrays.asList(getSkill(".NET"), getSkill("SQL"))).build();
+        VacancyDto vacancyDto = VacancyDto.builder().name("NET").skills(Arrays.asList(getSkill(".NET"), getSkill("SQL"))).remote(true).build();
         when(repository.findById(entity.getId())).thenReturn(Optional.of(entity));
         when(repository.save(eq(entity))).thenReturn(entity);
         VacancyDto dto = service.update(entity.getId(), vacancyDto);
@@ -73,7 +73,7 @@ class VacancyServiceTest {
     @Test
     void insert() {
         Vacancy entity = mockEntities().get(0);
-        VacancyDto vacancyDto = VacancyDto.builder().name("NET").skills(Arrays.asList(getSkill("JAVA"), getSkill("SQL"))).build();
+        VacancyDto vacancyDto = VacancyDto.builder().name("NET").skills(Arrays.asList(getSkill("JAVA"), getSkill("SQL"))).remote(true).build();
         when(repository.save(eq(entity))).thenReturn(entity);
         VacancyDto dto = service.insert(vacancyDto);
         assertNotNull(dto);
@@ -95,9 +95,9 @@ class VacancyServiceTest {
 
     List<Vacancy> mockEntities() {
         return Arrays.asList(
-                Vacancy.builder().id(UUID.randomUUID().toString()).name("NET").skills(Arrays.asList(getSkill(".NET"), getSkill("SQL"))).build(),
-                Vacancy.builder().id(UUID.randomUUID().toString()).name("NET").skills(Arrays.asList(getSkill("JAVA"), getSkill("SQL"))).build(),
-                Vacancy.builder().id(UUID.randomUUID().toString()).name("NET").skills(Arrays.asList(getSkill("PYTHON"), getSkill("SQL"))).build()
+                Vacancy.builder().id(UUID.randomUUID().toString()).name("NET").skills(Arrays.asList(getSkill(".NET"), getSkill("SQL"))).remote(true).build(),
+                Vacancy.builder().id(UUID.randomUUID().toString()).name("NET").skills(Arrays.asList(getSkill("JAVA"), getSkill("SQL"))).remote(true).build(),
+                Vacancy.builder().id(UUID.randomUUID().toString()).name("NET").skills(Arrays.asList(getSkill("PYTHON"), getSkill("SQL"))).remote(true).build()
         );
     }
 

@@ -1,6 +1,6 @@
 package com.allanweber.candidatescareer.app.candidate.specification;
 
-import com.allanweber.candidatescareer.app.candidate.dto.CandidateExperience;
+import com.allanweber.candidatescareer.app.shared.CandidateExperience;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 

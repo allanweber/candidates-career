@@ -1,6 +1,6 @@
 package com.allanweber.candidatescareer.app.vacancy.repository;
 
-import com.allanweber.candidatescareer.app.vacancy.dto.Skill;
+import com.allanweber.candidatescareer.app.shared.Skill;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -26,4 +26,9 @@ public class Vacancy {
     private final String description;
 
     private final List<Skill> skills;
+
+    private final String location;
+
+    @Builder.Default
+    private final boolean remote = false;
 }

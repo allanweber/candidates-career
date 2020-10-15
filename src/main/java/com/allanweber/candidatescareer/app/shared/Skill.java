@@ -1,4 +1,4 @@
-package com.allanweber.candidatescareer.app.vacancy.dto;
+package com.allanweber.candidatescareer.app.shared;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;

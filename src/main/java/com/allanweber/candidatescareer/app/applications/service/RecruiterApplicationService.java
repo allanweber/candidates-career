@@ -7,7 +7,7 @@ import com.allanweber.candidatescareer.app.candidate.dto.CandidateResponse;
 import com.allanweber.candidatescareer.app.candidate.email.SendApplicationDto;
 import com.allanweber.candidatescareer.app.applications.mapper.CandidateApplicationMapper;
 import com.allanweber.candidatescareer.app.candidate.service.CandidateService;
-import com.allanweber.candidatescareer.app.vacancy.dto.Skill;
+import com.allanweber.candidatescareer.app.shared.Skill;
 import com.allanweber.candidatescareer.app.vacancy.dto.VacancyDto;
 import com.allanweber.candidatescareer.app.vacancy.service.VacancyService;
 import com.allanweber.candidatescareer.authentication.user.dto.UserDto;

@@ -1,6 +1,6 @@
 package com.allanweber.candidatescareer.app.applications.service;
 
-import com.allanweber.candidatescareer.app.candidate.dto.CandidateExperience;
+import com.allanweber.candidatescareer.app.shared.CandidateExperience;
 import com.allanweber.candidatescareer.app.candidate.dto.CandidateProfile;
 import com.allanweber.candidatescareer.app.candidate.specification.StartDateIsBeforeEndDate;
 import lombok.AccessLevel;
