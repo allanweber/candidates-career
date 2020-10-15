@@ -1,5 +1,6 @@
 package com.allanweber.candidatescareer.app.vacancy.dto;
 
+import com.allanweber.candidatescareer.app.shared.Skill;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
@@ -8,20 +9,25 @@ import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 @AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @EqualsAndHashCode
 public class  VacancyDto {
-    private String id;
+    private final String id;
 
     @NotBlank(message = "Name é obrigatório")
-    private String name;
+    private final String name;
 
     @NotBlank(message = "Descrição é obrigatório")
-    private String description;
+    private final String description;
 
     @NotEmpty(message = "Skills é obrigatório")
-    private List<Skill> skills;
+    private final List<Skill> skills;
+
+    private final String location;
+
+    @Builder.Default
+    private final boolean remote = false;
 }
+

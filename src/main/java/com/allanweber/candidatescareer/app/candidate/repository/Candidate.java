@@ -1,6 +1,7 @@
 package com.allanweber.candidatescareer.app.candidate.repository;
 
 import com.allanweber.candidatescareer.app.candidate.dto.*;
+import com.allanweber.candidatescareer.app.shared.CandidateExperience;
 import com.allanweber.candidatescareer.app.social.dto.GitHubCandidate;
 import com.allanweber.candidatescareer.app.social.github.dto.GitHubProfile;
 import com.allanweber.candidatescareer.app.social.linkedin.dto.LinkedInProfile;

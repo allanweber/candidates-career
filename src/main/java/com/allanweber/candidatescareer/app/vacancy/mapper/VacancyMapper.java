@@ -12,12 +12,14 @@ import java.util.Optional;
 public class VacancyMapper {
 
     public static Vacancy toEntity(VacancyDto dto) {
-        VacancyDto vacancyDto = Optional.ofNullable(dto).orElse(new VacancyDto());
+        VacancyDto vacancyDto = Optional.ofNullable(dto).orElse(VacancyDto.builder().build());
         return Vacancy
                 .builder()
                 .name(vacancyDto.getName())
                 .skills(vacancyDto.getSkills())
                 .description(vacancyDto.getDescription())
+                .location(vacancyDto.getLocation())
+                .remote(vacancyDto.isRemote())
                 .build();
     }
 
@@ -32,12 +34,18 @@ public class VacancyMapper {
                     .name(entity.getName())
                     .skills(entity.getSkills())
                     .description(entity.getDescription())
+                    .location(entity.getLocation())
+                    .remote(entity.isRemote())
                     .build();
         }
         return dto;
     }
 
     public static Vacancy mapToUpdate(Vacancy entity, VacancyDto dto) {
-        return entity.withName(dto.getName()).withDescription(dto.getDescription()).withSkills(dto.getSkills());
+        return entity.withName(dto.getName())
+                .withDescription(dto.getDescription())
+                .withSkills(dto.getSkills())
+                .withLocation(dto.getLocation())
+                .withRemote(dto.isRemote());
     }
 }

@@ -1,6 +1,5 @@
-package com.allanweber.candidatescareer.app.candidate.dto;
+package com.allanweber.candidatescareer.app.shared;
 
-import com.allanweber.candidatescareer.app.vacancy.dto.Skill;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

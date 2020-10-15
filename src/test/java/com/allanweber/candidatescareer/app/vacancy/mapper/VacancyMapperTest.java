@@ -1,6 +1,6 @@
 package com.allanweber.candidatescareer.app.vacancy.mapper;
 
-import com.allanweber.candidatescareer.app.vacancy.dto.Skill;
+import com.allanweber.candidatescareer.app.shared.Skill;
 import com.allanweber.candidatescareer.app.vacancy.dto.VacancyDto;
 import com.allanweber.candidatescareer.app.vacancy.repository.Vacancy;
 import org.junit.jupiter.api.Test;

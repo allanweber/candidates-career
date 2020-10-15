@@ -1,5 +1,6 @@
 package com.allanweber.candidatescareer.app.candidate.dto;
 
+import com.allanweber.candidatescareer.app.shared.CandidateExperience;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
