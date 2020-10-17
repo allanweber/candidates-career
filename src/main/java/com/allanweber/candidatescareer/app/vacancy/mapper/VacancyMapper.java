@@ -1,11 +1,11 @@
 package com.allanweber.candidatescareer.app.vacancy.mapper;
 
+import com.allanweber.candidatescareer.app.vacancy.dto.Salary;
 import com.allanweber.candidatescareer.app.vacancy.dto.VacancyDto;
 import com.allanweber.candidatescareer.app.vacancy.repository.Vacancy;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-import java.util.Objects;
 import java.util.Optional;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -20,15 +20,33 @@ public class VacancyMapper {
                 .description(vacancyDto.getDescription())
                 .location(vacancyDto.getLocation())
                 .remote(vacancyDto.isRemote())
+                .salary(vacancyDto.getSalary())
                 .build();
     }
 
-    public static VacancyDto toResponse(Vacancy entity) {
-        VacancyDto dto;
-        if (Objects.isNull(entity)) {
-            dto = VacancyDto.builder().build();
+    public static VacancyDto toResponseView(Vacancy entity) {
+        VacancyDto.VacancyDtoBuilder builder = getBuilder(entity);
+        VacancyDto dto = builder.build();
+        if (Optional.ofNullable(dto.getSalary()).map(Salary::getVisible).orElse(false)) {
+            if (dto.getSalary().getFrom() == 0 && dto.getSalary().getTo() == 0) {
+                builder.salary(null);
+            }
         } else {
-            dto = VacancyDto
+            builder.salary(null);
+        }
+        return builder.build();
+    }
+
+    public static VacancyDto toResponse(Vacancy entity) {
+        return getBuilder(entity).build();
+    }
+
+    private static VacancyDto.VacancyDtoBuilder getBuilder(Vacancy entity) {
+        VacancyDto.VacancyDtoBuilder builder;
+        if (entity == null) {
+            builder = VacancyDto.builder();
+        } else {
+            builder = VacancyDto
                     .builder()
                     .id(entity.getId())
                     .name(entity.getName())
@@ -36,9 +54,9 @@ public class VacancyMapper {
                     .description(entity.getDescription())
                     .location(entity.getLocation())
                     .remote(entity.isRemote())
-                    .build();
+                    .salary(entity.getSalary());
         }
-        return dto;
+        return builder;
     }
 
     public static Vacancy mapToUpdate(Vacancy entity, VacancyDto dto) {
@@ -46,6 +64,7 @@ public class VacancyMapper {
                 .withDescription(dto.getDescription())
                 .withSkills(dto.getSkills())
                 .withLocation(dto.getLocation())
-                .withRemote(dto.isRemote());
+                .withRemote(dto.isRemote())
+                .withSalary(dto.getSalary());
     }
 }

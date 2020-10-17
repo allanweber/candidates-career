@@ -140,7 +140,7 @@ public class CandidateApplicationService {
             throw new HttpClientErrorException(HttpStatus.FORBIDDEN, CandidateApplicationUtils.UNAUTHORIZED_STATUS_MESSAGE);
         }
 
-        return VacancyMapper.toResponse(vacancy);
+        return VacancyMapper.toResponseView(vacancy);
     }
 
     public List<DenyReason> getDenyReasons() {

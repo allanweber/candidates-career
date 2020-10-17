@@ -2,7 +2,10 @@ package com.allanweber.candidatescareer.app.vacancy.dto;
 
 import com.allanweber.candidatescareer.app.shared.Skill;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
@@ -29,5 +32,7 @@ public class  VacancyDto {
 
     @Builder.Default
     private final boolean remote = false;
+
+    private final Salary salary;
 }
 

@@ -46,7 +46,7 @@ public class EmailService {
             message.setTo(receipts);
             mailSender.send(mimeMessage);
         } catch (Exception ex){
-            log.error("Error sending activation email", ex);
+            log.error("Error sending application email", ex);
             throw new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR,
                     String.format("Error sending activation email: %s", Optional.ofNullable(ex.getCause()).orElse(ex).getMessage()));
         }

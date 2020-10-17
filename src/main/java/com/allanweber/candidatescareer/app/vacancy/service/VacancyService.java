@@ -19,6 +19,7 @@ public class VacancyService {
 
     private static final String VACATION_NOT_FOUND = "Vaga não encontrada.";
     private static final String LOCATION_NOT_FOUND = "Se a vaga não é remota a localização deve ser informada.";
+    private static final String INVALID_SALARY = "Salario é inválido, 'DE' deve ser menor que 'ATÉ'.";
 
     private final VacancyAuthenticatedRepository repository;
 
@@ -51,8 +52,13 @@ public class VacancyService {
     }
 
     private void validateDto(VacancyDto vacancyDto) {
-        if(!vacancyDto.isRemote() && vacancyDto.getLocation() == null) {
-           throw  new HttpClientErrorException(BAD_REQUEST, LOCATION_NOT_FOUND);
+        if (!vacancyDto.isRemote() && vacancyDto.getLocation() == null) {
+            throw new HttpClientErrorException(BAD_REQUEST, LOCATION_NOT_FOUND);
+        }
+        if (vacancyDto.getSalary() != null
+                && vacancyDto.getSalary().getTo() > 0
+                && vacancyDto.getSalary().getFrom() > vacancyDto.getSalary().getTo()) {
+            throw new HttpClientErrorException(BAD_REQUEST, INVALID_SALARY);
         }
     }
 

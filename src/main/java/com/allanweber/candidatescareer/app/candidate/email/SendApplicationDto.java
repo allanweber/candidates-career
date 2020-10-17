@@ -1,5 +1,6 @@
 package com.allanweber.candidatescareer.app.candidate.email;
 
+import com.allanweber.candidatescareer.app.vacancy.dto.Salary;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,4 +24,6 @@ public class SendApplicationDto {
     private final String candidateApplicationId;
 
     private final String accessCode;
+
+    private final Salary salary;
 }
