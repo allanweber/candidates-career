@@ -9,6 +9,9 @@ import org.springframework.stereotype.Service;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.text.NumberFormat;
+import java.util.Locale;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,6 +23,7 @@ public class CandidateApplicationEmailService {
     public static final String URL = "$URL";
     public static final String RECRUITER_NAME = "$RECRUITER_NAME";
     public static final String ACCESS_CODE = "$ACCESS_CODE";
+    public static final String SALARY = "$SALARY";
     public static final String SUBJECT = "Candidates Career - Aplicar para vaga";
 
     private final EmailService emailService;
@@ -39,8 +43,40 @@ public class CandidateApplicationEmailService {
                 .replace(VACANCY_NAME, sendApplicationDto.getVacancyName())
                 .replace(ACCESS_CODE, sendApplicationDto.getAccessCode())
                 .replace(SKILLS, skillsFormatted)
-                .replace(URL, accessUrl);
+                .replace(URL, accessUrl)
+                .replace(SALARY, getSalaryText(sendApplicationDto));
 
         emailService.sendHtmlTemplate(SUBJECT, emailMessage, sendApplicationDto.getCandidateEmail());
+    }
+
+    @SuppressWarnings("PMD")
+    private String getSalaryText(SendApplicationDto sendApplicationDto) {
+        if (Optional.ofNullable(sendApplicationDto.getSalary()).isPresent()) {
+            if(sendApplicationDto.getSalary().getFrom() == 0 && sendApplicationDto.getSalary().getTo() == 0) {
+                return "";
+            }
+            StringBuilder salary = new StringBuilder().append("<p>")
+                    .append("O salário para essa vaga é:")
+                    .append("</p>")
+                    .append("<p><strong>");
+
+            if (sendApplicationDto.getSalary().getFrom() > 0 && sendApplicationDto.getSalary().getTo() > 0) {
+                salary.append("de ")
+                        .append(currencyFormat(sendApplicationDto.getSalary().getFrom()))
+                        .append(" até ")
+                        .append(currencyFormat(sendApplicationDto.getSalary().getTo()));
+            } else {
+                salary.append(currencyFormat(sendApplicationDto.getSalary().getFrom()));
+            }
+            salary.append("</p></strong>");
+            return salary.toString();
+        } else {
+            return "";
+        }
+    }
+
+    private String currencyFormat(double amount) {
+        return NumberFormat.getCurrencyInstance(new Locale("pt", "BR"))
+                .format(amount);
     }
 }

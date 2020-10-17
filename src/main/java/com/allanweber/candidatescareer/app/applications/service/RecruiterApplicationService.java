@@ -8,6 +8,7 @@ import com.allanweber.candidatescareer.app.candidate.email.SendApplicationDto;
 import com.allanweber.candidatescareer.app.applications.mapper.CandidateApplicationMapper;
 import com.allanweber.candidatescareer.app.candidate.service.CandidateService;
 import com.allanweber.candidatescareer.app.shared.Skill;
+import com.allanweber.candidatescareer.app.vacancy.dto.Salary;
 import com.allanweber.candidatescareer.app.vacancy.dto.VacancyDto;
 import com.allanweber.candidatescareer.app.vacancy.service.VacancyService;
 import com.allanweber.candidatescareer.authentication.user.dto.UserDto;
@@ -17,10 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Locale;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.allanweber.candidatescareer.app.applications.dto.ApplicationStatus.PENDING;
@@ -58,14 +56,17 @@ public class RecruiterApplicationService {
         );
 
         UserDto userDto = userService.getByUserName(candidate.getOwner());
-        SendApplicationDto sendApplicationDto = SendApplicationDto.builder().candidateEmail(candidate.getEmail()).candidateName(candidate.getName())
+        SendApplicationDto.SendApplicationDtoBuilder sendApplicationDtoBuilder = SendApplicationDto.builder().candidateEmail(candidate.getEmail()).candidateName(candidate.getName())
                 .candidateApplicationId(candidateApplication.getId()).recruiterName(userDto.getFullName())
                 .vacancyName(vacancy.getName())
                 .accessCode(accessCode)
-                .vacancySkills(vacancy.getSkills().stream().limit(5).map(Skill::getName).collect(Collectors.toList()))
-                .build();
+                .vacancySkills(vacancy.getSkills().stream().limit(5).map(Skill::getName).collect(Collectors.toList()));
 
-        candidateApplicationEmailService.sendEmail(sendApplicationDto);
+        if(Optional.ofNullable(vacancy.getSalary()).map(Salary::getVisible).orElse(false)){
+            sendApplicationDtoBuilder.salary(vacancy.getSalary());
+        }
+
+        candidateApplicationEmailService.sendEmail(sendApplicationDtoBuilder.build());
 
         return CandidateApplicationMapper.toResponse(candidateApplication, vacancy);
     }

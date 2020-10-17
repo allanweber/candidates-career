@@ -1,6 +1,7 @@
 package com.allanweber.candidatescareer.app.vacancy.repository;
 
 import com.allanweber.candidatescareer.app.shared.Skill;
+import com.allanweber.candidatescareer.app.vacancy.dto.Salary;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -31,4 +32,6 @@ public class Vacancy {
 
     @Builder.Default
     private final boolean remote = false;
+
+    private final Salary salary;
 }
