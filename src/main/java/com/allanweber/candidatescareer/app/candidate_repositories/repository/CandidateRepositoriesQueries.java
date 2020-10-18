@@ -3,7 +3,6 @@ package com.allanweber.candidatescareer.app.candidate_repositories.repository;
 import com.allanweber.candidatescareer.app.candidate_repositories.dto.RepositoryCounter;
 import com.mongodb.BasicDBObject;
 import lombok.RequiredArgsConstructor;
-import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -11,14 +10,14 @@ import org.springframework.stereotype.Repository;
 
 @RequiredArgsConstructor
 @Repository
-public class CandidateRepositoriesRepository {
+public class CandidateRepositoriesQueries {
 
     private static final String COLLECTION = "candidate-repository";
     private final MongoTemplate mongoTemplate;
 
     /**
      * db.getCollection('candidate-repository').aggregate([
-     *     { $match: { candidateId: ObjectId("$ID") } },
+     *     { $match: { candidateId: "$ID" } },
      *     { $project: { repositories : 1 , _id : 0 }},
      *     { $unwind : "$repositories" },
      *     { $group: { _id: "result", count: { $sum: 1 }}}
@@ -38,7 +37,7 @@ public class CandidateRepositoriesRepository {
 
     /**
      *db.getCollection('candidate-repository').aggregate([
-     *     { $match: { candidateId: ObjectId("5f707154562cc79b68a1afbc") } },
+     *     { $match: { candidateId: "$ID" } },
      *     { $project:
      *         {
      *             "starts": { "$sum": "$repositories.stars"},
@@ -68,7 +67,7 @@ public class CandidateRepositoriesRepository {
 
     private MatchOperation getMatchOperation(String candidateId, String owner) {
         return Aggregation.match(
-                new Criteria("candidateId").is(new ObjectId(candidateId)).and("owner").is(owner)
+                new Criteria("candidateId").is(candidateId).and("owner").is(owner)
         );
     }
 }
