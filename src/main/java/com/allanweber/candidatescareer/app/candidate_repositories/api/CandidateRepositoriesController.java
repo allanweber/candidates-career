@@ -23,7 +23,7 @@ public class CandidateRepositoriesController implements CandidateRepositoriesApi
     }
 
     @Override
-    public ResponseEntity<List<GithubRepository>> getRepositories(String id, int offset, String sort) {
-        return ok(candidateRepositoriesService.getRepositories(id, offset, sort));
+    public ResponseEntity<List<GithubRepository>> getRepositories(String id, int size, int offset, String sort) {
+        return ok(candidateRepositoriesService.getRepositories(id, size, offset, sort));
     }
 }

@@ -35,6 +35,7 @@ public interface CandidateRepositoriesApi {
             @ApiResponse(code = 404, message = CANDIDATE_NOT_FOUND)})
     @GetMapping("")
     ResponseEntity<List<GithubRepository>> getRepositories(@ApiParam(name = ID, value = ID_DESCRIPTION, required = true) @PathVariable(name = ID) String id,
+                                                           @ApiParam(name = "size", example = "10", defaultValue = "10") @RequestParam(name = "size", required = false) int size,
                                                            @ApiParam(name = "offset", example = "0", defaultValue = "0") @RequestParam(name = "offset", required = false) int offset,
                                                            @ApiParam(name = "sort", defaultValue = "name") @RequestParam(name = "sort", required = false) String sort);
 }

@@ -1,6 +1,5 @@
 package com.allanweber.candidatescareer.app.candidate_repositories.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -16,24 +15,18 @@ public class GithubRepository {
 
     private boolean fork;
 
-    @JsonProperty("created_at")
     private LocalDateTime createdAt;
 
-    @JsonProperty("updated_at")
     private LocalDateTime updatedAt;
 
-    @JsonProperty("clone_url")
     private String cloneUrl;
 
-    @JsonProperty("language")
     private String mainLanguage;
 
     private List<GithubRepositoryLanguage> languages;
 
-    @JsonProperty("stargazers_count")
     private long stars;
 
-    @JsonProperty("watchers_count")
     private long watchers;
 
     private long commits;
