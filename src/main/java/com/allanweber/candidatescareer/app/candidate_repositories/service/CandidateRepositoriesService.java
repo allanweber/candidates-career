@@ -40,11 +40,11 @@ public class CandidateRepositoriesService {
         return repositoryCounter;
     }
 
-    public List<GithubRepository> getRepositories(String candidateId, Integer offset, String sort) {
+    public List<GithubRepository> getRepositories(String candidateId, int size, Integer offset, String sort) {
         authenticatedRepository.findById(candidateId)
                 .orElseThrow(() -> new HttpClientErrorException(NOT_FOUND, NOT_FOUND_MESSAGE));
         Sort sortBy = getSortField(sort);
-        Pageable page = PageRequest.of(offset, 10, sortBy);
+        Pageable page = PageRequest.of(offset, size, sortBy);
         return candidateRepository.getByCandidateId(candidateId, page);
     }
 
