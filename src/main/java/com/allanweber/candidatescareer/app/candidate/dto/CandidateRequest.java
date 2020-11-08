@@ -22,6 +22,5 @@ public class CandidateRequest {
     @Email(message = "Email é inválido")
     private String email;
 
-    @NotBlank(message = "Telefone é obrigatório")
     private String phone;
 }
