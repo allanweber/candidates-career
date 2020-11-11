@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -40,6 +41,7 @@ public class CandidateProfile implements Trimmable {
     @Size(max = 20, message = "Telefone é muito grande")
     private String phone;
 
+    @Valid
     private List<CandidateExperience> experiences;
 
     private LocalDateTime lastUpdate;
