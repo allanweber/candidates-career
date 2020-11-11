@@ -1,6 +1,6 @@
 package com.allanweber.candidatescareer.authentication.auth.jwt;
 
-import com.allanweber.candidatescareer.app.helper.DateHelper;
+import com.allanweber.candidatescareer.core.utilities.DateHelper;
 import com.allanweber.candidatescareer.infrastructure.configuration.security.AppSecurityConfiguration;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -24,9 +24,8 @@ import java.util.stream.Collectors;
 @Slf4j
 public class JwtUtils {
 
-    private final AppSecurityConfiguration appSecurityConfiguration;
-
-    private final SecretKey secretKey;
+    private final transient AppSecurityConfiguration appSecurityConfiguration;
+    private final transient SecretKey secretKey;
 
     public JwtUtils(AppSecurityConfiguration appSecurityConfiguration) {
         this.appSecurityConfiguration = appSecurityConfiguration;

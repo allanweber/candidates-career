@@ -1,10 +1,12 @@
 package com.allanweber.candidatescareer.authentication.user.registration.validation;
 
 import com.allanweber.candidatescareer.authentication.user.registration.dto.UserRegistration;
+import lombok.NoArgsConstructor;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
+@NoArgsConstructor
 public class PasswordConfirmedValidator implements ConstraintValidator<PasswordConfirmed, UserRegistration> {
 
     @Override

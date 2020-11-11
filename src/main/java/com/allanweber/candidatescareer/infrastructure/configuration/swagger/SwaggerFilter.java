@@ -1,11 +1,14 @@
 package com.allanweber.candidatescareer.infrastructure.configuration.swagger;
 
+import lombok.NoArgsConstructor;
+
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @SuppressWarnings({"PMD.DataflowAnomalyAnalysis"})
+@NoArgsConstructor
 public class SwaggerFilter implements Filter {
 
     @Override

@@ -1,7 +1,7 @@
 package com.allanweber.candidatescareer.app.social.linkedin;
 
 import com.allanweber.candidatescareer.app.social.service.SocialServiceHelper;
-import com.allanweber.candidatescareer.app.helper.ObjectMapperHelper;
+import com.allanweber.candidatescareer.core.utilities.ObjectMapperHelper;
 import com.allanweber.candidatescareer.app.social.linkedin.dto.LinkedInProfile;
 import com.allanweber.candidatescareer.infrastructure.configuration.LinkedInConfiguration;
 import com.fasterxml.jackson.core.JsonProcessingException;

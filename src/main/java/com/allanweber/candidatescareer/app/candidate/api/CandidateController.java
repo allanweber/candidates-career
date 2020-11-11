@@ -39,12 +39,14 @@ public class CandidateController implements CandidateApi {
 
     @Override
     public ResponseEntity<CandidateResponse> create(@Valid CandidateRequest body) {
+        body.trim();
         CandidateResponse created = candidateService.insert(body);
         return created(URI.create(String.format("/candidates/%s", created.getId()))).body(created);
     }
 
     @Override
     public ResponseEntity<CandidateResponse> update(String id, @Valid CandidateUpdate body) {
+        body.trim();
         return ok(candidateService.update(id, body));
     }
 

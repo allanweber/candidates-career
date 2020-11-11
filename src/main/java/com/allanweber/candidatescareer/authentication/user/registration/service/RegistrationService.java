@@ -90,8 +90,8 @@ public class RegistrationService {
         if(changePassword.isEmpty()) {
             return new RememberMeResponse("Alteração de senha é inválida.");
         }
-        changePasswordRepository.delete(changePassword.get());
 
+        changePasswordRepository.delete(changePassword.get());
         userService.changePassword(changePasswordRequest.getEmail(), changePasswordRequest.getPassword());
 
         return new RememberMeResponse();

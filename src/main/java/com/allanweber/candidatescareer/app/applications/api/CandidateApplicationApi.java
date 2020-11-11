@@ -2,7 +2,7 @@ package com.allanweber.candidatescareer.app.applications.api;
 
 import com.allanweber.candidatescareer.app.applications.dto.DenyReason;
 import com.allanweber.candidatescareer.app.candidate.dto.CandidateProfile;
-import com.allanweber.candidatescareer.app.helper.ConstantsUtils;
+import com.allanweber.candidatescareer.core.constants.ConstantsUtils;
 import com.allanweber.candidatescareer.app.vacancy.dto.VacancyDto;
 import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;

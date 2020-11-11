@@ -1,5 +1,6 @@
 package com.allanweber.candidatescareer.infrastructure.configuration.security;
 
+import lombok.NoArgsConstructor;
 import org.passay.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
+@NoArgsConstructor
 @Configuration
 public class PasswordConfiguration {
     private static final int MIN_COMPLEX_RULES = 3;

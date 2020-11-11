@@ -28,8 +28,9 @@ public class RegistrationController implements RegistrationApi {
     private final RegistrationService registrationService;
 
     @Override
-    public ResponseEntity<UserDto> signUp(@Valid UserRegistration user) {
-        return ok(userService.createUser(user));
+    public ResponseEntity<UserDto> signUp(@Valid UserRegistration userRegistration) {
+        userRegistration.trim();
+        return ok(userService.createUser(userRegistration));
     }
 
     @Override
@@ -42,6 +43,7 @@ public class RegistrationController implements RegistrationApi {
 
     @Override
     public ResponseEntity<RememberMeResponse> rememberMe(@Valid RememberMeRequest rememberMe) {
+        rememberMe.trim();
         RememberMeResponse rememberMeResponse = registrationService.rememberMe(rememberMe);
         ResponseEntity<RememberMeResponse> response;
         if(rememberMeResponse.isOk()) {
@@ -54,6 +56,7 @@ public class RegistrationController implements RegistrationApi {
 
     @Override
     public ResponseEntity<RememberMeResponse> changePassword(@Valid ChangePasswordRequest changePasswordRequest) {
+        changePasswordRequest.trim();
         RememberMeResponse rememberMeResponse = registrationService.changePassword(changePasswordRequest);
         ResponseEntity<RememberMeResponse> response;
         if(rememberMeResponse.isOk()) {

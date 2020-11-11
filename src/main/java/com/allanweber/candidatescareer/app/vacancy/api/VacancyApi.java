@@ -1,6 +1,6 @@
 package com.allanweber.candidatescareer.app.vacancy.api;
 
-import com.allanweber.candidatescareer.app.helper.ConstantsUtils;
+import com.allanweber.candidatescareer.core.constants.ConstantsUtils;
 import com.allanweber.candidatescareer.app.vacancy.dto.VacancyDto;
 import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;

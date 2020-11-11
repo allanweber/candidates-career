@@ -4,37 +4,46 @@ import com.allanweber.candidatescareer.authentication.user.registration.validati
 import com.allanweber.candidatescareer.authentication.user.registration.validation.PasswordPolicy;
 import com.allanweber.candidatescareer.authentication.user.registration.validation.UniqueEmail;
 import com.allanweber.candidatescareer.authentication.user.registration.validation.UniqueUsername;
+import com.allanweber.candidatescareer.core.utilities.Trimmable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 
 @AllArgsConstructor
 @Getter
 @PasswordConfirmed
-public class UserRegistration {
+public class UserRegistration implements Trimmable {
 
-    @NotEmpty(message = "Enter your First Name")
+    @NotEmpty(message = "Informe seu primeiro nome")
+    @Size(max = 128, min = 3, message = "Tamanho do primeiro nome é inválido")
     private final String firstName;
 
-    @NotEmpty(message = "Enter your Last Name")
+    @NotEmpty(message = "Informe seu sobrenome")
+    @Size(max = 128, min = 3, message = "Tamanho do sobrenome é inválido")
     private final String lastName;
 
-    @NotEmpty(message = "Enter your User Name")
+    @NotEmpty(message = "Informe o nome de usuário")
+    @Size(max = 128, min = 5, message = "Tamanho do nome de usuário é inválido")
     @UniqueUsername
     private final String userName;
 
-    @NotEmpty(message = "Enter your Email")
-    @Email(message = "Email is not valid")
+    @NotBlank(message = "Informe o email")
+    @Email(message = "Email é inválido")
+    @Size(max = 128, message = "Email é muito grande")
     @UniqueEmail
     private final String email;
 
-    @NotEmpty(message = "Enter your Password")
+    @NotEmpty(message = "Informe a senha")
     @PasswordPolicy
+    @Size(max = 128, min = 10, message = "Tamanho da senha é inválido")
     private final String password;
 
-    @NotEmpty(message = "Confirm your Password")
+    @NotEmpty(message = "Informe a confirmação da senha")
+    @Size(max = 128, min = 10, message = "Tamanho da confirmação da senha é inválido")
     private final String confirmPassword;
 }
 

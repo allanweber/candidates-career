@@ -1,7 +1,7 @@
 package com.allanweber.candidatescareer.app.candidate.api;
 
 import com.allanweber.candidatescareer.app.candidate.dto.*;
-import com.allanweber.candidatescareer.app.helper.ConstantsUtils;
+import com.allanweber.candidatescareer.core.constants.ConstantsUtils;
 import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
