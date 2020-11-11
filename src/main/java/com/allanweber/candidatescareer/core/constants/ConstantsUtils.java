@@ -1,4 +1,4 @@
-package com.allanweber.candidatescareer.app.helper;
+package com.allanweber.candidatescareer.core.constants;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

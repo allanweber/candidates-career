@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -14,6 +15,7 @@ import javax.validation.constraints.NotBlank;
 public class Skill {
 
     @NotBlank(message = "Nome da habilidade é obrigatório")
+    @Size(max = 50, message = "Nome da habilidade é muito grande")
     private String name;
 
     @NotBlank(message = "Anos de experiência na habilidade é obrigatório")

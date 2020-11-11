@@ -2,7 +2,7 @@ package com.allanweber.candidatescareer.app.candidate_repositories.api;
 
 import com.allanweber.candidatescareer.app.candidate_repositories.dto.GithubRepository;
 import com.allanweber.candidatescareer.app.candidate_repositories.dto.RepositoryCounter;
-import com.allanweber.candidatescareer.app.helper.ConstantsUtils;
+import com.allanweber.candidatescareer.core.constants.ConstantsUtils;
 import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

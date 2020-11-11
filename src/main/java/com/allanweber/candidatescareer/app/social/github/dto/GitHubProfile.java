@@ -10,6 +10,7 @@ import lombok.Data;
 @Data
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@SuppressWarnings("PMD.AvoidFieldNameMatchingTypeName")
 public class GitHubProfile {
 
     private String user;

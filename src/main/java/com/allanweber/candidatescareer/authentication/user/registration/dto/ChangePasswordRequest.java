@@ -1,27 +1,34 @@
 package com.allanweber.candidatescareer.authentication.user.registration.dto;
 
 import com.allanweber.candidatescareer.authentication.user.registration.validation.PasswordPolicy;
+import com.allanweber.candidatescareer.core.utilities.Trimmable;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 
 @NoArgsConstructor
 @Getter
-public class ChangePasswordRequest {
+@Setter
+public class ChangePasswordRequest implements Trimmable {
 
-    @NotEmpty(message = "Hash is invalid")
+    @NotEmpty(message = "Requisição de troca de senha é inválida")
     private String hash;
 
-    @NotEmpty(message = "Enter your Email")
-    @Email(message = "Email is not valid")
+    @NotEmpty(message = "Informe o email")
+    @Email(message = "Email é inválido")
+    @Size(max = 128, message = "Email é muito grande")
     private String email;
 
-    @NotEmpty(message = "Enter your Password")
+    @NotEmpty(message = "Informe a senha")
     @PasswordPolicy
+    @Size(max = 128, min = 10, message = "Tamanho da senha é inválido")
     private String password;
 
-    @NotEmpty(message = "Confirm your Password")
+    @NotEmpty(message = "Informe a confirmação da senha")
+    @Size(max = 128, min = 10, message = "Tamanho da confirmação da senha é inválido")
     private String confirmPassword;
 }

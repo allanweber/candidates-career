@@ -172,7 +172,7 @@
 					<linkXRef>false</linkXRef>
 					<targetJdk>${java.version}</targetJdk>
 					<minimumTokens>80</minimumTokens>
-					<skipEmptyReport>false</skipEmptyReport>
+					<skipEmptyReport>true</skipEmptyReport>
 					<failOnViolation>true</failOnViolation>
 					<printFailingErrors>true</printFailingErrors>
 					<excludeRoots>

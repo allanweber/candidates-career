@@ -31,6 +31,7 @@ public class VacancyController implements VacancyApi {
 
     @Override
     public ResponseEntity<VacancyDto> create(@Valid VacancyDto body) {
+        body.trim();
         VacancyDto created = service.insert(body);
         return created(URI.create(String.format("/vacancies/%s", created.getId()))).body(created);
     }

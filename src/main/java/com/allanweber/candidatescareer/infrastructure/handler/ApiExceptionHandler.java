@@ -2,6 +2,7 @@ package com.allanweber.candidatescareer.infrastructure.handler;
 
 import com.allanweber.candidatescareer.infrastructure.handler.dto.ResponseErrorDto;
 import com.allanweber.candidatescareer.infrastructure.handler.dto.ViolationDto;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,7 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @RestControllerAdvice
 @Slf4j
+@NoArgsConstructor
 public class ApiExceptionHandler {
     private static final String CLIENT_EXCEPTION_HAPPENED = "Client Exception happened";
     private static final String UNEXPECTED_EXCEPTION_HAPPENED = "Unexpected Exception happened";

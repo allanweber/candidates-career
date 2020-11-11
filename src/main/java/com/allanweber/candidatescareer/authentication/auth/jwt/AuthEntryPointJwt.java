@@ -1,5 +1,6 @@
 package com.allanweber.candidatescareer.authentication.auth.jwt;
 
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -11,6 +12,7 @@ import java.io.IOException;
 
 @Component
 @Slf4j
+@NoArgsConstructor
 public class AuthEntryPointJwt implements AuthenticationEntryPoint {
 
     @Override

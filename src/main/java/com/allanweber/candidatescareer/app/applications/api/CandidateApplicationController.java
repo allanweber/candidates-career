@@ -48,6 +48,7 @@ public class CandidateApplicationController implements CandidateApplicationApi {
 
     @Override
     public ResponseEntity<Void> apply(String accessToken, String applicationId, CandidateProfile body) {
+        body.trim();
         candidateApplicationService.apply(accessToken, applicationId, body);
         return ok().build();
     }

@@ -1,20 +1,26 @@
 package com.allanweber.candidatescareer.authentication.auth.dto;
 
+import com.allanweber.candidatescareer.authentication.user.registration.validation.PasswordPolicy;
+import com.allanweber.candidatescareer.core.utilities.Trimmable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @AllArgsConstructor
 @Data
-public class LoginRequest {
+public class LoginRequest implements Trimmable {
 
-    @NotBlank
-    @Email
+    @NotBlank(message = "Informe o email")
+    @Email(message = "Email é inválido")
+    @Size(max = 128, message = "Email é muito grande")
     private String email;
 
-    @NotBlank
+    @NotBlank(message = "Informe a senha")
+    @PasswordPolicy
+    @Size(max = 128, min = 10, message = "Tamanho da senha é inválido")
     private String password;
 }
 

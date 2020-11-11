@@ -30,18 +30,16 @@ public class CandidateSocialEmailService {
     private final AppHostConfiguration appHostConfiguration;
 
     public void sendSocialAccess(CandidateResponse candidate, SocialNetworkType socialNetworkType) {
-        String accessUrl = String.format("%s/social-authorization/%s/%s", appHostConfiguration.getBackEnd(),
-                candidate.getId(), socialNetworkType.toString().toLowerCase(Locale.getDefault()));
-
-        String denyUrl = String.format("%s/social-authorization/%s/%s/deny", appHostConfiguration.getBackEnd(),
-                candidate.getId(), socialNetworkType.toString());
-
         String emailMessage;
         if (socialNetworkType.equals(SocialNetworkType.GITHUB)) {
             String emailTemplate = new BufferedReader(
                     new InputStreamReader(this.getClass().getResourceAsStream("/mail/github_access.html"), StandardCharsets.UTF_8))
                     .lines()
                     .collect(Collectors.joining());
+            String denyUrl = String.format("%s/social-authorization/%s/%s/deny", appHostConfiguration.getBackEnd(),
+                    candidate.getId(), socialNetworkType.toString());
+            String accessUrl = String.format("%s/social-authorization/%s/%s", appHostConfiguration.getBackEnd(),
+                    candidate.getId(), socialNetworkType.toString().toLowerCase(Locale.getDefault()));
             emailMessage = emailTemplate.replace(NAME, candidate.getName())
                     .replace(RECRUITER_NAME, authService.getAuthUser().getName())
                     .replace(URL, accessUrl)

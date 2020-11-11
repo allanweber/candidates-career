@@ -20,6 +20,7 @@ public class AuthController implements AuthApi {
 
     @Override
     public ResponseEntity<LoginResponse> login(@Valid LoginRequest loginRequest) {
+        loginRequest.trim();
         return ResponseEntity.ok(authService.login(loginRequest));
     }
 

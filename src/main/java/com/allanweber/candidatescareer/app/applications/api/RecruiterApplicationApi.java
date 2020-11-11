@@ -2,7 +2,7 @@ package com.allanweber.candidatescareer.app.applications.api;
 
 import com.allanweber.candidatescareer.app.applications.dto.ApplicationResponse;
 import com.allanweber.candidatescareer.app.candidate.dto.ResumeResponse;
-import com.allanweber.candidatescareer.app.helper.ConstantsUtils;
+import com.allanweber.candidatescareer.core.constants.ConstantsUtils;
 import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

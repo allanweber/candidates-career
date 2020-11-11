@@ -29,15 +29,13 @@ public class CandidateApplicationUtils {
 
         String message = null;
         if(!notValidDates.isEmpty()) {
-            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
             message = notValidDates.stream()
                     .map(exp ->
                             "Empresa: " + exp.getCompanyName() +
                                     " Cargo: " + exp.getPosition() +
-                                    " Data de início: " + exp.getStart().format(dateTimeFormatter) +
-                                    " Data de saída: " + exp.getEnd().format(dateTimeFormatter)
+                                    " Data de início: " + exp.getStart().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")) +
+                                    " Data de saída: " + exp.getEnd().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"))
                     ).collect(Collectors.joining(" | "));
-
         }
 
         return Optional.ofNullable(message);

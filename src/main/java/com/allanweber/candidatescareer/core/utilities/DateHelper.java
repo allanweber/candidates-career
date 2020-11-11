@@ -1,4 +1,4 @@
-package com.allanweber.candidatescareer.app.helper;
+package com.allanweber.candidatescareer.core.utilities;
 
 
 import lombok.AccessLevel;

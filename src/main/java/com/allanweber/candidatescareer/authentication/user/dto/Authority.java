@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@SuppressWarnings("PMD.AvoidFieldNameMatchingTypeName")
 public class Authority {
     private String authority;
 }
